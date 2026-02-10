@@ -5,6 +5,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.munchtruck.util.ValidationResult
+import com.example.munchtruck.util.Validators
 import kotlinx.coroutines.launch
 
 
@@ -23,11 +25,23 @@ class AuthViewModel : ViewModel() {
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
-            _isLoading.value = true
             _error.value = ""
 
+            when ( val validate = Validators.validateLogin(email, password)) {
+                is ValidationResult.Invalid -> {
+                    _error.value = validate.message
+                    return@launch
+                }
+                ValidationResult.Valid -> Unit
+        }
+
+            val trimmedEmail = email.trim()
+            val trimmedPassword = password.trim()
+
+
+            _isLoading.value = true
             try {
-                repository.login(email, password)
+                repository.login(trimmedEmail, trimmedPassword)
                 _isLoggedIn.value = true
             } catch (e: Exception) {
                 _error.value = e.message ?: "Login failed"
