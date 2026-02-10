@@ -16,17 +16,23 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.munchtruck.R
-import com.example.munchtruck.ui.theme.White
+import com.example.munchtruck.ui.theme.AppColors.DarkOverlay
+import com.example.munchtruck.ui.theme.AppColors.White
+import com.example.munchtruck.ui.theme.AppColors.WhiteMuted
+import com.example.munchtruck.ui.theme.Dimens
+import com.example.munchtruck.ui.theme.Dimens.ButtonRadius
+import com.example.munchtruck.ui.theme.Dimens.LogoHeightLarge
+import com.example.munchtruck.ui.theme.Dimens.LogoWidthSmall
+import com.example.munchtruck.ui.theme.Dimens.ScreenPadding
+import com.example.munchtruck.ui.theme.Dimens.SpaceM
+import com.example.munchtruck.ui.theme.Dimens.StartTopSpacing
+import com.example.munchtruck.ui.theme.Dimens.TitleLarge
 
 @Composable
 fun StartScreen(navController: NavController) {
@@ -43,79 +49,78 @@ fun StartScreen(navController: NavController) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.35f))
+                .background(DarkOverlay)
         )
 
         Column(modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
+            .padding(ScreenPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            Spacer(modifier = Modifier.height(230.dp))
+            Spacer(modifier = Modifier.height(StartTopSpacing))
 
             Text(
-                "Welcome to",
+                stringResource(R.string.start_welcome),
                 style = MaterialTheme.typography.headlineLarge.copy(
-                    fontSize = 45.sp,
+                    fontSize = TitleLarge,
                 ),
-
                 color = White,
                 fontWeight = FontWeight.Bold
             )
 //
             Image(
                 painter = painterResource(id = R.drawable.munchtruck_text),
-                contentDescription = null,
+                contentDescription = stringResource(R.string.logo_munchtruck),
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
-                    .fillMaxWidth(0.7f)
-                    .height(60.dp)
+                    .fillMaxWidth(LogoWidthSmall)
+                    .height(LogoHeightLarge)
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(SpaceM))
             Button(
                 onClick = {
                     navController.navigate("login")
                 },
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(Dimens.ButtonRadius)
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                       "I'm a Food Truck Owner",
+                        stringResource(R.string.start_owner_title),
                         style = MaterialTheme.typography.bodyLarge
                     )
                     Text(
-                  "For those of you who run a food truck",
+                        stringResource(R.string.start_owner_subtitle),
                         style = MaterialTheme.typography.bodySmall,
-                        color = White.copy(alpha = 0.9f)
+                        color = WhiteMuted
                     )
                 }
 
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(SpaceM))
             Button(
                 onClick = {
                     navController.navigate("discovery")
                 },
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(ButtonRadius)
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                       "I'm a Food Lover",
+                        stringResource(R.string.start_lover_title),
                         style = MaterialTheme.typography.bodyLarge
                     )
                     Text(
-                     "For those of you who want to find a food truck",
+                        stringResource(R.string.start_lover_subtitle),
                         style = MaterialTheme.typography.bodySmall,
-                        color = White.copy(alpha = 0.9f)
+                        color = WhiteMuted
                     )
                 }
             }

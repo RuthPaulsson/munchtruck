@@ -1,3 +1,28 @@
 <resources>
+
+
+    <!-- ===== Start screen ======================================  -->
+
     <string name="app_name">munchtruck</string>
+
+    <string name="logo_munchtruck">MunchTruck logo</string>
+    <string name="start_welcome">Welcome to</string>
+
+    <string name="start_owner_title">I\'m a Food Truck Owner</string>
+    <string name="start_owner_subtitle">For those of you who run a food truck</string>
+
+    <string name="start_lover_title">I\'m a Food Lover</string>
+    <string name="start_lover_subtitle">For those of you who want to find a food truck</string>
+
+
+    <!-- ===== Login screen ====================================== -->
+    <string name="login_email_placeholder">Email address</string>
+    <string name="login_password_placeholder">Password</string>
+
+    <string name="login_forgot_password">Forgot password?</string>
+    <string name="login_button">Log In</string>
+
+    <string name="login_no_account">Don\'t have an account?</string>
+    <string name="login_create_account">Create one here</string>
+
 </resources>
