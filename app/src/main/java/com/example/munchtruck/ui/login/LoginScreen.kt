@@ -19,6 +19,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,16 +33,30 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.munchtruck.R
 import androidx.navigation.NavController
 import com.example.munchtruck.ui.theme.PrimaryOrange
 import com.example.munchtruck.ui.theme.White
+import com.example.munchtruck.viewmodels.AuthViewModel
 
 
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(
+    navController: NavController,
+    authViewModel: AuthViewModel = viewModel()
+) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    val isLoggedIn by authViewModel.isLoggedIn.collectAsState()
+
+    LaunchedEffect(isLoggedIn) {
+        if (isLoggedIn) {
+            navController.navigate("profile"){
+                popUpTo("login") { inclusive = true }
+            }
+        }
+    }
 
     Box(modifier = Modifier.fillMaxWidth()) {
 
@@ -143,7 +159,7 @@ fun LoginScreen(navController: NavController) {
 
             Button(
                 onClick = {
-                    // connect later to viewmodel here
+                    authViewModel.login(email, password)
                 },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
