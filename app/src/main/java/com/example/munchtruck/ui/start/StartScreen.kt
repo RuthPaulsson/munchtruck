@@ -1,6 +1,7 @@
 package com.example.munchtruck.ui.start
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -38,6 +39,13 @@ fun StartScreen(navController: NavController) {
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.35f))
+        )
+
         Column(modifier = Modifier
             .fillMaxSize()
             .padding(24.dp),
@@ -49,12 +57,7 @@ fun StartScreen(navController: NavController) {
             Text(
                 "Welcome to",
                 style = MaterialTheme.typography.headlineLarge.copy(
-                    fontSize = 50.sp,
-                    shadow = Shadow(
-                        color = Color.Black.copy(alpha = 0.9f),
-                        offset = Offset(4f, 4f),
-                        blurRadius = 10f
-                    )
+                    fontSize = 45.sp,
                 ),
 
                 color = White,
@@ -66,8 +69,8 @@ fun StartScreen(navController: NavController) {
                 contentDescription = null,
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
-                    .fillMaxWidth(0.8f)
-                    .height(70.dp)
+                    .fillMaxWidth(0.7f)
+                    .height(60.dp)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
