@@ -7,7 +7,7 @@ import kotlinx.coroutines.tasks.await
 class AuthRepository {
     private val firebaseAuth = FirebaseAuth.getInstance()
     private val firestore = FirebaseFirestore.getInstance()
-    
+
     suspend fun login(email: String, password: String) {
         try {
             firebaseAuth.signInWithEmailAndPassword(email, password).await()
