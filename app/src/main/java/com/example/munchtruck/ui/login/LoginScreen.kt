@@ -62,14 +62,14 @@ fun LoginScreen(navController: NavController) {
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(170.dp))
+            Spacer(modifier = Modifier.height(180.dp))
 
             Image(
                 painter = painterResource(R.drawable.munchtruck_text),
                 contentDescription = "Logo",
                 modifier = Modifier
-                    .fillMaxWidth(0.8f)
-                    .height(70.dp),
+                    .fillMaxWidth(0.7f)
+                    .height(60.dp),
                 contentScale = ContentScale.Fit
             )
 
