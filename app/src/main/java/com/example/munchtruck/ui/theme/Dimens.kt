@@ -1,0 +1,40 @@
+package com.example.munchtruck.ui.theme
+
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+
+object Dimens {
+
+    // ====== Spacing / Padding ===============================
+
+    val ScreenPadding = 24.dp
+    val SpaceS = 8.dp
+    val SpaceM = 16.dp
+    val SpaceL = 24.dp
+
+
+    val SpaceBetweenLinkAndButton = 15.dp
+    val SpaceAfterButton = 10.dp
+
+    // ====== Logo / Images ===============================
+
+    val LogoHeightSmall = 60.dp
+    val LogoHeightLarge = 90.dp
+    val LogoWidthSmall = 0.7f
+
+    // ====== Buttons ===============================
+
+    val ButtonRadius = 16.dp
+    val InputRadius = 12.dp
+
+    // ====== Top spacing (hero sections) ===============================
+
+    val StartTopSpacing = 230.dp
+    val LoginTopSpacing = 180.dp
+
+
+    // ====== Text sizes ===============================
+
+    val TitleLarge = 45.sp
+
+}

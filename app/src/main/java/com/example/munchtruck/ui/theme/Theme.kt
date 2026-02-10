@@ -9,6 +9,10 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import com.example.munchtruck.ui.theme.AppColors.PrimaryBackground
+import com.example.munchtruck.ui.theme.AppColors.PrimaryOrange
+import com.example.munchtruck.ui.theme.AppColors.PrimaryText
+import com.example.munchtruck.ui.theme.AppColors.White
 
 private val LightColorScheme = lightColorScheme(
     primary = PrimaryOrange,
