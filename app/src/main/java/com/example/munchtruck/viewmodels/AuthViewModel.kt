@@ -35,9 +35,13 @@ class AuthViewModel : ViewModel() {
                 ValidationResult.Valid -> Unit
         }
 
+            val trimmedEmail = email.trim()
+            val trimmedPassword = password.trim()
+
+
             _isLoading.value = true
             try {
-                repository.login(email, password)
+                repository.login(trimmedEmail, trimmedPassword)
                 _isLoggedIn.value = true
             } catch (e: Exception) {
                 _error.value = e.message ?: "Login failed"

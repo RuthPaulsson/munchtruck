@@ -13,7 +13,7 @@ object Validators {
         val trimmedEmail = email.trim()
         val trimmedPassword = password.trim()
 
-        if (trimmedEmail.isEmpty() || trimmedPassword.isEmpty()) {
+        if (trimmedEmail.isBlank() || trimmedPassword.isBlank()) {
             return ValidationResult.Invalid("Email and password cannot be empty")
         }
         if (!Patterns.EMAIL_ADDRESS.matcher(trimmedEmail).matches()) {
