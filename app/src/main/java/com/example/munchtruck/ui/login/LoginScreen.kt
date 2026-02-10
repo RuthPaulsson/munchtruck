@@ -1,88 +1,194 @@
 package com.example.munchtruck.ui.login
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import com.example.munchtruck.viewmodels.AuthViewModel
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.munchtruck.R
 import androidx.navigation.NavController
+import com.example.munchtruck.ui.theme.PrimaryOrange
+import com.example.munchtruck.ui.theme.White
+import com.example.munchtruck.viewmodels.AuthViewModel
 
 
 @Composable
 fun LoginScreen(
     navController: NavController,
-    viewModel: AuthViewModel = viewModel()
+    authViewModel: AuthViewModel = viewModel()
 ) {
-    val isLoggedIn by viewModel.isLoggedIn.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
-    val error by viewModel.error.collectAsState()
-
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    val isLoggedIn by authViewModel.isLoggedIn.collectAsState()
 
     LaunchedEffect(isLoggedIn) {
         if (isLoggedIn) {
-            navController.navigate("profile") {
+            navController.navigate("profile"){
                 popUpTo("login") { inclusive = true }
             }
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    Box(modifier = Modifier.fillMaxWidth()) {
 
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Email") },
-            modifier = Modifier.fillMaxWidth()
+      Image(
+          painter = painterResource(R.drawable.bg_foodtruck),
+          contentDescription = null,
+          contentScale = ContentScale.Crop,
+          modifier = Modifier.fillMaxSize()
+      )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.35f))
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
-
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Password") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Button(
-            onClick = { viewModel.login(email, password) },
-            enabled = !isLoading,
-            modifier = Modifier.fillMaxWidth()
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Login")
-        }
+            Spacer(modifier = Modifier.height(180.dp))
 
-        if (isLoading) {
+            Image(
+                painter = painterResource(R.drawable.munchtruck_text),
+                contentDescription = "Logo",
+                modifier = Modifier
+                    .fillMaxWidth(0.7f)
+                    .height(60.dp),
+                contentScale = ContentScale.Fit
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                placeholder = {
+                    Text(
+                        "Email address",
+                        color = Color.Gray
+                    ) },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                singleLine = true,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    focusedBorderColor = Color.LightGray,
+                    unfocusedBorderColor = Color.LightGray,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                    cursorColor = Color.Black
+
+                )
+            )
+
             Spacer(modifier = Modifier.height(16.dp))
-            CircularProgressIndicator()
-        }
 
-        error?.let {
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                placeholder = {
+                    Text(
+                        "Password",
+                        color = Color.Gray
+                    ) },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                singleLine = true,
+                visualTransformation = PasswordVisualTransformation(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    focusedBorderColor = Color.LightGray,
+                    unfocusedBorderColor = Color.LightGray,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                    cursorColor = Color.Black
+
+                )
+            )
+
             Spacer(modifier = Modifier.height(8.dp))
-            Text(it, color = Color.Red)
+
+            Text(
+                "Forgot password?",
+                color = White,
+                style = MaterialTheme.typography.bodySmall.copy(
+                    textDecoration = TextDecoration.Underline
+                ),
+                modifier = Modifier
+                    .align(Alignment.Start)
+                    .clickable {
+                        navController.navigate("forgot_password")
+                    }
+            )
+
+            Spacer(modifier = Modifier.height(15.dp))
+
+            Button(
+                onClick = {
+                    authViewModel.login(email, password)
+                },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = PrimaryOrange
+                )
+            ) {
+                Text("Log In")
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Row{
+                Text(
+                    "Don't have an account? ",
+                    color = White,
+                    style = MaterialTheme.typography.bodySmall
+                    )
+                Text(
+                    "Create one here",
+                    color = PrimaryOrange,
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        textDecoration = TextDecoration.Underline
+                    ),
+                    modifier = Modifier.clickable{
+                        navController.navigate("register")
+                    }
+                )
+            }
         }
     }
 }
