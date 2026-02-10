@@ -1,7 +1,6 @@
 package com.example.munchtruck.ui.start
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -28,8 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.munchtruck.R
-import com.example.munchtruck.ui.theme.PrimaryOrange
-import com.example.munchtruck.ui.theme.PrimaryText
 import com.example.munchtruck.ui.theme.White
 
 @Composable
@@ -38,7 +33,7 @@ fun StartScreen(navController: NavController) {
         modifier = Modifier.fillMaxSize()
     ) {
         Image(
-            painter = painterResource(id= R.drawable.bg_foodtruck),
+            painter = painterResource(R.drawable.bg_foodtruck),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
@@ -52,7 +47,7 @@ fun StartScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(230.dp))
 
             Text(
-                text = "Welcome to",
+                "Welcome to",
                 style = MaterialTheme.typography.headlineLarge.copy(
                     fontSize = 50.sp,
                     shadow = Shadow(
@@ -87,11 +82,11 @@ fun StartScreen(navController: NavController) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "I'm a Food Truck Owner",
+                       "I'm a Food Truck Owner",
                         style = MaterialTheme.typography.bodyLarge
                     )
                     Text(
-                        text = "For those of you who run a food truck",
+                  "For those of you who run a food truck",
                         style = MaterialTheme.typography.bodySmall,
                         color = White.copy(alpha = 0.9f)
                     )
@@ -111,11 +106,11 @@ fun StartScreen(navController: NavController) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "I'm a Food Lover",
+                       "I'm a Food Lover",
                         style = MaterialTheme.typography.bodyLarge
                     )
                     Text(
-                        text = "For those of you who want to find a food truck",
+                     "For those of you who want to find a food truck",
                         style = MaterialTheme.typography.bodySmall,
                         color = White.copy(alpha = 0.9f)
                     )
