@@ -1,6 +1,7 @@
 package com.example.munchtruck.ui.login
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,7 +14,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,9 +25,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.example.munchtruck.R
 import androidx.navigation.NavController
@@ -45,6 +50,11 @@ fun LoginScreen(navController: NavController) {
           contentScale = ContentScale.Crop,
           modifier = Modifier.fillMaxSize()
       )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.35f))
+        )
 
         Column(
             modifier = Modifier
@@ -52,26 +62,40 @@ fun LoginScreen(navController: NavController) {
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(180.dp))
+            Spacer(modifier = Modifier.height(170.dp))
 
             Image(
                 painter = painterResource(R.drawable.munchtruck_text),
                 contentDescription = "Logo",
                 modifier = Modifier
-                    .fillMaxWidth(0.7f)
+                    .fillMaxWidth(0.8f)
                     .height(70.dp),
                 contentScale = ContentScale.Fit
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                placeholder = { Text("Email address") },
+                placeholder = {
+                    Text(
+                        "Email address",
+                        color = Color.Gray
+                    ) },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
                 singleLine = true,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    focusedBorderColor = Color.LightGray,
+                    unfocusedBorderColor = Color.LightGray,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                    cursorColor = Color.Black
+
+                )
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -79,11 +103,25 @@ fun LoginScreen(navController: NavController) {
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                placeholder = { Text("Password") },
+                placeholder = {
+                    Text(
+                        "Password",
+                        color = Color.Gray
+                    ) },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
                 singleLine = true,
-                visualTransformation = PasswordVisualTransformation()
+                visualTransformation = PasswordVisualTransformation(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    focusedBorderColor = Color.LightGray,
+                    unfocusedBorderColor = Color.LightGray,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                    cursorColor = Color.Black
+
+                )
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -91,6 +129,9 @@ fun LoginScreen(navController: NavController) {
             Text(
                 "Forgot password?",
                 color = White,
+                style = MaterialTheme.typography.bodySmall.copy(
+                    textDecoration = TextDecoration.Underline
+                ),
                 modifier = Modifier
                     .align(Alignment.Start)
                     .clickable {
@@ -98,7 +139,7 @@ fun LoginScreen(navController: NavController) {
                     }
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(15.dp))
 
             Button(
                 onClick = {
@@ -113,13 +154,20 @@ fun LoginScreen(navController: NavController) {
                 Text("Log In")
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             Row{
-                Text("Don't have an account? ", color = White)
+                Text(
+                    "Don't have an account? ",
+                    color = White,
+                    style = MaterialTheme.typography.bodySmall
+                    )
                 Text(
                     "Create one here",
                     color = PrimaryOrange,
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        textDecoration = TextDecoration.Underline
+                    ),
                     modifier = Modifier.clickable{
                         navController.navigate("register")
                     }
