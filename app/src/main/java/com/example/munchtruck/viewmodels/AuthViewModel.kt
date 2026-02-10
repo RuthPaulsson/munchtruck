@@ -51,6 +51,37 @@ class AuthViewModel : ViewModel() {
         }
     }
 
+    fun register(email: String, password: String, confirmPassword: String) {
+        viewModelScope.launch {
+
+            _error.value = ""
+
+            when (val validate = Validators.validateRegister(email,password, confirmPassword)) {
+                is ValidationResult.Invalid -> {
+                    _error.value = validate.message
+                    return@launch
+                }
+
+                ValidationResult.Valid -> Unit
+            }
+
+            val trimmedEmail = email.trim()
+            val trimmedPassword = password.trim()
+
+
+            _isLoading.value = true
+            try {
+                repository.register(trimmedEmail, trimmedPassword)
+                _isLoggedIn.value = true
+            } catch (e: Exception) {
+                _error.value = e.message ?: "Registration failed"
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+
     fun logout() {
         repository.logout()
         _isLoggedIn.value = false
