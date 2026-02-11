@@ -19,11 +19,12 @@ class AuthRepository {
 
             val user = hashMapOf(
                 "uid" to uid,
-                "email" to email
+                "email" to email,
+                "companyName" to "",
+                "role" to "owner"
             )
 
-            firestore.collection(
-                "users")
+            firestore.collection("users")
                 .document(uid)
                 .set(user)
                 .await()

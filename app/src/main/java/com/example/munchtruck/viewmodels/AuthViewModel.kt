@@ -21,7 +21,10 @@ class AuthViewModel : ViewModel() {
     private val _error = MutableStateFlow<String>("")
     val error: StateFlow<String> = _error
 
-    private val _isLoggedIn = MutableStateFlow(false)
+
+//    private val _isLoggedIn = MutableStateFlow(repository.isUserLoggedIn()) // todo lägg till när vi har en logout ut knapp
+
+    private val _isLoggedIn = MutableStateFlow(false)  // todo ta bort till när vi har en logout knapp
     val isLoggedIn: StateFlow<Boolean> = _isLoggedIn
 
     fun login(email: String, password: String) {
