@@ -90,6 +90,8 @@ class AuthViewModel : ViewModel() {
     fun logout() {
         repository.logout()
         _isLoggedIn.value = false
+        _error.value = ""
+        _isLoading.value = false
     }
 }
 
