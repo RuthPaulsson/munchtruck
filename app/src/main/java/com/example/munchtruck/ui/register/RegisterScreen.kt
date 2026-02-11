@@ -71,131 +71,19 @@ fun RegisterScreen(
         }
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(PrimaryBackground)
-    ) {
-
-        Image(
-            painter = painterResource(R.drawable.basic_car),
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter),
-        contentScale = ContentScale.FillWidth
-
-        )
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(ScreenPadding),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(modifier = Modifier.height(SpaceL))
-
-            Image(
-                painter = painterResource(R.drawable.munchtruck_text),
-                contentDescription = stringResource(R.string.logo_munchtruck),
-                modifier = Modifier
-                    .fillMaxWidth(LogoWidthSmall)
-                    .height(LogoHeightSmall),
-                contentScale = ContentScale.Fit
-            )
-
-            Spacer(modifier = Modifier.height(SpaceS))
-
-            Text(
-                text = stringResource(R.string.register_subtitle),
-                style = MaterialTheme.typography.bodyLarge,
-                color = PrimaryText
-            )
-
-            Spacer(modifier = Modifier.height(SpaceL))
-
-            InputField(
-                value = company,
-                onChange = { company = it },
-                lable = stringResource(R.string.register_company_label),
-                placeholder = stringResource(R.string.register_company_hint)
-            )
-
-            Spacer(modifier = Modifier.height(SpaceM))
-
-            InputField(
-                value = email,
-                onChange = { email = it },
-                lable = stringResource(R.string.register_email_label),
-                placeholder = stringResource(R.string.input_email_hint)
-            )
-
-            Spacer(modifier = Modifier.height(SpaceM))
-
-
-            InputField(
-                value = password,
-                onChange = { password = it },
-                lable = stringResource(R.string.register_password_label),
-                placeholder = stringResource(R.string.input_password_hint),
-                isPassword = true
-            )
-
-            Spacer(modifier = Modifier.height(SpaceM))
-
-            InputField(
-                value = confirmPassword,
-                onChange = { confirmPassword = it },
-                lable = stringResource(R.string.register_confirm_label),
-                placeholder = stringResource(R.string.input_confirm_password_hint),
-                isPassword = true
-            )
-
-            Spacer(modifier = Modifier.height(SpaceL))
-
-            if (error.isNotEmpty()) {
-                Text(
-                    text = error,
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(bottom = SpaceS)
-                )
-            }
-
-            Button(
-                onClick =  {
-                    authViewModel.register(email, password, confirmPassword)
-                },
-                enabled = !isLoading,
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(ButtonRadius),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = PrimaryOrange
-                )
-            ) {
-                if (isLoading){
-                    CircularProgressIndicator(
-                        color = White,
-                        strokeWidth = LoaderStroke,
-                        modifier = Modifier.size(LoaderSize)
-
-                    )
-                } else {
-                    Text(stringResource(R.string.register_button))
-
-                }
-            }
-
+    RegisterContent(
+        company = company,
+        email = email,
+        password = password,
+        confirmPassword = confirmPassword,
+        error = error,
+        isLoading = isLoading,
+        onCompanyChange = { company = it },
+        onEmailChange = { email = it },
+        onPasswordChange = { password = it },
+        onConfirmPasswordChange = { confirmPassword = it },
+        onRegisterClick = {
+            authViewModel.register(email, password, confirmPassword)
         }
-    }
-
+    )
 }
-//
-//@Preview(showBackground = true)
-//@Composable
-//fun RegisterScreenPreview() {
-//    RegisterScreen(
-//        navController = androidx.navigation.compose.rememberNavController(),
-//        authViewModel = AuthViewModel()
-//    )
-//}
