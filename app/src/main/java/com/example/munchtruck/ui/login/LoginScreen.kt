@@ -60,7 +60,7 @@ import com.example.munchtruck.viewmodels.AuthViewModel
 @Composable
 fun LoginScreen(
     navController: NavController,
-    authViewModel: AuthViewModel = viewModel()
+    authViewModel: AuthViewModel
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -113,7 +113,7 @@ fun LoginScreen(
                 onValueChange = { email = it },
                 placeholder = {
                     Text(
-                        stringResource(R.string.login_email_placeholder),
+                        stringResource(R.string.input_email_hint),
                         color = TextMuted
                     ) },
                 modifier = Modifier.fillMaxWidth(),
@@ -138,7 +138,7 @@ fun LoginScreen(
                 onValueChange = { password = it },
                 placeholder = {
                     Text(
-                        stringResource(R.string.login_password_placeholder),
+                        stringResource(R.string.input_password_hint),
                         color = TextMuted
                     ) },
                 modifier = Modifier.fillMaxWidth(),
