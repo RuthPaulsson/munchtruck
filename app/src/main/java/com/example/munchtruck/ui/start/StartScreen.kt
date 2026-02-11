@@ -20,7 +20,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.munchtruck.R
 import com.example.munchtruck.ui.theme.AppColors.DarkOverlay
 import com.example.munchtruck.ui.theme.AppColors.White
@@ -28,6 +30,7 @@ import com.example.munchtruck.ui.theme.AppColors.WhiteMuted
 import com.example.munchtruck.ui.theme.Dimens
 import com.example.munchtruck.ui.theme.Dimens.ButtonRadius
 import com.example.munchtruck.ui.theme.Dimens.LogoHeightLarge
+import com.example.munchtruck.ui.theme.Dimens.LogoHeightSmall
 import com.example.munchtruck.ui.theme.Dimens.LogoWidthSmall
 import com.example.munchtruck.ui.theme.Dimens.ScreenPadding
 import com.example.munchtruck.ui.theme.Dimens.SpaceM
@@ -75,7 +78,7 @@ fun StartScreen(navController: NavController) {
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .fillMaxWidth(LogoWidthSmall)
-                    .height(LogoHeightLarge)
+                    .height(LogoHeightSmall)
             )
 
             Spacer(modifier = Modifier.height(SpaceM))
@@ -128,4 +131,12 @@ fun StartScreen(navController: NavController) {
 
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun StartScreenPreview() {
+    StartScreen(
+        navController = rememberNavController()
+    )
 }
