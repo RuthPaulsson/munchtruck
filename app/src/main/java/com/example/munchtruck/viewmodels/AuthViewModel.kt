@@ -1,5 +1,6 @@
 package com.example.munchtruck.viewmodels
 
+import android.util.Log
 import com.example.munchtruck.data.repository.AuthRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,6 +31,7 @@ class AuthViewModel : ViewModel() {
             when ( val validate = Validators.validateLogin(email, password)) {
                 is ValidationResult.Invalid -> {
                     _error.value = validate.message
+                    Log.e("AuthViewModel", "Validation failed: ${validate.message}")
                     return@launch
                 }
                 ValidationResult.Valid -> Unit
@@ -45,6 +47,7 @@ class AuthViewModel : ViewModel() {
                 _isLoggedIn.value = true
             } catch (e: Exception) {
                 _error.value = e.message ?: "Login failed"
+                Log.e("AuthViewModel", "Login failed: ${e.message}")
             } finally {
                 _isLoading.value = false
             }
@@ -59,6 +62,7 @@ class AuthViewModel : ViewModel() {
             when (val validate = Validators.validateRegister(email,password, confirmPassword)) {
                 is ValidationResult.Invalid -> {
                     _error.value = validate.message
+                    Log.e("AuthViewModel", "Validation failed: ${validate.message}")
                     return@launch
                 }
 
@@ -75,6 +79,7 @@ class AuthViewModel : ViewModel() {
                 _isLoggedIn.value = true
             } catch (e: Exception) {
                 _error.value = e.message ?: "Registration failed"
+                Log.e("AuthViewModel", "Registration failed: ${e.message}")
             } finally {
                 _isLoading.value = false
             }
