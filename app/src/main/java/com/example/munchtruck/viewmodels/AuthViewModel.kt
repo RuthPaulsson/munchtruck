@@ -28,10 +28,10 @@ class AuthViewModel : ViewModel() {
     val error: StateFlow<String> = _error
 
 
-//  private val _isLoggedIn = MutableStateFlow(repository.isUserLoggedIn()) // todo lägg till när vi har en logout ut knapp
+  private val _isLoggedIn = MutableStateFlow(repository.isUserLoggedIn()) // todo lägg till när vi har en logout ut knapp
 
-    private val _isLoggedIn =
-        MutableStateFlow(false)  // todo ta bort till när vi har en logout knapp
+//    private val _isLoggedIn =
+//        MutableStateFlow(false)  // todo ta bort till när vi har en logout knapp
     val isLoggedIn: StateFlow<Boolean> = _isLoggedIn
 
 
@@ -56,7 +56,7 @@ class AuthViewModel : ViewModel() {
             _isLoading.value = true
             try {
                 repository.login(trimmedEmail, trimmedPassword)
-                _isLoggedIn.value = true
+                _isLoggedIn.value = repository.isUserLoggedIn()
             } catch (e: Exception) {
                 _error.value = e.message ?: "Login failed"
                 Log.e("AuthViewModel", "Login failed: ${e.message}")
@@ -88,7 +88,7 @@ class AuthViewModel : ViewModel() {
             _isLoading.value = true
             try {
                 repository.register(trimmedEmail, trimmedPassword)
-                _isLoggedIn.value = true
+                _isLoggedIn.value = repository.isUserLoggedIn()
             } catch (e: Exception) {
                 _error.value = e.message ?: "Registration failed"
                 Log.e("AuthViewModel", "Registration failed: ${e.message}")
