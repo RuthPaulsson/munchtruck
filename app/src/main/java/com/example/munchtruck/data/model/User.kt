@@ -1,9 +1,7 @@
 package com.example.munchtruck.data.model
 
 /**
- * User profile to be stored in Firestore.
- *
- *
+ * User profile data model.
  * @property uid Unique identifier for the user (FirebaseAuth UID).
  * @property email Email address used for authentication.
  * @property companyName Company/FoodTruck name associated with the user.

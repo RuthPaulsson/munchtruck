@@ -13,7 +13,6 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel responsible for authentication UI state and actions.
  *
- * Exposes:
  * - isLoading: indicates an ongoing auth operation
  * - error: a message to display to the user on validation/auth failure
  * - isLoggedIn: indicates whether the owner is authenticated
@@ -35,13 +34,7 @@ class AuthViewModel : ViewModel() {
         MutableStateFlow(false)  // todo ta bort till när vi har en logout knapp
     val isLoggedIn: StateFlow<Boolean> = _isLoggedIn
 
-    /**
-     * Attempts to sign in using email and password.
-     *
-     * @param email User input email.
-     * @param password User input password.
-     * @return Unit. Updates StateFlow as needed to reflect effects.
-     */
+
     fun login(email: String, password: String) {
         viewModelScope.launch {
             _error.value = ""
@@ -73,14 +66,6 @@ class AuthViewModel : ViewModel() {
         }
     }
 
-    /**
-     * Attempts to register a new user and store initial data in Firestore.
-     *
-     * @param email User input email.
-     * @param password User input password.
-     * @param confirmPassword User input password confirmation.
-     * @return Unit. Updates StateFlow as needed to reflect effects.
-     */
     fun register(email: String, password: String, confirmPassword: String) {
         viewModelScope.launch {
 
@@ -113,11 +98,6 @@ class AuthViewModel : ViewModel() {
         }
     }
 
-    /**
-     * Signs out the current user and clears authentication-related UI state.
-     *
-     * @return Unit. After logout, isLoggedIn becomes false and error/loading are reset.
-     */
     fun logout() {
         repository.logout()
         _isLoggedIn.value = false
@@ -125,5 +105,3 @@ class AuthViewModel : ViewModel() {
         _isLoading.value = false
     }
 }
-
-// Vill man vara inloggad tills man aktivt väljer att logga ut?

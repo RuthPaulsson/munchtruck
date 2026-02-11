@@ -2,11 +2,23 @@ package com.example.munchtruck.util
 
 import android.util.Patterns
 
+/**
+ * Represents the result of a validation operation.
+ *
+ * - [Valid] means the input passed all validation rules.
+ * - [Invalid] contains a user-facing error message explaining why validation failed.
+ */
 sealed class ValidationResult {
     data object Valid : ValidationResult()
     data class Invalid(val message: String) : ValidationResult()
 }
 
+/**
+ * Utility object responsible for validating authentication-related user input.
+ *
+ * This class contains pure validation logic and has no dependency on Firebase or any
+ * other external services.
+ */
 object Validators {
 
     fun validateLogin (email: String, password: String): ValidationResult {
