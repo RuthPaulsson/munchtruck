@@ -11,9 +11,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -32,6 +34,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.munchtruck.R
@@ -45,6 +48,8 @@ import com.example.munchtruck.ui.theme.AppColors.TextMuted
 import com.example.munchtruck.ui.theme.AppColors.White
 import com.example.munchtruck.ui.theme.Dimens.ButtonRadius
 import com.example.munchtruck.ui.theme.Dimens.InputRadius
+import com.example.munchtruck.ui.theme.Dimens.LoaderSize
+import com.example.munchtruck.ui.theme.Dimens.LoaderStroke
 import com.example.munchtruck.ui.theme.Dimens.LoginTopSpacing
 import com.example.munchtruck.ui.theme.Dimens.LogoHeightSmall
 import com.example.munchtruck.ui.theme.Dimens.LogoWidthSmall
@@ -64,6 +69,8 @@ fun LoginScreen(
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    val error by authViewModel.error.collectAsState()
+    val isLoading by authViewModel.isLoading.collectAsState()
     val isLoggedIn by authViewModel.isLoggedIn.collectAsState()
 
     LaunchedEffect(isLoggedIn) {
@@ -174,18 +181,37 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(SpaceBetweenLinkAndButton))
 
+            if (error.isNotEmpty()) {
+                Text(
+                    text = error,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(bottom = SpaceS)
+                )
+            }
+
             Button(
                 onClick = {
                     authViewModel.login(email, password)
                 },
+                enabled = !isLoading,
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(ButtonRadius),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = PrimaryOrange
                 )
             ) {
-                Text(stringResource(R.string.login_button))
+                if (isLoading){
+                    CircularProgressIndicator(
+                        color = White,
+                        strokeWidth = LoaderStroke,
+                        modifier = Modifier.size(LoaderSize)
+                    )
+                } else {
+                    Text(stringResource(R.string.login_button))
+                }
             }
+
 
             Spacer(modifier = Modifier.height(SpaceAfterButton))
 
