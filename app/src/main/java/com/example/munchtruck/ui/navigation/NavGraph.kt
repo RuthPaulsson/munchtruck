@@ -1,6 +1,7 @@
 package com.example.munchtruck.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 
@@ -9,10 +10,12 @@ import com.example.munchtruck.ui.login.LoginScreen
 import com.example.munchtruck.ui.profile.ProfileScreen
 import com.example.munchtruck.ui.register.RegisterScreen
 import com.example.munchtruck.ui.start.StartScreen
+import com.example.munchtruck.viewmodels.AuthViewModel
 
 @Composable
 fun NavGraph() {
     val navController = rememberNavController()
+    val authViewModel: AuthViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -24,11 +27,11 @@ fun NavGraph() {
         }
 
         composable("login"){
-            LoginScreen(navController)
+            LoginScreen(navController,authViewModel)
         }
 
         composable("register"){
-            RegisterScreen(navController)
+            RegisterScreen(navController,authViewModel )
         }
         composable("profile"){
             ProfileScreen()

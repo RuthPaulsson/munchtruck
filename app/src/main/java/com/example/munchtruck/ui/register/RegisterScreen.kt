@@ -53,7 +53,7 @@ import com.example.munchtruck.viewmodels.AuthViewModel
 @Composable
 fun RegisterScreen(
     navController: NavController,
-    authViewModel: AuthViewModel = viewModel()
+    authViewModel: AuthViewModel
 ){
     var company by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -65,8 +65,8 @@ fun RegisterScreen(
 
     LaunchedEffect(isLoggedIn) {
         if (isLoggedIn) {
-            navController.navigate("profile"){
-                popUpTo("login") { inclusive = true }
+            navController.navigate("profile") {
+                popUpTo("register") { inclusive = true }
             }
         }
     }
@@ -178,6 +178,7 @@ fun RegisterScreen(
                         color = White,
                         strokeWidth = LoaderStroke,
                         modifier = Modifier.size(LoaderSize)
+
                     )
                 } else {
                     Text(stringResource(R.string.register_button))
@@ -189,11 +190,12 @@ fun RegisterScreen(
     }
 
 }
-
-@Preview(showBackground = true)
-@Composable
-fun RegisterScreenPreview() {
-    RegisterScreen(
-        navController = androidx.navigation.compose.rememberNavController()
-    )
-}
+//
+//@Preview(showBackground = true)
+//@Composable
+//fun RegisterScreenPreview() {
+//    RegisterScreen(
+//        navController = androidx.navigation.compose.rememberNavController(),
+//        authViewModel = AuthViewModel()
+//    )
+//}
