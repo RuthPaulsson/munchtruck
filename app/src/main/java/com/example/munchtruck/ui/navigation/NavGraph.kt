@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.munchtruck.ui.login.LoginScreen
 import com.example.munchtruck.ui.profile.ProfileScreen
+import com.example.munchtruck.ui.register.RegisterScreen
 import com.example.munchtruck.ui.start.StartScreen
 
 @Composable
@@ -26,6 +27,9 @@ fun NavGraph() {
             LoginScreen(navController)
         }
 
+        composable("register"){
+            RegisterScreen(navController)
+        }
         composable("profile"){
             ProfileScreen()
         }
