@@ -52,10 +52,14 @@ kotlin {
 }
 
 dependencies {
-    // ========================== Core / UI / Compose ===============================
+
+    // ========================== Core (Android fundamentals) ===============================
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+
+    // ========================== UI (Compose & Material) ===============================
+
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
@@ -63,12 +67,26 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
 
+    // ========================== Architecture (ViewModel / Navigation) ===============================
 
-    // ========================== Credentials / Google ID =================================
+    implementation(libs.androidx.lifecycle.viewmodel.compose.v270)
+    implementation(libs.androidx.lifecycle.runtime.compose.v270)
+    implementation(libs.androidx.navigation.compose.v277)
+
+    // ========================== Authentication / googleId ===============================
 
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
+
+    // ========================== Backend (Firebase) ===============================
+
+    implementation(platform(libs.firebase.bom.v3270))
+    implementation(libs.com.google.firebase.firebase.auth)
+    implementation(libs.com.google.firebase.firebase.firestore)
+
+    // ========================== Unit Testing ===============================
+
     testImplementation(libs.junit)
     testImplementation(libs.mockito.kotlin)
     testImplementation(libs.mockito.inline)
@@ -76,24 +94,15 @@ dependencies {
     testImplementation(libs.androidx.arch.core.testing)
     testImplementation(libs.robolectric)
 
+    // ========================== Instrumentation / UI Tests ===============================
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
 
-
     // ========================== Debug ===============================
 
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
-
-    implementation(libs.androidx.lifecycle.viewmodel.compose.v270)
-    implementation(libs.androidx.lifecycle.runtime.compose.v270)
-    implementation(libs.androidx.navigation.compose.v277)
-    implementation(platform(libs.firebase.bom.v3270))
-    implementation(libs.com.google.firebase.firebase.auth)
-    implementation(libs.com.google.firebase.firebase.firestore)
-
-
-
 }
