@@ -1,6 +1,4 @@
-
 package com.example.munchtruck.viewmodels
-
 
 import com.example.munchtruck.data.repository.AuthRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,26 +9,21 @@ import com.example.munchtruck.util.ValidationResult
 import com.example.munchtruck.util.Validators
 import kotlinx.coroutines.launch
 
-
 class AuthViewModel(
     private val repository: AuthRepository = AuthRepository()
 ) : ViewModel() {
 
 
-    // private val repository = AuthRepository()
-
-
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
-
-    private val _error = MutableStateFlow<String>("")
+    private val _error = MutableStateFlow("")
     val error: StateFlow<String> = _error
 
 
-    private val _isLoggedIn = MutableStateFlow(false)
-    val isLoggedIn: StateFlow<Boolean> = _isLoggedIn
+  private val _isLoggedIn = MutableStateFlow(repository.isUserLoggedIn())
 
+    val isLoggedIn: StateFlow<Boolean> = _isLoggedIn
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
@@ -42,7 +35,7 @@ class AuthViewModel(
                     return@launch
                 }
                 ValidationResult.Valid -> Unit
-            }
+        }
 
             val trimmedEmail = email.trim()
             val trimmedPassword = password.trim()
@@ -51,7 +44,7 @@ class AuthViewModel(
             _isLoading.value = true
             try {
                 repository.login(trimmedEmail, trimmedPassword)
-                _isLoggedIn.value = true
+                _isLoggedIn.value = repository.isUserLoggedIn()
             } catch (e: Exception) {
                 _error.value = e.message ?: "Login failed"
             } finally {
@@ -74,17 +67,14 @@ class AuthViewModel(
                 ValidationResult.Valid -> Unit
             }
 
-
             val trimmedEmail = email.trim()
             val trimmedPassword = password.trim()
-
-
 
 
             _isLoading.value = true
             try {
                 repository.register(trimmedEmail, trimmedPassword)
-                _isLoggedIn.value = true
+                _isLoggedIn.value = repository.isUserLoggedIn()
             } catch (e: Exception) {
                 _error.value = e.message ?: "Registration failed"
             } finally {
@@ -93,9 +83,10 @@ class AuthViewModel(
         }
     }
 
-
     fun logout() {
         repository.logout()
         _isLoggedIn.value = false
+        _isLoading.value = false
+        _error.value = ""
     }
 }

@@ -7,9 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.munchtruck"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36 // Uppdaterat format för moderna Gradle
 
     defaultConfig {
         applicationId = "com.example.munchtruck"
@@ -34,10 +32,8 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlin {
-        compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
-        }
+    kotlinOptions {
+        jvmTarget = "11"
     }
     buildFeatures {
         compose = true
@@ -45,10 +41,6 @@ android {
     testOptions {
         unitTests.isReturnDefaultValues = true
     }
-}
-
-kotlin {
-    jvmToolchain(11)
 }
 
 dependencies {
@@ -66,8 +58,10 @@ dependencies {
 
     testImplementation(libs.junit)
     testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.mockito.inline)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.androidx.arch.core.testing)
+    testImplementation("org.robolectric:robolectric:4.10.3")
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -82,5 +76,4 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
-    testImplementation("org.robolectric:robolectric:4.10.3")
 }

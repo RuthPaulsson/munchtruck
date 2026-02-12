@@ -57,9 +57,11 @@ class AuthViewModelTest {
         val email = "user@test.com"
         val password = "Password123!"
 
+        whenever(mockRepo.isUserLoggedIn()).thenReturn(true)
 
         viewModel.login(email, password)
 
+        verify(mockRepo).login(email, password)
         assertTrue("Inloggningen borde ha lyckats", viewModel.isLoggedIn.value)
         assertEquals("", viewModel.error.value)
     }
@@ -98,14 +100,12 @@ class AuthViewModelTest {
         val email = "newowner@munchtruck.com"
         val password = "StrongPassword123!"
 
+        whenever(mockRepo.isUserLoggedIn()).thenReturn(true)
 
         viewModel.register(email, password, password)
 
-
         verify(mockRepo).register(email, password)
-
-
-        assertTrue(viewModel.isLoggedIn.value)
+        assertTrue("Registreringen borde ha lyckats", viewModel.isLoggedIn.value)
         assertEquals("", viewModel.error.value)
     }
 
