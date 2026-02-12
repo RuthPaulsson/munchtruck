@@ -133,4 +133,17 @@ class AuthViewModelTest {
         assertEquals(errorMsg, viewModel.error.value)
         assertFalse(viewModel.isLoggedIn.value)
     }
+    @Test
+    fun `test repeated login and logout clears state every time`() = runTest {
+        whenever(mockRepo.isUserLoggedIn()).thenReturn(true)
+        viewModel.login("test@test.com", "Password123")
+        assertTrue(viewModel.isLoggedIn.value)
+
+        viewModel.logout()
+        assertFalse(viewModel.isLoggedIn.value)
+        assertEquals("", viewModel.error.value) // Viktigt: rensa felmeddelanden!
+
+        viewModel.login("test@test.com", "Password123")
+        assertTrue(viewModel.isLoggedIn.value)
+    }
 }
