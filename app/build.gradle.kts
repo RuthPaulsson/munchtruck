@@ -19,6 +19,7 @@ extensions.configure<ApplicationExtension> {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -31,7 +32,6 @@ extensions.configure<ApplicationExtension> {
             )
         }
     }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -39,6 +39,9 @@ extensions.configure<ApplicationExtension> {
 
     buildFeatures {
         compose = true
+    }
+    testOptions {
+        unitTests.isReturnDefaultValues = true
     }
 }
 
@@ -66,25 +69,13 @@ dependencies {
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
-
-
-    // ========================== Architecture / Navigation ===============================
-
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.lifecycle.runtime.compose)
-    implementation(libs.androidx.navigation.compose)
-
-
-    // ========================== Firebase ===============================
-
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.google.firebase.auth)
-    implementation(libs.google.firebase.firestore)
-
-
-    // ========================== Unit Test / Android Test ===============================
-
     testImplementation(libs.junit)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.mockito.inline)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.androidx.arch.core.testing)
+    testImplementation(libs.robolectric)
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
@@ -95,5 +86,14 @@ dependencies {
 
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    implementation(libs.androidx.lifecycle.viewmodel.compose.v270)
+    implementation(libs.androidx.lifecycle.runtime.compose.v270)
+    implementation(libs.androidx.navigation.compose.v277)
+    implementation(platform(libs.firebase.bom.v3270))
+    implementation(libs.com.google.firebase.firebase.auth)
+    implementation(libs.com.google.firebase.firebase.firestore)
+
+
 
 }

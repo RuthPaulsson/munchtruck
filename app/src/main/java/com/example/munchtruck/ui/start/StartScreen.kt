@@ -27,6 +27,7 @@ import com.example.munchtruck.R
 import com.example.munchtruck.ui.theme.AppColors.DarkOverlay
 import com.example.munchtruck.ui.theme.AppColors.White
 import com.example.munchtruck.ui.theme.AppColors.WhiteMuted
+import com.example.munchtruck.ui.theme.AppPreviewWrapper
 import com.example.munchtruck.ui.theme.Dimens
 import com.example.munchtruck.ui.theme.Dimens.ButtonRadius
 import com.example.munchtruck.ui.theme.Dimens.LogoHeightLarge
@@ -136,7 +137,9 @@ fun StartScreen(navController: NavController) {
 @Preview(showBackground = true)
 @Composable
 fun StartScreenPreview() {
-    StartScreen(
-        navController = rememberNavController()
-    )
+    AppPreviewWrapper {
+        StartScreen(
+            navController = rememberNavController()
+        )
+    }
 }
