@@ -8,7 +8,6 @@ plugins {
     alias(libs.plugins.google.gms.google.services)
 }
 
-// Use the new public Android DSL type (ApplicationExtension)
 extensions.configure<ApplicationExtension> {
     namespace = "com.example.munchtruck"
 
@@ -33,7 +32,6 @@ extensions.configure<ApplicationExtension> {
         }
     }
 
-    // Recommended for modern AGP: Java 17
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -44,7 +42,6 @@ extensions.configure<ApplicationExtension> {
     }
 }
 
-// Replace deprecated android.kotlinOptions with Kotlin compilerOptions DSL
 kotlin {
     compilerOptions {
         jvmTarget.set(JvmTarget.JVM_17)
@@ -52,8 +49,7 @@ kotlin {
 }
 
 dependencies {
-
-    // ========================== implementation libs ===============================
+    // ========================== Core / UI / Compose ===============================
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -63,11 +59,30 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+
+
+    // ========================== Credentials / Google ID =================================
+
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
 
-    // ========================== Test ===============================
+
+    // ========================== Architecture / Navigation ===============================
+
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.navigation.compose)
+
+
+    // ========================== Firebase ===============================
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.google.firebase.auth)
+    implementation(libs.google.firebase.firestore)
+
+
+    // ========================== Unit Test / Android Test ===============================
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -75,17 +90,10 @@ dependencies {
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
 
+
     // ========================== Debug ===============================
 
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
-    // ========================== implementation ===============================
-
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.lifecycle.runtime.compose)
-    implementation(libs.androidx.navigation.compose)
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.google.firebase.auth)
-    implementation(libs.google.firebase.firestore)
 }
