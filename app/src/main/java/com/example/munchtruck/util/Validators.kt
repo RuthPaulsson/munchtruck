@@ -1,27 +1,13 @@
 package com.example.munchtruck.util
 
-// Ta bort import android.util.Patterns om den inte används på fler ställen
 
-/**
- * Represents the result of a validation operation.
- *
- * - [Valid] means the input passed all validation rules.
- * - [Invalid] contains a user-facing error message explaining why validation failed.
- */
 sealed class ValidationResult {
     data object Valid : ValidationResult()
     data class Invalid(val message: String) : ValidationResult()
 }
 
-/**
- * Utility object responsible for validating authentication-related user input.
- *
- * This class contains pure validation logic and has no dependency on Firebase or any
- * other external services.
- */
 object Validators {
 
-    // En standard-regex för e-post som fungerar i ren Kotlin/Java
     private val EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\$".toRegex()
 
     fun validateLogin (email: String, password: String): ValidationResult {
@@ -32,7 +18,6 @@ object Validators {
             return ValidationResult.Invalid("Email and password cannot be empty")
         }
 
-        // Här använder vi vår nya Regex istället för Patterns
         if (!trimmedEmail.matches(EMAIL_REGEX)) {
             return ValidationResult.Invalid("Invalid email address")
         }
