@@ -34,7 +34,7 @@ fun NavGraph() {
             RegisterScreen(navController,authViewModel )
         }
         composable("profile"){
-            ProfileScreen()
+            ProfileScreen(navController,authViewModel)
         }
     }
 }
