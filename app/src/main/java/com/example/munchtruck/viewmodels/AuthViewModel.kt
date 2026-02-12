@@ -21,7 +21,11 @@ class AuthViewModel(
     private val _error = MutableStateFlow<String>("")
     val error: StateFlow<String> = _error
 
-    private val _isLoggedIn = MutableStateFlow(false)
+
+  private val _isLoggedIn = MutableStateFlow(repository.isUserLoggedIn()) // todo lägg till när vi har en logout ut knapp
+
+//    private val _isLoggedIn =
+//        MutableStateFlow(false)  // todo ta bort till när vi har en logout knapp
     val isLoggedIn: StateFlow<Boolean> = _isLoggedIn
 
     fun login(email: String, password: String) {
@@ -43,7 +47,7 @@ class AuthViewModel(
             _isLoading.value = true
             try {
                 repository.login(trimmedEmail, trimmedPassword)
-                _isLoggedIn.value = true
+                _isLoggedIn.value = repository.isUserLoggedIn()
             } catch (e: Exception) {
                 _error.value = e.message ?: "Login failed"
             } finally {
@@ -73,7 +77,7 @@ class AuthViewModel(
             _isLoading.value = true
             try {
                 repository.register(trimmedEmail, trimmedPassword)
-                _isLoggedIn.value = true
+                _isLoggedIn.value = repository.isUserLoggedIn()
             } catch (e: Exception) {
                 _error.value = e.message ?: "Registration failed"
             } finally {

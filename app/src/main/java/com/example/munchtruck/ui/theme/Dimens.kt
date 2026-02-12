@@ -5,14 +5,18 @@ import androidx.compose.ui.unit.sp
 
 object Dimens {
 
+    // ====== Loading / Indicators ===============================
+
+    val LoaderStroke = 2.dp
+    val LoaderSize = 20.dp
+
     // ====== Spacing / Padding ===============================
 
     val ScreenPadding = 24.dp
+    val SpaceXS = 4.dp
     val SpaceS = 8.dp
     val SpaceM = 16.dp
     val SpaceL = 24.dp
-
-
     val SpaceBetweenLinkAndButton = 15.dp
     val SpaceAfterButton = 10.dp
 

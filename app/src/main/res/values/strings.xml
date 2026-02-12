@@ -1,5 +1,10 @@
 <resources>
 
+    <!-- ===== Common inputs ====================================== -->
+
+    <string name="input_email_hint">Email address</string>
+    <string name="input_password_hint">Password</string>
+    <string name="input_confirm_password_hint">Enter password again</string>
 
     <!-- ===== Start screen ======================================  -->
 
@@ -16,13 +21,24 @@
 
 
     <!-- ===== Login screen ====================================== -->
-    <string name="login_email_placeholder">Email address</string>
-    <string name="login_password_placeholder">Password</string>
 
     <string name="login_forgot_password">Forgot password?</string>
     <string name="login_button">Log In</string>
 
     <string name="login_no_account">Don\'t have an account?</string>
     <string name="login_create_account">Create one here</string>
+
+    <!-- ===== Register screen ====================================== -->
+
+    <string name="register_subtitle">Register as a food truck owner</string>
+
+    <string name="register_company_label">Company name</string>
+    <string name="register_company_hint">Enter name</string>
+
+    <string name="register_email_label">Email address</string>
+    <string name="register_password_label">Password</string>
+    <string name="register_confirm_label">Confirm password</string>
+
+    <string name="register_button">Get Started</string>
 
 </resources>
