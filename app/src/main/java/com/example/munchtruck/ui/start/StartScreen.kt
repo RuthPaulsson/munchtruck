@@ -38,11 +38,19 @@ import com.example.munchtruck.ui.theme.Dimens.SpaceM
 import com.example.munchtruck.ui.theme.Dimens.StartTopSpacing
 import com.example.munchtruck.ui.theme.Dimens.TitleLarge
 
+// ====== Start Screen ===============================
+
 @Composable
 fun StartScreen(navController: NavController) {
+
+    // ====== Root Container ===============================
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
+
+        // ====== Background ===============================
+
         Image(
             painter = painterResource(R.drawable.bg_foodtruck),
             contentDescription = null,
@@ -56,11 +64,15 @@ fun StartScreen(navController: NavController) {
                 .background(DarkOverlay)
         )
 
+        // ====== Main Content ===============================
+
         Column(modifier = Modifier
             .fillMaxSize()
             .padding(ScreenPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
+            // ====== Header ===============================
 
             Spacer(modifier = Modifier.height(StartTopSpacing))
 
@@ -83,6 +95,9 @@ fun StartScreen(navController: NavController) {
             )
 
             Spacer(modifier = Modifier.height(SpaceM))
+
+            // ====== Owner Button ===============================
+
             Button(
                 onClick = {
                     navController.navigate("login")
@@ -107,6 +122,9 @@ fun StartScreen(navController: NavController) {
             }
 
             Spacer(modifier = Modifier.height(SpaceM))
+
+            // ====== Food Lover Button ===============================
+
             Button(
                 onClick = {
                     navController.navigate("discovery")
@@ -133,6 +151,8 @@ fun StartScreen(navController: NavController) {
         }
     }
 }
+
+// ====== Preview ===============================
 
 @Preview(showBackground = true)
 @Composable

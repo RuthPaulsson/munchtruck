@@ -20,13 +20,18 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.munchtruck.viewmodels.AuthViewModel
 
+// ====== Profile Screen ===============================
 @Composable
 fun ProfileScreen(
     navController: NavController,
     authViewModel: AuthViewModel
 ){
 
+    // ====== UI State ===============================
+
     var showDialog by remember { mutableStateOf(false) }
+
+    // ====== Layout ===============================
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -45,6 +50,8 @@ fun ProfileScreen(
             }
         }
     }
+
+    // ====== Logout Dialog ===============================
 
     if (showDialog) {
         AlertDialog(

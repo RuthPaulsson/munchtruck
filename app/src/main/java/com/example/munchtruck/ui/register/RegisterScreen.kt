@@ -49,12 +49,15 @@ import com.example.munchtruck.ui.theme.Dimens.SpaceM
 import com.example.munchtruck.ui.theme.Dimens.SpaceS
 import com.example.munchtruck.viewmodels.AuthViewModel
 
+// ====== Register Screen ===============================
 
 @Composable
 fun RegisterScreen(
     navController: NavController,
     authViewModel: AuthViewModel
 ){
+    // ====== UI State ===============================
+
     var company by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -63,6 +66,8 @@ fun RegisterScreen(
     val isLoading by authViewModel.isLoading.collectAsState()
     val isLoggedIn by authViewModel.isLoggedIn.collectAsState()
 
+    // ====== Navigation Effects ===============================
+
     LaunchedEffect(isLoggedIn) {
         if (isLoggedIn) {
             navController.navigate("profile") {
@@ -70,6 +75,9 @@ fun RegisterScreen(
             }
         }
     }
+
+
+    // ====== UI Content ===============================
 
     RegisterContent(
         company = company,

@@ -46,7 +46,7 @@ import com.example.munchtruck.ui.theme.Dimens.SpaceL
 import com.example.munchtruck.ui.theme.Dimens.SpaceM
 import com.example.munchtruck.ui.theme.Dimens.SpaceS
 
-
+// ====== Login Content ===============================
 @Composable
 fun LoginContent(
     email: String,
@@ -60,8 +60,12 @@ fun LoginContent(
     onForgotPasswordClick: () -> Unit
 ) {
 
+    // ====== Root Container ===============================
+
     Box(modifier = Modifier
         .fillMaxWidth()) {
+
+        // ====== Background ===============================
 
         Image(
             painter = painterResource(R.drawable.bg_foodtruck),
@@ -75,12 +79,16 @@ fun LoginContent(
                 .background(DarkOverlay)
         )
 
+        // ====== Main Content ===============================
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(ScreenPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // ====== Header ===============================
+
             Spacer(modifier = Modifier.height(LoginTopSpacing))
 
             Image(
@@ -103,6 +111,8 @@ fun LoginContent(
 
             Spacer(modifier = Modifier.height(SpaceM))
 
+            // ====== Login Form ===============================
+
             InputField(
                 value = password,
                 lable = "",
@@ -112,6 +122,8 @@ fun LoginContent(
             )
 
             Spacer(modifier = Modifier.height(SpaceS))
+
+            // ====== Forgot Password ===============================
 
             Text(
                 stringResource(R.string.login_forgot_password),
@@ -126,6 +138,8 @@ fun LoginContent(
 
             Spacer(modifier = Modifier.height(SpaceBetweenLinkAndButton))
 
+            // ====== Error Message ===============================
+
             if (error.isNotEmpty()) {
                 Text(
                     text = error,
@@ -134,6 +148,8 @@ fun LoginContent(
                     modifier = Modifier.padding(bottom = SpaceS)
                 )
             }
+
+            // ====== Login Button ===============================
 
             Button(
                 onClick = onLoginClick,
@@ -152,8 +168,9 @@ fun LoginContent(
                 }
             }
 
-
             Spacer(modifier = Modifier.height(SpaceAfterButton))
+
+            // ====== Register Link ===============================
 
             Row{
                 Text(
@@ -174,6 +191,7 @@ fun LoginContent(
     }
 }
 
+// ====== Preview ===============================
 @Preview(showBackground = true)
 @Composable
 fun LoginContentPreview() {

@@ -11,17 +11,22 @@ import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
 import com.example.munchtruck.viewmodels.AuthViewModel
 
+// ====== Login Screen ===============================
 
 @Composable
 fun LoginScreen(
     navController: NavController,
     authViewModel: AuthViewModel
 ) {
+    // ====== UI State ===============================
+
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val error by authViewModel.error.collectAsState()
     val isLoading by authViewModel.isLoading.collectAsState()
     val isLoggedIn by authViewModel.isLoggedIn.collectAsState()
+
+    // ====== Navigation Effects ===============================
 
     LaunchedEffect(isLoggedIn) {
         if (isLoggedIn) {
@@ -30,6 +35,8 @@ fun LoginScreen(
             }
         }
     }
+
+    // ====== UI Content ===============================
 
     LoginContent(
         email = email,

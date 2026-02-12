@@ -50,6 +50,7 @@ import com.example.munchtruck.ui.theme.Dimens.SpaceM
 import com.example.munchtruck.ui.theme.Dimens.SpaceS
 import com.example.munchtruck.viewmodels.AuthViewModel
 
+// ====== Register Content ===============================
 
 @Composable
 fun RegisterContent(
@@ -66,6 +67,8 @@ fun RegisterContent(
     onRegisterClick: () -> Unit
 ){
 
+    // ====== Root Container ===============================
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -81,6 +84,8 @@ fun RegisterContent(
             contentScale = ContentScale.FillWidth
 
         )
+
+        // ====== Main Content ===============================
 
         Column(
             modifier = Modifier
@@ -109,6 +114,8 @@ fun RegisterContent(
 
             Spacer(modifier = Modifier.height(SpaceL))
 
+            // ====== Input Fields ===============================
+
             InputField(
                 value = company,
                 onChange = onCompanyChange,
@@ -126,7 +133,6 @@ fun RegisterContent(
             )
 
             Spacer(modifier = Modifier.height(SpaceM))
-
 
             InputField(
                 value = password,
@@ -148,6 +154,8 @@ fun RegisterContent(
 
             Spacer(modifier = Modifier.height(SpaceL))
 
+            // ====== Error Messages ===============================
+
             if (error.isNotEmpty()) {
                 Text(
                     text = error,
@@ -156,6 +164,8 @@ fun RegisterContent(
                     modifier = Modifier.padding(bottom = SpaceS)
                 )
             }
+
+            // ====== Register Button ===============================
 
             Button(
                 onClick = onRegisterClick,
@@ -178,6 +188,8 @@ fun RegisterContent(
         }
     }
 }
+
+// ====== Preview ===============================
 
 @Preview(showBackground = true)
 @Composable
