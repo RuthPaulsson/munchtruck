@@ -1,6 +1,5 @@
 package com.example.munchtruck.viewmodels
 
-import android.util.Log
 import com.example.munchtruck.data.repository.AuthRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -10,16 +9,11 @@ import com.example.munchtruck.util.ValidationResult
 import com.example.munchtruck.util.Validators
 import kotlinx.coroutines.launch
 
-/**
- * ViewModel responsible for authentication UI state and actions.
- *
- * - isLoading: indicates an ongoing auth operation
- * - error: a message to display to the user on validation/auth failure
- * - isLoggedIn: indicates whether the owner is authenticated
- */
-class AuthViewModel : ViewModel() {
+class AuthViewModel(
+    private val repository: AuthRepository = AuthRepository()
+) : ViewModel() {
 
-    private val repository = AuthRepository()
+   // private val repository = AuthRepository()
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
@@ -34,20 +28,17 @@ class AuthViewModel : ViewModel() {
 //        MutableStateFlow(false)  // todo ta bort till när vi har en logout knapp
     val isLoggedIn: StateFlow<Boolean> = _isLoggedIn
 
-
     fun login(email: String, password: String) {
         viewModelScope.launch {
             _error.value = ""
 
-            when (val validate = Validators.validateLogin(email, password)) {
+            when ( val validate = Validators.validateLogin(email, password)) {
                 is ValidationResult.Invalid -> {
                     _error.value = validate.message
-                    Log.e("AuthViewModel", "Validation failed: ${validate.message}")
                     return@launch
                 }
-
                 ValidationResult.Valid -> Unit
-            }
+        }
 
             val trimmedEmail = email.trim()
             val trimmedPassword = password.trim()
@@ -59,7 +50,6 @@ class AuthViewModel : ViewModel() {
                 _isLoggedIn.value = repository.isUserLoggedIn()
             } catch (e: Exception) {
                 _error.value = e.message ?: "Login failed"
-                Log.e("AuthViewModel", "Login failed: ${e.message}")
             } finally {
                 _isLoading.value = false
             }
@@ -71,10 +61,9 @@ class AuthViewModel : ViewModel() {
 
             _error.value = ""
 
-            when (val validate = Validators.validateRegister(email, password, confirmPassword)) {
+            when (val validate = Validators.validateRegister(email,password, confirmPassword)) {
                 is ValidationResult.Invalid -> {
                     _error.value = validate.message
-                    Log.e("AuthViewModel", "Validation failed: ${validate.message}")
                     return@launch
                 }
 
@@ -91,7 +80,6 @@ class AuthViewModel : ViewModel() {
                 _isLoggedIn.value = repository.isUserLoggedIn()
             } catch (e: Exception) {
                 _error.value = e.message ?: "Registration failed"
-                Log.e("AuthViewModel", "Registration failed: ${e.message}")
             } finally {
                 _isLoading.value = false
             }
@@ -101,7 +89,5 @@ class AuthViewModel : ViewModel() {
     fun logout() {
         repository.logout()
         _isLoggedIn.value = false
-        _error.value = ""
-        _isLoading.value = false
     }
 }

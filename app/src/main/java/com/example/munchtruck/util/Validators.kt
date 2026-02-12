@@ -1,6 +1,6 @@
 package com.example.munchtruck.util
 
-import android.util.Patterns
+// Ta bort import android.util.Patterns om den inte används på fler ställen
 
 /**
  * Represents the result of a validation operation.
@@ -21,6 +21,9 @@ sealed class ValidationResult {
  */
 object Validators {
 
+    // En standard-regex för e-post som fungerar i ren Kotlin/Java
+    private val EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\$".toRegex()
+
     fun validateLogin (email: String, password: String): ValidationResult {
         val trimmedEmail = email.trim()
         val trimmedPassword = password.trim()
@@ -28,7 +31,9 @@ object Validators {
         if (trimmedEmail.isBlank() || trimmedPassword.isBlank()) {
             return ValidationResult.Invalid("Email and password cannot be empty")
         }
-        if (!Patterns.EMAIL_ADDRESS.matcher(trimmedEmail).matches()) {
+
+        // Här använder vi vår nya Regex istället för Patterns
+        if (!trimmedEmail.matches(EMAIL_REGEX)) {
             return ValidationResult.Invalid("Invalid email address")
         }
 
@@ -58,8 +63,4 @@ object Validators {
         }
         return ValidationResult.Valid
     }
-
-
 }
-
-
