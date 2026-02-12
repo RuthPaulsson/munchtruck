@@ -24,18 +24,20 @@ import com.example.munchtruck.ui.theme.Dimens.SpaceXS
 fun InputField(
     value: String,
     onChange: (String) -> Unit,
-    lable: String,
+    lable: String? = null,
     placeholder: String,
     isPassword: Boolean = false
 ){
     Column(modifier = Modifier.fillMaxWidth()) {
-        Text(
-            text = lable,
-            style = MaterialTheme.typography.bodyMedium,
-            color = PrimaryText
-        )
+        if (!lable.isNullOrEmpty()) {
+            Text(
+                text = lable,
+                style = MaterialTheme.typography.bodyMedium,
+                color = PrimaryText
+            )
 
-        Spacer(modifier = Modifier.height(SpaceXS))
+            Spacer(modifier = Modifier.height(SpaceXS))
+        }
 
         OutlinedTextField(
             value = value,

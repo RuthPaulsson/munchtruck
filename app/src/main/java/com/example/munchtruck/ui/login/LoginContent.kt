@@ -17,8 +17,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,19 +24,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.munchtruck.R
+import com.example.munchtruck.ui.components.InputField
 import com.example.munchtruck.ui.theme.AppColors.DarkOverlay
-import com.example.munchtruck.ui.theme.AppColors.InputBorder
 import com.example.munchtruck.ui.theme.AppColors.LinkColor
 import com.example.munchtruck.ui.theme.AppColors.PrimaryOrange
-import com.example.munchtruck.ui.theme.AppColors.PrimaryText
-import com.example.munchtruck.ui.theme.AppColors.TextMuted
 import com.example.munchtruck.ui.theme.AppColors.White
 import com.example.munchtruck.ui.theme.Dimens.ButtonRadius
-import com.example.munchtruck.ui.theme.Dimens.InputRadius
 import com.example.munchtruck.ui.theme.Dimens.LoaderSize
 import com.example.munchtruck.ui.theme.Dimens.LoaderStroke
 import com.example.munchtruck.ui.theme.Dimens.LoginTopSpacing
@@ -99,53 +93,21 @@ fun LoginContent(
 
             Spacer(modifier = Modifier.height(SpaceL))
 
-            OutlinedTextField(
+            InputField(
                 value = email,
-                onValueChange = onEmailChange,
-                placeholder = {
-                    Text(
-                        stringResource(R.string.input_email_hint),
-                        color = TextMuted
-                    ) },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(InputRadius),
-                singleLine = true,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = White,
-                    unfocusedContainerColor = White,
-                    focusedBorderColor = InputBorder,
-                    unfocusedBorderColor = InputBorder,
-                    focusedTextColor = PrimaryText,
-                    unfocusedTextColor = PrimaryText,
-                    cursorColor = PrimaryText
-
-                )
+                onChange = onEmailChange,
+                lable = "",
+                placeholder = stringResource(R.string.input_email_hint)
             )
 
             Spacer(modifier = Modifier.height(SpaceM))
 
-            OutlinedTextField(
+            InputField(
                 value = password,
-                onValueChange = onPasswordChange,
-                placeholder = {
-                    Text(
-                        stringResource(R.string.input_password_hint),
-                        color = TextMuted
-                    ) },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(InputRadius),
-                singleLine = true,
-                visualTransformation = PasswordVisualTransformation(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = White,
-                    unfocusedContainerColor = White,
-                    focusedBorderColor = InputBorder,
-                    unfocusedBorderColor = InputBorder,
-                    focusedTextColor = PrimaryText,
-                    unfocusedTextColor = PrimaryText,
-                    cursorColor = PrimaryText
-
-                )
+                lable = "",
+                onChange = onPasswordChange,
+                placeholder = stringResource(R.string.input_password_hint),
+                isPassword = true
             )
 
             Spacer(modifier = Modifier.height(SpaceS))
