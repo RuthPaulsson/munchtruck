@@ -15,6 +15,8 @@ import com.example.munchtruck.ui.register.RegisterScreen
 import com.example.munchtruck.ui.start.StartScreen
 import com.example.munchtruck.viewmodels.AuthViewModel
 
+// ====== Navigation Graph ===============================
+
 @Composable
 fun NavGraph() {
     val navController = rememberNavController()

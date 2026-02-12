@@ -20,6 +20,8 @@ import com.example.munchtruck.ui.theme.AppColors.White
 import com.example.munchtruck.ui.theme.Dimens.InputRadius
 import com.example.munchtruck.ui.theme.Dimens.SpaceXS
 
+// ====== Input Field Component ===============================
+
 @Composable
 fun InputField(
     value: String,
@@ -29,6 +31,9 @@ fun InputField(
     isPassword: Boolean = false
 ){
     Column(modifier = Modifier.fillMaxWidth()) {
+
+        // ====== Label ===============================
+
         if (!lable.isNullOrEmpty()) {
             Text(
                 text = lable,
@@ -38,6 +43,7 @@ fun InputField(
 
             Spacer(modifier = Modifier.height(SpaceXS))
         }
+        // ====== Text Field ===============================
 
         OutlinedTextField(
             value = value,
