@@ -1,6 +1,9 @@
 package com.example.munchtruck.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,9 +20,13 @@ fun NavGraph() {
     val navController = rememberNavController()
     val authViewModel: AuthViewModel = viewModel()
 
+    val isLoggedIn by authViewModel.isLoggedIn.collectAsState()
+
+    // TEMP: Use start as entry for development until role/onboarding is implemented
+    val startDestination = if (isLoggedIn) "profile" else "start"
     NavHost(
         navController = navController,
-        startDestination = "start"
+        startDestination = startDestination
     ){
         composable("start") {
             StartScreen(navController)
@@ -34,7 +41,16 @@ fun NavGraph() {
             RegisterScreen(navController,authViewModel )
         }
         composable("profile"){
-            ProfileScreen(navController,authViewModel)
+            if (isLoggedIn) {
+                ProfileScreen(navController,authViewModel)
+            } else {
+                LaunchedEffect(Unit) {
+                    navController.navigate("login"){
+                        popUpTo(0)
+                    }
+                }
+            }
+
         }
     }
 }
