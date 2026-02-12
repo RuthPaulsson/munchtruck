@@ -18,7 +18,7 @@ import java.util.regex.Pattern
 import org.robolectric.RobolectricTestRunner
 import org.junit.runner.RunWith
 
-@RunWith(RobolectricTestRunner::class) // Denna rad gör att Patterns fungerar!
+@RunWith(RobolectricTestRunner::class)
 @OptIn(ExperimentalCoroutinesApi::class)
 class AuthViewModelTest {
 
@@ -55,7 +55,7 @@ class AuthViewModelTest {
     @Test
     fun `login with valid credentials updates state to logged in`() = runTest {
         val email = "user@test.com"
-        val password = "Password123!" // Viktigt: Måste passera valideringen!
+        val password = "Password123!"
 
 
         viewModel.login(email, password)
@@ -96,7 +96,7 @@ class AuthViewModelTest {
     @Test
     fun `register_with_valid_data_calls_repository_and_updates_isLoggedIn`() = runTest {
         val email = "newowner@munchtruck.com"
-        val password = "StrongPassword123!" // Glöm inte specialtecken om Validatorn kräver det
+        val password = "StrongPassword123!"
 
 
         viewModel.register(email, password, password)
