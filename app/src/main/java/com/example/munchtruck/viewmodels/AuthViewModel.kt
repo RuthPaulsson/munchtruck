@@ -13,19 +13,16 @@ class AuthViewModel(
     private val repository: AuthRepository = AuthRepository()
 ) : ViewModel() {
 
-   // private val repository = AuthRepository()
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
-    private val _error = MutableStateFlow<String>("")
+    private val _error = MutableStateFlow("")
     val error: StateFlow<String> = _error
 
 
-  private val _isLoggedIn = MutableStateFlow(repository.isUserLoggedIn()) // todo lägg till när vi har en logout ut knapp
+  private val _isLoggedIn = MutableStateFlow(repository.isUserLoggedIn())
 
-//    private val _isLoggedIn =
-//        MutableStateFlow(false)  // todo ta bort till när vi har en logout knapp
     val isLoggedIn: StateFlow<Boolean> = _isLoggedIn
 
     fun login(email: String, password: String) {
@@ -89,5 +86,7 @@ class AuthViewModel(
     fun logout() {
         repository.logout()
         _isLoggedIn.value = false
+        _isLoading.value = false
+        _error.value = ""
     }
 }
