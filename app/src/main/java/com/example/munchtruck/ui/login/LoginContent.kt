@@ -1,5 +1,6 @@
 package com.example.munchtruck.ui.login
 
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -32,6 +32,7 @@ import com.example.munchtruck.ui.theme.AppColors.DarkOverlay
 import com.example.munchtruck.ui.theme.AppColors.LinkColor
 import com.example.munchtruck.ui.theme.AppColors.PrimaryOrange
 import com.example.munchtruck.ui.theme.AppColors.White
+import com.example.munchtruck.ui.theme.AppPreviewWrapper
 import com.example.munchtruck.ui.theme.Dimens.ButtonRadius
 import com.example.munchtruck.ui.theme.Dimens.LoaderSize
 import com.example.munchtruck.ui.theme.Dimens.LoaderStroke
@@ -139,9 +140,6 @@ fun LoginContent(
                 enabled = !isLoading,
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(ButtonRadius),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = PrimaryOrange
-                )
             ) {
                 if (isLoading){
                     CircularProgressIndicator(
@@ -179,15 +177,17 @@ fun LoginContent(
 @Preview(showBackground = true)
 @Composable
 fun LoginContentPreview() {
-    LoginContent(
-        email = "",
-        password = "",
-        error = "",
-        isLoading = false,
-        onEmailChange = {},
-        onPasswordChange = {},
-        onLoginClick = {},
-        onRegisterClick = {},
-        onForgotPasswordClick = {}
-    )
+    AppPreviewWrapper {
+        LoginContent(
+            email = "",
+            password = "",
+            error = "",
+            isLoading = false,
+            onEmailChange = {},
+            onPasswordChange = {},
+            onLoginClick = {},
+            onRegisterClick = {},
+            onForgotPasswordClick = {}
+        )
+    }
 }
