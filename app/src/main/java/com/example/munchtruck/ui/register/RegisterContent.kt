@@ -38,6 +38,7 @@ import com.example.munchtruck.ui.theme.AppColors.PrimaryBackground
 import com.example.munchtruck.ui.theme.AppColors.PrimaryOrange
 import com.example.munchtruck.ui.theme.AppColors.PrimaryText
 import com.example.munchtruck.ui.theme.AppColors.White
+import com.example.munchtruck.ui.theme.AppPreviewWrapper
 import com.example.munchtruck.ui.theme.Dimens.ButtonRadius
 import com.example.munchtruck.ui.theme.Dimens.LoaderSize
 import com.example.munchtruck.ui.theme.Dimens.LoaderStroke
@@ -161,9 +162,6 @@ fun RegisterContent(
                 enabled = !isLoading,
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(ButtonRadius),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = PrimaryOrange
-                )
             ) {
                 if (isLoading){
                     CircularProgressIndicator(
@@ -184,17 +182,20 @@ fun RegisterContent(
 @Preview(showBackground = true)
 @Composable
 fun RegisterContentPreview() {
-    RegisterContent(
-        company = "",
-        email = "",
-        password = "",
-        confirmPassword = "",
-        error = "",
-        isLoading = false,
-        onCompanyChange = {},
-        onEmailChange = {},
-        onPasswordChange = {},
-        onConfirmPasswordChange = {},
-        onRegisterClick = {}
-    )
+    AppPreviewWrapper {
+        RegisterContent(
+            company = "",
+            email = "",
+            password = "",
+            confirmPassword = "",
+            error = "",
+            isLoading = false,
+            onCompanyChange = {},
+            onEmailChange = {},
+            onPasswordChange = {},
+            onConfirmPasswordChange = {},
+            onRegisterClick = {}
+        )
+    }
+
 }
