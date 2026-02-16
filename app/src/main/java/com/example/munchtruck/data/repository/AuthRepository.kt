@@ -32,10 +32,24 @@ class AuthRepository {
             "role" to "owner"
         )
 
-        firestore.collection("users")
-            .document(uid)
-            .set(user)
-            .await()
+        val truck = mutableMapOf<String, Any>(
+            "id" to uid,
+            "name" to "",
+            "description" to "",
+            "location" to "",
+            "imageUrl" to "",
+            "isOpen" to false,
+            "ownerId" to uid
+        )
+
+        firestore.runBatch { batch ->
+            val userRef = firestore.collection("users").document(uid)
+            val truckRef = firestore.collection("foodTrucks").document(uid)
+
+            batch.set(userRef, user)
+            batch.set(truckRef, truck)
+        }.await()
+
 
     }
 
