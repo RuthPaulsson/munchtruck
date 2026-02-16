@@ -4,6 +4,7 @@ package com.example.munchtruck.data.repository.firebase
 import com.example.munchtruck.data.model.FoodTruck
 import com.example.munchtruck.data.repository.ProfileRepository
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.tasks.await
 
 
@@ -45,14 +46,32 @@ class FirebaseProfileRepository (
     }
 
     override suspend fun updateTruckProfile(
-        ownerUid: String,
+        id: String,
         name: String,
         description: String,
         location: String,
+        imageUrl: String,
         isOpen: Boolean,
-        imageUrl: String
+        ownerId: String
     ): FoodTruck {
-        TODO("Not yet implemented")
+        val truckUpdates = mutableMapOf<String, Any>(
+            "id" to ownerId,
+            "name" to name,
+            "description" to description,
+            "location" to location,
+            "isOpen" to isOpen,
+            "ownerId" to ownerId
+        )
+        if (imageUrl.isNotBlank()) truckUpdates["imageUrl"] = imageUrl
+
+        foodTrucks.document(ownerId).set(truckUpdates,SetOptions.merge()).await()
+        return getTruckProfile(ownerId)
+
+        /*
+        Todo
+         : Samma här "id" to ownerId "ownerID" to ownerId,
+         det blir lite dubbel kod så behöver vi inte spara owner id i .dok så är de bra
+         */
     }
 
 

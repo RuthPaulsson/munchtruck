@@ -12,7 +12,7 @@ interface ProfileRepository {
         location: String,
         imageUrl: String,
         isOpen: Boolean,
-        ownerUid: String
+        ownerId: String
     ): FoodTruck
 
 }
