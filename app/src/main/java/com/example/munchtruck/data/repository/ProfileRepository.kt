@@ -6,12 +6,13 @@ interface ProfileRepository {
     suspend fun getTruckProfile (ownerUid: String): FoodTruck
 
     suspend fun updateTruckProfile (
-        ownerUid: String,
+        id: String,
         name: String,
         description: String,
         location: String,
+        imageUrl: String,
         isOpen: Boolean,
-        imageUrl: String
+        ownerUid: String
     ): FoodTruck
 
 }
