@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface MenuRepository {
 
-    fun getMenu(truckId: String): Flow<List<MenuItem>>
+    fun observeMenu(truckId: String): Flow<List<MenuItem>>
 
     suspend fun addMenuItem(
         truckId: String,

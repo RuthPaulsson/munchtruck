@@ -12,6 +12,7 @@ class FirebaseProfileRepository (
     firestore: FirebaseFirestore,
 ) : ProfileRepository {
 
+    //todo se över att ändra så arketekturen blir lika här och i menurepo se fun menuCollection()
     private val foodTrucks = firestore.collection("foodTrucks")
 
 

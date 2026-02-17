@@ -3,13 +3,40 @@ package com.example.munchtruck.data.repository.firebase
 import com.example.munchtruck.data.model.MenuItem
 import com.example.munchtruck.data.repository.MenuRepository
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 
 class FirebaseMenuRepository (
-    firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 ) : MenuRepository {
-    override fun getMenu(truckId: String): Flow<List<MenuItem>> {
-        TODO("Not yet implemented")
+
+    private fun menuCollection(truckId: String) = firestore.collection(
+        "foodTrucks")
+        .document(truckId)
+        .collection("menu")
+
+    override fun observeMenu(truckId: String): Flow<List<MenuItem>> = callbackFlow {
+        val listener = menuCollection(truckId).addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                close(e)
+                return@addSnapshotListener
+            }
+
+
+            val menuItems = snapshot?.documents.orEmpty().map { doc ->
+                MenuItem(
+//                    id = doc.id,
+//                    name = doc.getString("name").orEmpty(),
+//                    price = doc.getLong("price") ?: 0L,
+//                    description = doc.getString("description").orEmpty(),
+//                    imageUrl = doc.getString("imageUrl").orEmpty()
+                )
+            }
+            trySend(menuItems).isSuccess
+
+        }
+        awaitClose { listener.remove() }
     }
 
     override suspend fun addMenuItem(
