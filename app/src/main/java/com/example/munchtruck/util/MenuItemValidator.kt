@@ -13,6 +13,13 @@ object MenuItemValidator {
         }
     }
 
+    fun validateDescription(description: String): String? {
+        return when {
+            description.length > 200 -> "Beskrivningen kan vara max 200 tecken"
+            else -> null
+        }
+    }
+
     fun validatePrice(priceString: String): String? {
         return when {
             priceString.isBlank() -> "Pris kan inte vara tomt"
@@ -30,7 +37,23 @@ object MenuItemValidator {
         }
     }
 
-    fun validateAll(name: String, priceString: String): Boolean {
-        return validateName(name) == null && validatePrice(priceString) == null
+    fun validateImageUrl(imageUrl: String): String? {
+        return when {
+            imageUrl.isNotBlank() && !imageUrl.matches(Regex("^(http|https)://.*$")) ->
+                "Ogiltig URL. Måste börja med http:// eller https://"
+            else -> null
+        }
+    }
+
+    fun validateAll(
+        name: String,
+        priceString: String,
+        description: String = "",
+        imageUrl: String = ""
+    ): Boolean {
+        return validateName(name) == null &&
+                validatePrice(priceString) == null &&
+                validateDescription(description) == null &&
+                validateImageUrl(imageUrl) == null
     }
 }

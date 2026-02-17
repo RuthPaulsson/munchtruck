@@ -12,15 +12,38 @@ object PriceFormatter {
         }
     }
 
-    fun format(price: Double): String {
+    fun format(priceInOre: Long): String {
+        val priceInKronor = priceInOre / 100.0
         return try {
-            swedishCurrencyFormat.format(price)
+            swedishCurrencyFormat.format(priceInKronor)
         } catch (e: Exception) {
-            "%.2f kr".format(price).replace(".", ",")
+            "%.2f kr".format(priceInKronor).replace(".", ",")
         }
     }
 
-    fun parse(priceString: String): Double? {
+    fun format(priceInKronor: Double): String {
+        return try {
+            swedishCurrencyFormat.format(priceInKronor)
+        } catch (e: Exception) {
+            "%.2f kr".format(priceInKronor).replace(".", ",")
+        }
+    }
+
+    fun parseToOre(priceString: String): Long? {
+        return try {
+            val cleaned = priceString
+                .replace("kr", "")
+                .replace(" ", "")
+                .replace(",", ".")
+                .trim()
+            val kronor = cleaned.toDoubleOrNull() ?: return null
+            (kronor * 100).toLong()  // Convert to öre
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    fun parseToKronor(priceString: String): Double? {
         return try {
             val cleaned = priceString
                 .replace("kr", "")
@@ -33,6 +56,7 @@ object PriceFormatter {
         }
     }
 
+    fun Long.toPriceString(): String = format(this)
 
     fun Double.toPriceString(): String = format(this)
 }
