@@ -3,77 +3,61 @@ package com.example.munchtruck.data.repository.firebase
 
 import com.example.munchtruck.data.model.FoodTruck
 import com.example.munchtruck.data.repository.ProfileRepository
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.tasks.await
 
 
 class FirebaseProfileRepository (
-    firestore: FirebaseFirestore,
+    private val firestore: FirebaseFirestore,
+    private val auth : FirebaseAuth
 ) : ProfileRepository {
 
-    //todo se över att ändra så arketekturen blir lika här och i menurepo se fun menuCollection()
-    private val foodTrucks = firestore.collection("foodTrucks")
+    fun truckId () : String =
+        auth.currentUser?.uid ?: throw IllegalStateException("Ej inloggad")
 
 
-    override suspend fun getTruckProfile(ownerUid: String): FoodTruck {
-        val snapshot = foodTrucks.document(ownerUid).get().await()
-        if (!snapshot.exists()) throw IllegalArgumentException ("FoodTruck profile is missing")
+    private fun truckDoc() =
+        firestore.collection("foodTrucks")
+        .document(truckId())
+
+
+    override suspend fun getTruckProfile(): FoodTruck {
+        val doc = truckDoc().get().await()
+        if (!doc.exists()) throw IllegalArgumentException ("FoodTruck profile is missing")
 
         return FoodTruck (
-//            id = snapshot.id,
-//            name = snapshot.getString("name").orEmpty(),
-//            describtion = snapshot.getString("description").orEmpty(),
-//            location = snapshot.getString("location").orEmpty(),
-//            imageUrl = snapshot.getString("imageUrl").orEmpty(),
-//            isOpen = snapshot.getBoolean("isOpen") ?: false,
-//            ownerId = snapshot.getString("ownerId").orEmpty()
-            /**
-            todo
-             foodType = snapshot.getString("foodType").orEmpty()
-             Kommer vi behöva ha denna ??
-             As a food truck owner, I want to edit my profile with name,
-              image, description, !!-> and type of food <-!!,
-               so that customers can understand what my food truck offers.
-
-            todo : Tror att vi kan slåihop dessa då allt sparas i uid i Foodtruck collectionen,
-               vilket ger dem separata id'n och vi hämtar ju bara alla foodtrucks i närheten behöver vi spara
-               owner id separat ?
-               ownerId = snapshot.getString("ownerId").orEmpty()
-               id = snapshot.id,
-             */
-
+//            id = doc.id,
+//            name = doc.getString("name").orEmpty(),
+//            description = doc.getString("description").orEmpty(),
+//            location = doc.getString("location").orEmpty(),
+//            imageUrl = doc.getString("imageUrl").orEmpty(),
+//            isOpen = doc.getBoolean("isOpen") ?: false,
+//            foodType = doc.getString("foodType").orEmpty()
         )
     }
 
     override suspend fun updateTruckProfile(
-        id: String,
         name: String,
         description: String,
         location: String,
         imageUrl: String,
         isOpen: Boolean,
-        ownerId: String
+        foodType: String
     ): FoodTruck {
+
         val truckUpdates = mutableMapOf<String, Any>(
-            "id" to ownerId,
-            "name" to name,
-            "description" to description,
-            "location" to location,
-            "isOpen" to isOpen,
-            "ownerId" to ownerId
+            "name" to name.trim(),
+            "description" to description.trim(),
+            "location" to location.trim(),
+            "foodType" to foodType.trim(),
+            "isOpen" to isOpen
         )
-        if (imageUrl.isNotBlank()) truckUpdates["imageUrl"] = imageUrl
+        if (imageUrl.trim().isNotBlank()) truckUpdates["imageUrl"] = imageUrl.trim()
 
-        foodTrucks.document(ownerId).set(truckUpdates,SetOptions.merge()).await()
-        return getTruckProfile(ownerId)
-
-        /*
-        Todo
-         : Samma här "id" to ownerId "ownerID" to ownerId,
-         det blir lite dubbel kod så behöver vi inte spara owner id i .dok så är de bra
-         */
+        truckDoc().set(truckUpdates,SetOptions.merge()).await()
+        return getTruckProfile()
     }
-
 
 }

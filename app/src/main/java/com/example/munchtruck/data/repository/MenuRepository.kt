@@ -5,18 +5,16 @@ import kotlinx.coroutines.flow.Flow
 
 interface MenuRepository {
 
-    fun observeMenu(truckId: String): Flow<List<MenuItem>>
+    fun observeMenu(): Flow<List<MenuItem>>
 
     suspend fun addMenuItem(
-        truckId: String,
         name: String,
         price: Long,
         description: String,
         imageUrl: String
-    )
+    ) : String
 
     suspend fun updateMenuItem(
-        truckId: String,
         itemId: String,
         name: String,
         price: Long,
@@ -24,5 +22,5 @@ interface MenuRepository {
         imageUrl: String
     )
 
-    suspend fun deleteMenuItem(truckId: String, itemId: String)
+    suspend fun deleteMenuItem(itemId: String)
 }
