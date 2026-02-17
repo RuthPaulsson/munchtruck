@@ -26,20 +26,19 @@ class AuthRepository {
         val uid = authResult.user?.uid ?: throw Exception("User not found")
 
         val user = hashMapOf(
-            "uid" to uid,
+            "id" to uid,
             "email" to email,
             "companyName" to "",
             "role" to "owner"
         )
 
         val truck = mutableMapOf<String, Any>(
-            "id" to uid,
             "name" to "",
             "description" to "",
             "location" to "",
             "imageUrl" to "",
-            "isOpen" to false,
-            "ownerId" to uid
+            "foodType" to "",
+            "isOpen" to false
         )
 
         firestore.runBatch { batch ->
