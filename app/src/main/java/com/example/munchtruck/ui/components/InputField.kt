@@ -28,7 +28,10 @@ fun InputField(
     onChange: (String) -> Unit,
     lable: String? = null,
     placeholder: String,
-    isPassword: Boolean = false
+    isPassword: Boolean = false,
+    singleLine: Boolean = true,
+    minLines: Int = 1,
+    maxLines: Int = if (singelLine) 1 else Int.MAX_VALUE
 ){
     Column(modifier = Modifier.fillMaxWidth()) {
 
@@ -57,7 +60,9 @@ fun InputField(
 
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(InputRadius),
-            singleLine = true,
+            singleLine = singleLine,
+            minLines = minLines,
+            maxLines = maxLines,
             visualTransformation =
                 if (isPassword) PasswordVisualTransformation()
                 else VisualTransformation.None,
