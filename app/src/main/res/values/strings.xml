@@ -41,4 +41,11 @@
 
     <string name="register_button">Get Started</string>
 
+    <!-- ===== Profile screen ====================================== -->
+
+    <string name="profile_logout_title">Log out</string>
+    <string name="profile_logout_message">Are you sure you want to log out?</string>
+    <string name="profile_logout_confirm">Yes</string>
+    <string name="profile_logout_cancel">Cancel</string>
+
 </resources>
