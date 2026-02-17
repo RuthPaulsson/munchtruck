@@ -76,10 +76,21 @@ class FirebaseMenuRepository (
         description: String,
         imageUrl: String
     ) {
-        TODO("Not yet implemented")
+        require(name.isNotBlank()){"Name cannot be blank"}
+        require(price > 0){"Price must be greater than 0"}
+
+        val updateMenuItem = mutableMapOf<String, Any>(
+            "name" to name,
+            "price" to price,
+            "description" to description
+        )
+        if (imageUrl.isNotBlank()) updateMenuItem["imageUrl"] = imageUrl
+
+        menuCollection(truckId).document(itemId).set(updateMenuItem).await()
+
     }
 
     override suspend fun deleteMenuItem(truckId: String, itemId: String) {
-        TODO("Not yet implemented")
+        menuCollection(truckId).document(itemId).delete().await()
     }
 }
