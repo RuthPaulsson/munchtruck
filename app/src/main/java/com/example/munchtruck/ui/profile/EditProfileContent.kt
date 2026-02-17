@@ -30,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.munchtruck.R
+import com.example.munchtruck.ui.components.InputField
 import com.example.munchtruck.ui.theme.AppPreviewWrapper
 import com.example.munchtruck.ui.theme.Dimens.ScreenPadding
 import com.example.munchtruck.ui.theme.Dimens.SpaceL
@@ -37,6 +38,12 @@ import com.example.munchtruck.ui.theme.Dimens.SpaceL
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditProfileContent(
+    name: String,
+    description: String,
+    foodType: String,
+    onNameChange: (String) -> Unit,
+    onDescriptionChange: (String) -> Unit,
+    onFoodTypeChange: (String) -> Unit,
     onBackClick: () -> Unit,
     onSaveClick: () -> Unit,
     onImageClick: () -> Unit
@@ -112,7 +119,31 @@ fun EditProfileContent(
             }
             Spacer(modifier = Modifier.height(SpaceL))
 
-            // ===== TODO: Input fields =====
+            // ===== Input fields =====
+
+            InputField(
+                value = name,
+                onChange = onNameChange,
+                placeholder = stringResource(R.string.profile_name_hint)
+            )
+
+            Spacer(modifier = Modifier.height(SpaceL))
+
+            InputField(
+                value = description,
+                onChange = onDescriptionChange,
+                placeholder = stringResource(R.string.profile_description_hint),
+                singleLine = false,
+                minLines = 3
+            )
+            Spacer(modifier = Modifier.height(SpaceL))
+
+            InputField(
+                value = foodType,
+                onChange = onFoodTypeChange,
+                placeholder = stringResource(R.string.profile_food_type_hint)
+
+            )
         }
     }
 }
@@ -122,9 +153,15 @@ fun EditProfileContent(
 fun EditProfileContentPreview() {
     AppPreviewWrapper {
         EditProfileContent(
+            name = "",
+            description = "",
+            foodType = "",
             onBackClick = {},
             onSaveClick = {},
-            onImageClick = {}
+            onImageClick = {},
+            onNameChange = {},
+            onDescriptionChange = {},
+            onFoodTypeChange = {}
         )
     }
 }

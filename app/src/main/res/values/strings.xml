@@ -48,9 +48,15 @@
     <string name="profile_logout_confirm">Yes</string>
     <string name="profile_logout_cancel">Cancel</string>
 
+    <!-- ===== Edit Profile screen ====================================== -->
+
     <string name="common_back">Back</string>
     <string name="common_save">Save</string>
     <string name="edit_profile_title">Edit Profile</string>
+    <string name="profile_name_hint">Add Truck name..</string>
+    <string name="profile_description_hint">Add a short info about your food truck and the food you serve..</string>
+    <string name="profile_food_type_hint">Food type</string>
     <string name="profile_load_image">Load image</string>
+
 
 </resources>
