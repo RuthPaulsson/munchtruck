@@ -48,4 +48,8 @@
     <string name="profile_logout_confirm">Yes</string>
     <string name="profile_logout_cancel">Cancel</string>
 
+    <string name="common_back">Back</string>
+    <string name="common_save">Save</string>
+    <string name="edit_profile_title">Edit Profile</string>
+
 </resources>
