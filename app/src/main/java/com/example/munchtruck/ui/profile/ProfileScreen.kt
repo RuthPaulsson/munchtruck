@@ -31,25 +31,6 @@ fun ProfileScreen(
 
     var showDialog by remember { mutableStateOf(false) }
 
-    // ====== Layout ===============================
-
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ){
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-
-            Text("Welcome!")
-
-            Spacer(modifier = Modifier.height((24.dp)))
-
-            Button(onClick = {
-                showDialog = true
-            }) {
-                Text("Log out")
-            }
-        }
-    }
 
     // ====== Logout Dialog ===============================
 
