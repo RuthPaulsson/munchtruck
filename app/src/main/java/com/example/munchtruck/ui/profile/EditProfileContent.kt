@@ -1,13 +1,17 @@
 package com.example.munchtruck.ui.profile
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -17,7 +21,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,7 +38,8 @@ import com.example.munchtruck.ui.theme.Dimens.SpaceL
 @Composable
 fun EditProfileContent(
     onBackClick: () -> Unit,
-    onSaveClick: () -> Unit
+    onSaveClick: () -> Unit,
+    onImageClick: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -76,7 +84,34 @@ fun EditProfileContent(
             )
 
             Spacer(modifier = Modifier.height(SpaceL))
-            // ===== TODO: Image section =====
+
+        // ===== Profile Image Section =====
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .clip(RoundedCornerShape(16.dp))
+            ) {
+                Image(
+                   painter = painterResource(R.drawable.ic_launcher_background),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier =  Modifier.fillMaxSize()
+                )
+
+                Button(
+                    onClick = onImageClick,
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 16.dp),
+                    shape = RoundedCornerShape(50)
+
+                ) {
+                    Text(stringResource(R.string.profile_load_image))
+                }
+            }
+            Spacer(modifier = Modifier.height(SpaceL))
+
             // ===== TODO: Input fields =====
         }
     }
@@ -88,7 +123,8 @@ fun EditProfileContentPreview() {
     AppPreviewWrapper {
         EditProfileContent(
             onBackClick = {},
-            onSaveClick = {}
+            onSaveClick = {},
+            onImageClick = {}
         )
     }
 }

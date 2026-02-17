@@ -15,6 +15,9 @@ fun EditProfileScreen(
         },
         onSaveClick = {
             // TODO: connect to viewmodel later
+        },
+        onImageClick = {
+            // TODO: connect later
         }
     )
 }

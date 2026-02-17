@@ -51,5 +51,6 @@
     <string name="common_back">Back</string>
     <string name="common_save">Save</string>
     <string name="edit_profile_title">Edit Profile</string>
+    <string name="profile_load_image">Load image</string>
 
 </resources>
