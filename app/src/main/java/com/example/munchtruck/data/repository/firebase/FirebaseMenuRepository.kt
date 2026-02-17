@@ -6,6 +6,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.tasks.await
 
 class FirebaseMenuRepository (
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
@@ -46,7 +47,25 @@ class FirebaseMenuRepository (
         description: String,
         imageUrl: String
     ) {
-        TODO("Not yet implemented")
+
+        val trimmedName = name.trim()
+        val trimmedDescription = description.trim()
+        val trimmedImageUrl = imageUrl.trim()
+
+        require(name.isNotBlank()){"Name cannot be blank"}
+        require(price > 0){"Price must be greater than 0"}
+
+        val itemRef = menuCollection(truckId).document()
+        val itemData = mutableMapOf<String, Any>(
+            "id" to itemRef.id,
+            "name" to trimmedName,
+            "price" to price,
+            "description" to trimmedDescription
+        )
+        if (trimmedImageUrl.isNotBlank()) itemData ["imageUrl"] = trimmedImageUrl
+
+
+        itemRef.set(itemData).await()
     }
 
     override suspend fun updateMenuItem(
