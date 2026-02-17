@@ -9,7 +9,7 @@ import kotlinx.coroutines.tasks.await
 
 
 class FirebaseProfileRepository (
-    private val firestore: FirebaseFirestore,
+    firestore: FirebaseFirestore,
 ) : ProfileRepository {
 
     private val foodTrucks = firestore.collection("foodTrucks")
@@ -20,13 +20,13 @@ class FirebaseProfileRepository (
         if (!snapshot.exists()) throw IllegalArgumentException ("FoodTruck profile is missing")
 
         return FoodTruck (
-            id = snapshot.id,
-            name = snapshot.getString("name").orEmpty(),
-            describtion = snapshot.getString("description").orEmpty(),
-            location = snapshot.getString("location").orEmpty(),
-            imageUrl = snapshot.getString("imageUrl").orEmpty(),
-            isOpen = snapshot.getBoolean("isOpen") ?: false,
-            ownerId = snapshot.getString("ownerId").orEmpty()
+//            id = snapshot.id,
+//            name = snapshot.getString("name").orEmpty(),
+//            describtion = snapshot.getString("description").orEmpty(),
+//            location = snapshot.getString("location").orEmpty(),
+//            imageUrl = snapshot.getString("imageUrl").orEmpty(),
+//            isOpen = snapshot.getBoolean("isOpen") ?: false,
+//            ownerId = snapshot.getString("ownerId").orEmpty()
             /**
             todo
              foodType = snapshot.getString("foodType").orEmpty()
