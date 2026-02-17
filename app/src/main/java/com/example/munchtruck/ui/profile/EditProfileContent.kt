@@ -1,5 +1,6 @@
 package com.example.munchtruck.ui.profile
 
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,6 +30,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import com.example.munchtruck.R
 import com.example.munchtruck.ui.components.InputField
 import com.example.munchtruck.ui.theme.AppPreviewWrapper
@@ -41,6 +43,7 @@ fun EditProfileContent(
     name: String,
     description: String,
     foodType: String,
+    selectedImageUri: Uri?,
     onNameChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
     onFoodTypeChange: (String) -> Unit,
@@ -99,12 +102,23 @@ fun EditProfileContent(
                     .height(200.dp)
                     .clip(RoundedCornerShape(16.dp))
             ) {
-                Image(
-                   painter = painterResource(R.drawable.ic_launcher_background),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier =  Modifier.fillMaxSize()
-                )
+                if (selectedImageUri != null){
+                    Image(
+                        painter = rememberAsyncImagePainter(selectedImageUri),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier =  Modifier.fillMaxSize()
+                    )
+                } else {
+                    Image(
+                        painter = painterResource(R.drawable.ic_launcher_background),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+
+                }
+
 
                 Button(
                     onClick = onImageClick,
@@ -156,6 +170,7 @@ fun EditProfileContentPreview() {
             name = "",
             description = "",
             foodType = "",
+            selectedImageUri = null,
             onBackClick = {},
             onSaveClick = {},
             onImageClick = {},
