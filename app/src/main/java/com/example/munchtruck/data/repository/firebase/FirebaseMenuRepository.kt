@@ -2,23 +2,31 @@ package com.example.munchtruck.data.repository.firebase
 
 import com.example.munchtruck.data.model.MenuItem
 import com.example.munchtruck.data.repository.MenuRepository
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 
 class FirebaseMenuRepository (
-    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private val firestore: FirebaseFirestore,
+    private val auth: FirebaseAuth
 ) : MenuRepository {
 
-    private fun menuCollection(truckId: String) = firestore.collection(
+    private fun truckId(): String =
+        auth.currentUser?.uid ?: throw IllegalStateException("Not logged in")
+
+
+    private fun menuCollection() = firestore.collection(
         "foodTrucks")
-        .document(truckId)
+        .document(truckId())
         .collection("menu")
 
-    override fun observeMenu(truckId: String): Flow<List<MenuItem>> = callbackFlow {
-        val listener = menuCollection(truckId).addSnapshotListener { snapshot, e ->
+
+    override fun observeMenu(): Flow<List<MenuItem>> = callbackFlow {
+        val listener = menuCollection().addSnapshotListener { snapshot, e ->
             if (e != null) {
                 close(e)
                 return@addSnapshotListener
@@ -34,63 +42,52 @@ class FirebaseMenuRepository (
 //                    imageUrl = doc.getString("imageUrl").orEmpty()
                 )
             }
-            trySend(menuItems).isSuccess
+            trySend(menuItems)
 
         }
         awaitClose { listener.remove() }
     }
 
     override suspend fun addMenuItem(
-        truckId: String,
         name: String,
         price: Long,
         description: String,
         imageUrl: String
-    ) {
+    ) : String {
 
-        val trimmedName = name.trim()
-        val trimmedDescription = description.trim()
-        val trimmedImageUrl = imageUrl.trim()
-
-        require(name.isNotBlank()){"Name cannot be blank"}
-        require(price > 0){"Price must be greater than 0"}
-
-        val itemRef = menuCollection(truckId).document()
+        val itemRef = menuCollection().document()
         val itemData = mutableMapOf<String, Any>(
-            "id" to itemRef.id,
-            "name" to trimmedName,
+            "name" to name.trim(),
             "price" to price,
-            "description" to trimmedDescription
+            "description" to description.trim()
         )
-        if (trimmedImageUrl.isNotBlank()) itemData ["imageUrl"] = trimmedImageUrl
-
+        if (imageUrl.trim().isNotBlank()) itemData ["imageUrl"] = imageUrl.trim()
 
         itemRef.set(itemData).await()
+        return itemRef.id
     }
 
     override suspend fun updateMenuItem(
-        truckId: String,
         itemId: String,
         name: String,
         price: Long,
         description: String,
         imageUrl: String
     ) {
-        require(name.isNotBlank()){"Name cannot be blank"}
-        require(price > 0){"Price must be greater than 0"}
 
         val updateMenuItem = mutableMapOf<String, Any>(
-            "name" to name,
+            "name" to name.trim(),
             "price" to price,
-            "description" to description
+            "description" to description.trim()
         )
-        if (imageUrl.isNotBlank()) updateMenuItem["imageUrl"] = imageUrl
+        if (imageUrl.trim().isNotBlank()) updateMenuItem["imageUrl"] = imageUrl.trim()
 
-        menuCollection(truckId).document(itemId).set(updateMenuItem).await()
+        menuCollection().document(itemId).set(updateMenuItem, SetOptions.merge())
+            .await()
 
     }
 
-    override suspend fun deleteMenuItem(truckId: String, itemId: String) {
-        menuCollection(truckId).document(itemId).delete().await()
+    override suspend fun deleteMenuItem(itemId: String) {
+        menuCollection().document(itemId).delete().await()
     }
 }

@@ -8,8 +8,8 @@ import kotlinx.coroutines.tasks.await
 class StorageImageRepository(
     private val storage: FirebaseStorage = FirebaseStorage.getInstance(),
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-) {
-    suspend fun uploadProfileImage(imageUri: Uri): String {
+) : ImageRepository {
+    override suspend fun uploadProfileImage(imageUri: Uri): String {
         val uid = auth.currentUser?.uid ?: throw IllegalStateException("Ej inloggad")
 
         val ref = storage.getReference("foodtrucks/$uid/profile.jpg")
@@ -18,7 +18,7 @@ class StorageImageRepository(
         return ref.downloadUrl.await().toString()
     }
 
-    suspend fun getProfileImageUri(): String? {
+    override suspend fun getProfileImageUri(): String? {
         val uid = auth.currentUser?.uid ?: return null
         val ref = storage.getReference("foodtrucks/$uid/profile.jpg")
 
