@@ -10,10 +10,12 @@ import androidx.navigation.compose.composable
 
 import androidx.navigation.compose.rememberNavController
 import com.example.munchtruck.ui.login.LoginScreen
+import com.example.munchtruck.ui.profile.EditProfileScreen
 import com.example.munchtruck.ui.profile.ProfileScreen
 import com.example.munchtruck.ui.register.RegisterScreen
 import com.example.munchtruck.ui.start.StartScreen
 import com.example.munchtruck.viewmodels.AuthViewModel
+import com.example.munchtruck.viewmodels.ProfileViewModel
 
 // ====== Navigation Graph ===============================
 
@@ -21,6 +23,7 @@ import com.example.munchtruck.viewmodels.AuthViewModel
 fun NavGraph() {
     val navController = rememberNavController()
     val authViewModel: AuthViewModel = viewModel()
+    val profileViewModel: ProfileViewModel = viewModel()
 
     val isLoggedIn by authViewModel.isLoggedIn.collectAsState()
 
@@ -53,6 +56,13 @@ fun NavGraph() {
                 }
             }
 
+        }
+
+        composable ("edit_profile") {
+            EditProfileScreen(
+                navController = navController,
+                profileViewModel = profileViewModel
+            )
         }
     }
 }

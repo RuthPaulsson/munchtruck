@@ -1,4 +1,6 @@
 package com.example.munchtruck.viewmodels
 
-class ProfileViewModel {
+import androidx.lifecycle.ViewModel
+
+class ProfileViewModel : ViewModel() {
 }
