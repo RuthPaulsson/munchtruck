@@ -4,6 +4,8 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,6 +23,14 @@ fun EditProfileScreen(
     var name by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var foodType by remember { mutableStateOf("") }
+
+    val saveSuccess by profileViewModel.saveSuccess.collectAsState()
+
+    LaunchedEffect(saveSuccess) {
+        if (saveSuccess) {
+            navController.popBackStack()
+        }
+    }
 
     // ====== Image Picker Launcher ===============================
 
@@ -44,7 +54,12 @@ fun EditProfileScreen(
             navController.popBackStack()
         },
         onSaveClick = {
-            // TODO: connect to viewmodel later
+            profileViewModel.saveProfile(
+                name = name,
+                description = description,
+                foodType = foodType,
+                imageUri = selectedImageUri
+            )
         },
         onImageClick = {
             imageLauncher.launch("image/*")
