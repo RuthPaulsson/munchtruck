@@ -3,13 +3,15 @@ package com.example.munchtruck.ui.profile
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.munchtruck.viewmodels.ProfileViewModel
 
@@ -18,17 +20,40 @@ fun EditProfileScreen(
     navController: NavController,
     profileViewModel: ProfileViewModel
 ) {
-    // ====== UI State ===============================
+    // ====== State from ViewModel ===============================
+
+    val uiState by profileViewModel.uiState.collectAsStateWithLifecycle()
+
+    // ====== Local UI State ===============================
+
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
-    var name by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
+
+    var name by remember(uiState.name) {
+        mutableStateOf(uiState.name)
+    }
+
+    var description by remember(uiState.description) {
+        mutableStateOf(uiState.description)
+    }
+
     var foodType by remember { mutableStateOf("") }
 
-    val saveSuccess by profileViewModel.saveSuccess.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(saveSuccess) {
-        if (saveSuccess) {
+    // ====== Handle Save Success ===============================
+
+    LaunchedEffect(uiState.saveSuccess) {
+        if (uiState.saveSuccess) {
             navController.popBackStack()
+            profileViewModel.resetSaveStatus()
+        }
+    }
+
+    // ====== Handle Error ===============================
+    LaunchedEffect(uiState.error) {
+        uiState.error?.let { message ->
+            snackbarHostState.showSnackbar(message)
+            profileViewModel.clearError()
         }
     }
 
@@ -63,6 +88,9 @@ fun EditProfileScreen(
         },
         onImageClick = {
             imageLauncher.launch("image/*")
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
         }
     )
 }

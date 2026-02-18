@@ -49,9 +49,11 @@ fun EditProfileContent(
     onFoodTypeChange: (String) -> Unit,
     onBackClick: () -> Unit,
     onSaveClick: () -> Unit,
-    onImageClick: () -> Unit
+    onImageClick: () -> Unit,
+    snackbarHost: @Composable () -> Unit
 ) {
     Scaffold(
+        snackbarHost = { snackbarHost() },
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
@@ -176,7 +178,8 @@ fun EditProfileContentPreview() {
             onImageClick = {},
             onNameChange = {},
             onDescriptionChange = {},
-            onFoodTypeChange = {}
+            onFoodTypeChange = {},
+            snackbarHost = {}
         )
     }
 }
