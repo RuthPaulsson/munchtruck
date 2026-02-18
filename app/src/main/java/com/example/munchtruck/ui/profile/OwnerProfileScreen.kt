@@ -17,17 +17,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.munchtruck.viewmodels.AuthViewModel
+import com.example.munchtruck.viewmodels.ProfileViewModel
 
 // ====== Profile Screen ===============================
 @Composable
 fun ProfileScreen(
     navController: NavController,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    viewModel: ProfileViewModel
 ){
 
     // ====== UI State ===============================
+
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     var showDialog by remember { mutableStateOf(false) }
 
