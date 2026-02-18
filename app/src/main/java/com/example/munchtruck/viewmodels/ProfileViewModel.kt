@@ -63,8 +63,7 @@ class ProfileViewModel(
                 }
             }
         }
-
-        fun clearError() = _uiState.update { it.copy(error = null) }
-        fun resetSaveStatus() = _uiState.update { it.copy(saveSuccess = false) }
     }
+    fun clearError() = _uiState.update { it.copy(error = null) }
+    fun resetSaveStatus() = _uiState.update { it.copy(saveSuccess = false) }
 }

@@ -35,11 +35,11 @@ class FirebaseMenuRepository (
 
             val menuItems = snapshot?.documents.orEmpty().map { doc ->
                 MenuItem(
-//                    id = doc.id,
-//                    name = doc.getString("name").orEmpty(),
-//                    price = doc.getLong("price") ?: 0L,
-//                    description = doc.getString("description").orEmpty(),
-//                    imageUrl = doc.getString("imageUrl").orEmpty()
+                    id = doc.id,
+                    name = doc.getString("name").orEmpty(),
+                    price = doc.getLong("price") ?: 0L,
+                    description = doc.getString("description").orEmpty(),
+                    imageUrl = doc.getString("imageUrl").orEmpty()
                 )
             }
             trySend(menuItems)
