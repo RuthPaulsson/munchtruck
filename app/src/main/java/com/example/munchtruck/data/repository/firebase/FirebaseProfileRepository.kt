@@ -18,13 +18,15 @@ class FirebaseProfileRepository (
         auth.currentUser?.uid ?: throw IllegalStateException("Ej inloggad")
 
 
-    private fun truckDoc() =
+    // Namn ska det vara myTruckDoc eller truckDoc?
+    // Kanske beror på om vi ska ha en "ownerProfileRepo (write only)... Och en guestProfileRepo (read only)"
+    private fun myTruckDoc() =
         firestore.collection("foodTrucks")
         .document(truckId())
 
 
     override suspend fun getTruckProfile(): FoodTruck {
-        val doc = truckDoc().get().await()
+        val doc = myTruckDoc().get().await()
         if (!doc.exists()) throw IllegalArgumentException ("FoodTruck profile is missing")
 
         return FoodTruck (
@@ -38,7 +40,7 @@ class FirebaseProfileRepository (
         )
     }
 
-    override suspend fun updateTruckProfile(
+    override suspend fun updateMyTruckProfile(
         name: String,
         description: String,
         location: String,
@@ -56,7 +58,7 @@ class FirebaseProfileRepository (
         )
         if (imageUrl.trim().isNotBlank()) truckUpdates["imageUrl"] = imageUrl.trim()
 
-        truckDoc().set(truckUpdates,SetOptions.merge()).await()
+        myTruckDoc().set(truckUpdates,SetOptions.merge()).await()
         return getTruckProfile()
     }
 
