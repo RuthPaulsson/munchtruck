@@ -1,6 +1,7 @@
-package com.example.munchtruck.data.repository
+package com.example.munchtruck.data.repository.firebase
 
 import android.net.Uri
+import com.example.munchtruck.data.repository.ImageRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
