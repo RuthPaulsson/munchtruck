@@ -31,6 +31,10 @@ fun EditMenuScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
 
+    LaunchedEffect(Unit) {
+        viewModel.observeMenu()
+    }
+
     LaunchedEffect(uiState.saveSuccess) {
         if (uiState.saveSuccess) {
             navController.popBackStack()
