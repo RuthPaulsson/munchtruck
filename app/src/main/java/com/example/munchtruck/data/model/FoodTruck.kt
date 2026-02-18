@@ -1,4 +1,11 @@
 package com.example.munchtruck.data.model
 
-class FoodTruck {
-}
+data class FoodTruck (
+    val id: String = "",
+    val name: String = "",
+    val description: String = "",
+    val foodType: String = "",
+    val location: TruckLocation? = null,
+    val imageUrl: String = "",
+    val isOpen: Boolean = false
+)
