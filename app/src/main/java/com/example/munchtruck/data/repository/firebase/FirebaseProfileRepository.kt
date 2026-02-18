@@ -1,7 +1,9 @@
 package com.example.munchtruck.data.repository.firebase
 
 
+import android.net.Uri
 import com.example.munchtruck.data.model.FoodTruck
+import com.example.munchtruck.data.model.TruckLocation
 import com.example.munchtruck.data.repository.ProfileRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -24,26 +26,51 @@ class FirebaseProfileRepository (
         firestore.collection("foodTrucks")
         .document(truckId())
 
+    override suspend fun saveProfile(
+        name: String,
+        description: String,
+        foodType: String,
+        imageUri: Uri?
+    ) {
+        TODO("Not yet implemented")
+    }
+
 
     override suspend fun getTruckProfile(): FoodTruck {
         val doc = myTruckDoc().get().await()
         if (!doc.exists()) throw IllegalArgumentException ("FoodTruck profile is missing")
 
+        val loc = doc.getString("location") as? Map<*, *>
+        val lat = (loc?.get("latitude") as? Number)?.toDouble()
+        val long = (loc?.get("longitude") as? Number)?.toDouble()
+
+        val location = if (lat != null && long != null){
+            TruckLocation(
+                latitude = lat,
+                longitude = long,
+                adress = (loc["address"] as? String).orEmpty(),
+                updatedAtMilis = doc.getLong("updatedAtMilis") ?: 0L
+            )
+        } else {
+            null
+        }
+
+
         return FoodTruck (
-//            id = doc.id,
-//            name = doc.getString("name").orEmpty(),
-//            description = doc.getString("description").orEmpty(),
-//            location = doc.getString("location").orEmpty(),
-//            imageUrl = doc.getString("imageUrl").orEmpty(),
-//            isOpen = doc.getBoolean("isOpen") ?: false,
-//            foodType = doc.getString("foodType").orEmpty()
+            id = doc.id,
+            name = doc.getString("name").orEmpty(),
+            description = doc.getString("description").orEmpty(),
+            foodType = doc.getString("foodType").orEmpty(),
+            location = location,
+            imageUrl = doc.getString("imageUrl").orEmpty(),
+            isOpen = doc.getBoolean("isOpen") ?: false
+
         )
     }
 
     override suspend fun updateMyTruckProfile(
         name: String,
         description: String,
-        location: String,
         imageUrl: String,
         isOpen: Boolean,
         foodType: String
@@ -52,7 +79,6 @@ class FirebaseProfileRepository (
         val truckUpdates = mutableMapOf<String, Any>(
             "name" to name.trim(),
             "description" to description.trim(),
-            "location" to location.trim(),
             "foodType" to foodType.trim(),
             "isOpen" to isOpen
         )
