@@ -75,14 +75,14 @@ class FirebaseMenuRepository (
         imageUrl: String
     ) {
 
-        val updateMenuItem = mutableMapOf<String, Any>(
+        val updatedMenuItem = mutableMapOf<String, Any>(
             "name" to name.trim(),
             "price" to price,
             "description" to description.trim()
         )
-        if (imageUrl.trim().isNotBlank()) updateMenuItem["imageUrl"] = imageUrl.trim()
+        if (imageUrl.trim().isNotBlank()) updatedMenuItem["imageUrl"] = imageUrl.trim()
 
-        menuCollection().document(itemId).set(updateMenuItem, SetOptions.merge())
+        menuCollection().document(itemId).set(updatedMenuItem, SetOptions.merge())
             .await()
 
     }

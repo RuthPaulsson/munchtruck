@@ -4,6 +4,8 @@ import com.example.munchtruck.data.model.TruckLocation
 import com.example.munchtruck.data.repository.TruckRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
+import kotlinx.coroutines.tasks.await
 
 class FirebaseTruckRepository (
     private val firestore: FirebaseFirestore,
@@ -19,5 +21,17 @@ class FirebaseTruckRepository (
 
 
     override suspend fun updateMyTruckLocation(location: TruckLocation) {
+
+        val updatedLocation = mapOf(
+            "location" to mapOf(
+                "latitude" to location.latitude,
+                "longitude" to location.longitude,
+                "address" to location.adress.trim(),
+                "updatedAtMilis" to location.updatedAtMilis
+            )
+        )
+        myTruckDoc().set(updatedLocation, SetOptions.merge()).await()
+
     }
+
 }
