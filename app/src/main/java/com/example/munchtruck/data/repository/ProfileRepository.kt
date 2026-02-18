@@ -5,7 +5,7 @@ import com.example.munchtruck.data.model.FoodTruck
 interface ProfileRepository {
     suspend fun getTruckProfile (): FoodTruck
 
-    suspend fun updateTruckProfile (
+    suspend fun updateMyTruckProfile (
         name: String,
         description: String,
         location: String,
