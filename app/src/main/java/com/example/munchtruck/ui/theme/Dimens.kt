@@ -41,4 +41,10 @@ object Dimens {
 
     val TitleLarge = 45.sp
 
+    // ====== Menu ===============================
+
+    val MenuImageHeight = 180.dp
+    val MenuImageRadius = 16.dp
+    val MenuImageButtonBottomPadding = 12.dp
+
 }
