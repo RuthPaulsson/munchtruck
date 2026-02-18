@@ -10,11 +10,13 @@ import androidx.navigation.compose.composable
 
 import androidx.navigation.compose.rememberNavController
 import com.example.munchtruck.ui.login.LoginScreen
+import com.example.munchtruck.ui.menu.EditMenuScreen
 import com.example.munchtruck.ui.profile.EditProfileScreen
 import com.example.munchtruck.ui.profile.ProfileScreen
 import com.example.munchtruck.ui.register.RegisterScreen
 import com.example.munchtruck.ui.start.StartScreen
 import com.example.munchtruck.viewmodels.AuthViewModel
+import com.example.munchtruck.viewmodels.MenuViewModel
 import com.example.munchtruck.viewmodels.ProfileViewModel
 
 // ====== Navigation Graph ===============================
@@ -24,6 +26,7 @@ fun NavGraph() {
     val navController = rememberNavController()
     val authViewModel: AuthViewModel = viewModel()
     val profileViewModel: ProfileViewModel = viewModel()
+    val menuViewModel: MenuViewModel = viewModel()
 
     val isLoggedIn by authViewModel.isLoggedIn.collectAsState()
 
@@ -62,6 +65,16 @@ fun NavGraph() {
             EditProfileScreen(
                 navController = navController,
                 profileViewModel = profileViewModel
+            )
+        }
+
+        composable ("edit_menu/{itemId}") { backStackEntry ->
+            val itemId = backStackEntry.arguments?.getString("itemId")
+
+            EditMenuScreen(
+                navController = navController,
+                viewModel = menuViewModel,
+                itemId = if (itemId == "new") null else itemId
             )
         }
     }

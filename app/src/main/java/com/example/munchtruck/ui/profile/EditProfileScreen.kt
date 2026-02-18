@@ -89,8 +89,13 @@ fun EditProfileScreen(
         onImageClick = {
             imageLauncher.launch("image/*")
         },
+        onMenuClick = {
+            navController.navigate("edit_menu/new")
+        },
+
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
-        }
+        },
+
     )
 }

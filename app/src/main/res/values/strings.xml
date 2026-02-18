@@ -57,6 +57,16 @@
     <string name="profile_description_hint">Add a short info about your food truck and the food you serve..</string>
     <string name="profile_food_type_hint">Food type</string>
     <string name="profile_load_image">Load image</string>
+    <string name="profile_manage_menu">Manage Menu</string>
 
+    <!-- ===== Edit Menu screen ====================================== -->
+
+    <string name="menu_title">Menu</string>
+    <string name="menu_name_hint">Dish name</string>
+    <string name="menu_price_hint">Price (kr)</string>
+    <string name="menu_description_hint">Description</string>
+    <string name="menu_select_image">Select image</string>
+    <string name="menu_no_image">No image selected</string>
+    <string name="menu_delete">Delete dish</string>
 
 </resources>
