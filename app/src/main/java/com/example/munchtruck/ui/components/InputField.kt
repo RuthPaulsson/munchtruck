@@ -31,7 +31,7 @@ fun InputField(
     isPassword: Boolean = false,
     singleLine: Boolean = true,
     minLines: Int = 1,
-    maxLines: Int = if (singelLine) 1 else Int.MAX_VALUE
+    maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE
 ){
     Column(modifier = Modifier.fillMaxWidth()) {
 
