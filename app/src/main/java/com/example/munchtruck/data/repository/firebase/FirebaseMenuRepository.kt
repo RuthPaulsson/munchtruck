@@ -80,7 +80,7 @@ class FirebaseMenuRepository (
             "price" to price,
             "description" to description.trim()
         )
-        if (imageUrl.trim().isNotBlank()) updatedMenuItem["imageUrl"] = imageUrl.trim()
+        if (imageUrl.isNotBlank()) updatedMenuItem["imageUrl"] = imageUrl.trim()
 
         menuCollection().document(itemId).set(updatedMenuItem, SetOptions.merge())
             .await()

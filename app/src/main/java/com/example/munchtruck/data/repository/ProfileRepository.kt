@@ -4,19 +4,15 @@ import com.example.munchtruck.data.model.FoodTruck
 
 interface ProfileRepository {
 
-    suspend fun saveProfile(name: String,
-                            description: String,
-                            foodType: String,
-                            imageUri: android.net.Uri?)
+    suspend fun saveTruckProfile(
+        name: String,
+        description: String,
+        foodType: String,
+        imageUrl: String,
+//        isOpen: Boolean
+    ): FoodTruck
 
     suspend fun getTruckProfile (): FoodTruck
 
-    suspend fun updateMyTruckProfile (
-        name: String,
-        description: String,
-        imageUrl: String,
-        isOpen: Boolean,
-        foodType: String
-    ): FoodTruck
 
 }

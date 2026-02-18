@@ -1,7 +1,6 @@
 package com.example.munchtruck.data.repository.firebase
 
 
-import android.net.Uri
 import com.example.munchtruck.data.model.FoodTruck
 import com.example.munchtruck.data.model.TruckLocation
 import com.example.munchtruck.data.repository.ProfileRepository
@@ -19,22 +18,31 @@ class FirebaseProfileRepository (
     fun truckId () : String =
         auth.currentUser?.uid ?: throw IllegalStateException("Ej inloggad")
 
-
     // Namn ska det vara myTruckDoc eller truckDoc?
-    // Kanske beror på om vi ska ha en "ownerProfileRepo (write only)... Och en guestProfileRepo (read only)"
+    // Kanske beror på om vi ska ha inline eller en "ownerProfileRepo (write only)... Och en guestProfileRepo (read only)"
     private fun myTruckDoc() =
         firestore.collection("foodTrucks")
         .document(truckId())
 
-    override suspend fun saveProfile(
+    override suspend fun saveTruckProfile(
         name: String,
         description: String,
         foodType: String,
-        imageUri: Uri?
-    ) {
-        TODO("Not yet implemented")
-    }
+        imageUrl: String,
+//        isOpen: Boolean
+    ): FoodTruck {
 
+        val truckUpdates = mutableMapOf<String, Any>(
+            "name" to name.trim(),
+            "description" to description.trim(),
+            "foodType" to foodType.trim(),
+//            "isOpen" to isOpen
+        )
+        if (imageUrl.isNotBlank()) truckUpdates["imageUrl"] = imageUrl.trim()
+
+        myTruckDoc().set(truckUpdates,SetOptions.merge()).await()
+        return getTruckProfile()
+    }
 
     override suspend fun getTruckProfile(): FoodTruck {
         val doc = myTruckDoc().get().await()
@@ -55,7 +63,6 @@ class FirebaseProfileRepository (
             null
         }
 
-
         return FoodTruck (
             id = doc.id,
             name = doc.getString("name").orEmpty(),
@@ -63,29 +70,8 @@ class FirebaseProfileRepository (
             foodType = doc.getString("foodType").orEmpty(),
             location = location,
             imageUrl = doc.getString("imageUrl").orEmpty(),
-            isOpen = doc.getBoolean("isOpen") ?: false
-
+//            isOpen = doc.getBoolean("isOpen") ?: false
         )
-    }
-
-    override suspend fun updateMyTruckProfile(
-        name: String,
-        description: String,
-        imageUrl: String,
-        isOpen: Boolean,
-        foodType: String
-    ): FoodTruck {
-
-        val truckUpdates = mutableMapOf<String, Any>(
-            "name" to name.trim(),
-            "description" to description.trim(),
-            "foodType" to foodType.trim(),
-            "isOpen" to isOpen
-        )
-        if (imageUrl.trim().isNotBlank()) truckUpdates["imageUrl"] = imageUrl.trim()
-
-        myTruckDoc().set(truckUpdates,SetOptions.merge()).await()
-        return getTruckProfile()
     }
 
 }
