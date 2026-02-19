@@ -49,7 +49,7 @@ class ProfileViewModel(
                     imageRepository.uploadProfileImage(imageUri)
                 } else ""
 
-                repository.saveTruckProfile(name, description, foodType, imageUrl)
+                repository.saveMyTruckProfile(name, description, foodType, imageUrl)
 
                 _uiState.update {
                     it.copy(isSaving = false, saveSuccess = true)
