@@ -29,6 +29,11 @@ fun ProfileScreen(
         truckName = "Crazy Burgers", // change to viewmodel data later
         description = "Best smash burgers in town.", // change to viewmodel data later
         onEditClick = { navController.navigate("edit_profile") },
+        rating = null,
+        location = null,
+        openingHours = null,
+        imageUrl = null,
+        menuItems = emptyList(),
         onLogoutClick  = { showDialog = true }
     )
 
