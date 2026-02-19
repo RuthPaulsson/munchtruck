@@ -69,4 +69,27 @@
     <string name="menu_no_image">No image selected</string>
     <string name="menu_delete">Delete dish</string>
 
+    <!-- ===== Location strings ====================================== -->
+
+    <string name="location_permission_required">Location permission required</string>
+    <string name="location_permission_denied">Location permission denied</string>
+
+    <string name="location_error_permission_denied">Location permission denied</string>
+    <string name="location_error_no_location">Could not get current location</string>
+    <string name="location_error_invalid_coordinates">Invalid location selected</string>
+    <string name="location_error_gps_timeout">GPS timeout - please try again or select manually</string>
+    <string name="location_error_address_too_short">Address must be at least 3 characters</string>
+    <string name="location_error_save_failed">Failed to save location</string>
+    <string name="location_error_unknown">An unknown error occurred</string>
+
+    <string name="location_save_success">Location saved successfully</string>
+
+    <string name="location_no_location_selected">No location selected</string>
+    <string name="location_use_current">Use current location</string>
+    <string name="location_select_on_map">Select on map</string>
+    <string name="location_save">Save location</string>
+    <string name="location_selected_coordinates">Selected Coordinates:</string>
+    <string name="location_latitude">Latitude</string>
+    <string name="location_longitude">Longitude</string>
+    <string name="location_formatted">Formatted</string>
 </resources>

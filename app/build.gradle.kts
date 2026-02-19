@@ -81,13 +81,16 @@ dependencies {
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
 
-// ========================== Backend (Firebase) ===============================
+    // ========================== Backend (Firebase) ===============================
+
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.storage.ktx)
     implementation(libs.kotlinx.coroutines.play.services)
+    implementation(libs.google.play.services.location)
     implementation(libs.firebase.storage)
+
 
     // ========================== Unit Testing ===============================
 
