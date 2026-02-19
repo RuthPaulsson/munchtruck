@@ -10,6 +10,9 @@ class StorageImageRepository(
     private val storage: FirebaseStorage = FirebaseStorage.getInstance(),
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 ) : ImageRepository {
+
+    // ====== PROFILE IMAGE ===============================
+
     override suspend fun uploadProfileImage(imageUri: Uri): String {
         val uid = auth.currentUser?.uid ?: throw IllegalStateException("Ej inloggad")
 
@@ -28,5 +31,21 @@ class StorageImageRepository(
         } catch (e: Exception) {
             null
         }
+    }
+
+    // ====== MENU IMAGE ===============================
+
+    override suspend fun uploadMenuImage(
+        itemId: String,
+        imageUri: Uri
+    ): String {
+        val uid = auth.currentUser?.uid ?: throw IllegalStateException("Ej inloggad")
+
+        val ref = storage.getReference(
+            "foodtrucks/$uid/menu/$itemId.jpg"
+        )
+
+        ref.putFile(imageUri).await()
+        return ref.downloadUrl.await().toString()
     }
 }
