@@ -21,13 +21,13 @@ class MenuViewModel(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MenuUiState())
     val uiState: StateFlow<MenuUiState> = _uiState.asStateFlow()
+    private var isObserving = false
 
-    init {
-        observeMenu()
-    }
+ fun observeMenu(){
+     if (isObserving) return
+     isObserving = true
 
-    private fun observeMenu(){
-        viewModelScope.launch {
+     viewModelScope.launch {
             repository.observeMenu().collect { items ->
                 _uiState.update {
                     it.copy(menuItems = items)
