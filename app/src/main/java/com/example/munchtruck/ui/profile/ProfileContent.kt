@@ -16,7 +16,8 @@ import com.example.munchtruck.ui.theme.Dimens.SpaceL
 
 @Composable
 fun ProfileContent (
-    onLogoutClick: () -> Unit
+    onLogoutClick: () -> Unit,
+    onEditClick: () -> Unit
 ) {
     // ====== Layout ===============================
 
@@ -27,6 +28,14 @@ fun ProfileContent (
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
             Text("Welcome!")
+
+            Spacer(modifier = Modifier.height(SpaceL))
+
+            Button(
+                onClick = onEditClick
+            ) {
+                Text(("Edit profile"))
+            }
 
             Spacer(modifier = Modifier.height(SpaceL))
 
@@ -44,7 +53,8 @@ fun ProfileContent (
 fun ProfileContentPreview() {
     AppPreviewWrapper() {
         ProfileContent(
-            onLogoutClick = {}
+            onLogoutClick = {},
+            onEditClick = {}
         )
     }
 }
