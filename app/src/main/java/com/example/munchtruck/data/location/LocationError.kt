@@ -1,4 +1,4 @@
-package com.example.munchtruck.ui.owner
+package com.example.munchtruck.data.location
 
 sealed class LocationError {
     object NoPermission : LocationError()

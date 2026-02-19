@@ -1,14 +1,12 @@
 package com.example.munchtruck.viewmodels
 
-import android.location.Location
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.munchtruck.data.model.TruckLocation
 import com.example.munchtruck.data.repository.ProfileRepository  // Rätt!
-import com.example.munchtruck.data.repository.firebase.DeviceLocationProvider
-import com.example.munchtruck.ui.owner.LocationError
-import com.example.munchtruck.ui.owner.LocationUiState
+import com.example.munchtruck.data.location.DeviceLocationProvider
+import com.example.munchtruck.data.location.LocationError
 import com.example.munchtruck.util.LocationConstants
 import com.example.munchtruck.util.LocationValidator
 import kotlinx.coroutines.TimeoutCancellationException
@@ -19,34 +17,36 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 
+
 data class LocationUiState(
     val isLoading: Boolean = false,
-    val isSaving: Boolean = false,
-    val error: String? = null,
-    val saveSuccess: Boolean = false,
-    val location: TruckLocation? = null
+    val selectedLat: Double? = null,
+    val selectedLng: Double? = null,
+    val address: String = "",
+    val hasPermission: Boolean = false,
+    val error: LocationError? = null,
+    val saveSuccess: Boolean = false
 )
-
-class OwnerLocationViewModel(
-    private val profileRepository: ProfileRepository,  // Bytte namn till profileRepository
-    private val locationProvider: DeviceLocationProvider,
-    private val truckId: String
+class LocationViewModel(
+    private val profileRepository: ProfileRepository,
+    private val locationProvider: DeviceLocationProvider
 ) : ViewModel() {
 
     private val validator = LocationValidator()
     private val TAG = "OwnerLocationViewModel"
 
-    private val _uiState: MutableStateFlow<LocationUiState> = MutableStateFlow(LocationUiState())
+    private val _uiState = MutableStateFlow(LocationUiState())
     val uiState: StateFlow<LocationUiState> = _uiState.asStateFlow()
 
     init {
         loadSavedLocation()
     }
 
+    // ====== Load saved location ===============================
+
     private fun loadSavedLocation() {
         viewModelScope.launch {
             try {
-                _uiState.update { it.copy(isLoading = true) }
                 val truck = profileRepository.getTruckProfile()
                 truck.location?.let { location ->
                     _uiState.update { currentState ->
@@ -72,6 +72,8 @@ class OwnerLocationViewModel(
         }
     }
 
+    // ====== Permission ===============================
+
     fun onPermissionResult(granted: Boolean) {
         _uiState.update { currentState ->
             currentState.copy(
@@ -80,6 +82,8 @@ class OwnerLocationViewModel(
             )
         }
     }
+
+    // ====== Manual input ===============================
 
     fun onManualAddressChanged(address: String) {
         val error = validator.validateAddress(address)
@@ -102,7 +106,10 @@ class OwnerLocationViewModel(
         }
     }
 
+    // ====== GPS ===============================
+
     fun useCurrentLocation() {
+
         if (!_uiState.value.hasPermission) {
             _uiState.update { currentState ->
                 currentState.copy(error = LocationError.NoPermission)
@@ -155,9 +162,11 @@ class OwnerLocationViewModel(
         }
     }
 
-    fun saveLocation() {
-        val state = _uiState.value
+    // ====== Save ===============================
 
+    fun saveLocation() {
+
+        val state = _uiState.value
         val coordError = validator.validateCoordinates(state.selectedLat, state.selectedLng)
         val addressError = validator.validateAddress(state.address)
 
@@ -198,6 +207,9 @@ class OwnerLocationViewModel(
             }
         }
     }
+
+
+    // ====== Public helpers ===============================
 
     fun clearError() {
         _uiState.update { currentState ->
