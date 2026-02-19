@@ -74,14 +74,14 @@ fun EditMenuScreen(
                     name = name,
                     price = priceLong,
                     description = description,
-                    imageUrl = ""
+                    imageUri = selectedImageUri
                 )
             } else {
                 viewModel.addMenuItem(
                     name = name,
                     price =priceLong,
                     description = description,
-                    imageUrl = ""
+                    imageUri = selectedImageUri
                 )
             }
         } ,

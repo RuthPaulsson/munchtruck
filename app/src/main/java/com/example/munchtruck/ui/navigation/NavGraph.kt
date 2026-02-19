@@ -73,7 +73,7 @@ fun NavGraph() {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 if (modelClass.isAssignableFrom(MenuViewModel::class.java)) {
                     @Suppress("UNCHECKED_CAST")
-                    return MenuViewModel(menuRepository) as T
+                    return MenuViewModel(menuRepository, imageRepository) as T
                 }
                 throw IllegalArgumentException("Unknown ViewModel class")
             }
