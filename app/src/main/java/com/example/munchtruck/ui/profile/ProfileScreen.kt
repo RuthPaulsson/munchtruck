@@ -25,6 +25,9 @@ fun ProfileScreen(
     var showDialog by remember { mutableStateOf(false) }
 
     ProfileContent(
+        onEditClick = {
+            navController.navigate("edit_profile")
+        },
         onLogoutClick  = { showDialog = true}
     )
 
