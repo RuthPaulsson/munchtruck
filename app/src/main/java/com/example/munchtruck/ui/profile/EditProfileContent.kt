@@ -1,8 +1,10 @@
 package com.example.munchtruck.ui.profile
 
 import android.net.Uri
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,10 +14,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.RestaurantMenu
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -27,6 +32,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,10 +48,16 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.munchtruck.R
 import com.example.munchtruck.ui.components.InputField
 import com.example.munchtruck.ui.theme.AppPreviewWrapper
+import com.example.munchtruck.ui.theme.Dimens.LocationMapHeight
+import com.example.munchtruck.ui.theme.Dimens.ProfileImageButtonRadius
+import com.example.munchtruck.ui.theme.Dimens.ProfileImageHeight
+import com.example.munchtruck.ui.theme.Dimens.ProfileImageRadius
 import com.example.munchtruck.ui.theme.Dimens.ScreenPadding
 import com.example.munchtruck.ui.theme.Dimens.SpaceL
 import com.example.munchtruck.ui.theme.Dimens.SpaceM
 import com.example.munchtruck.ui.theme.Dimens.SpaceS
+import com.example.munchtruck.ui.theme.Dimens.SpaceXS
+import com.example.munchtruck.ui.theme.Dimens.TopBarLogoHeight
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,25 +65,32 @@ fun EditProfileContent(
     name: String,
     description: String,
     foodType: String,
+    location: String,
     selectedImageUri: Uri?,
     onNameChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
     onFoodTypeChange: (String) -> Unit,
+    onLocationSelected: (String) -> Unit,
     onBackClick: () -> Unit,
     onSaveClick: () -> Unit,
     onImageClick: () -> Unit,
     onMenuClick: () -> Unit,
     snackbarHost: @Composable () -> Unit
 ) {
+    var isLocationExpanded by remember { mutableStateOf(false) }
+    var tempLocation by remember(location) { mutableStateOf(location) }
+    val hasLocation = location.isNotBlank()
+    val currentLocationText =
+        stringResource(R.string.profile_use_current_location)
+
     Scaffold(
         snackbarHost = { snackbarHost() },
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    Image(
-                        painterResource(R.drawable.munchtruck_text),
-                        contentDescription = stringResource(R.string.logo_munchtruck),
-                        modifier = Modifier.height(28.dp)
+                    Text(
+                        text = stringResource(R.string.edit_profile_title),
+                        style = MaterialTheme.typography.titleLarge
                     )
                 },
                 navigationIcon = {
@@ -76,7 +98,6 @@ fun EditProfileContent(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.common_back)
-
                         )
                     }
                 },
@@ -87,37 +108,31 @@ fun EditProfileContent(
                 }
             )
         }
-
     ) { innerPadding ->
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .animateContentSize()
                 .padding(innerPadding)
                 .padding(ScreenPadding)
-
         ) {
-            Spacer(modifier = Modifier.height(SpaceL))
-            Text(
-                text = stringResource(R.string.edit_profile_title),
-                style = MaterialTheme.typography.headlineSmall
-            )
 
-            Spacer(modifier = Modifier.height(SpaceL))
+            // ===== Profile Image =====
 
-        // ===== Profile Image Section =====
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp)
-                    .clip(RoundedCornerShape(16.dp))
+                    .height(ProfileImageHeight)
+                    .clip(RoundedCornerShape(ProfileImageRadius))
             ) {
-                if (selectedImageUri != null){
+                if (selectedImageUri != null) {
                     Image(
                         painter = rememberAsyncImagePainter(selectedImageUri),
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
-                        modifier =  Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize()
                     )
                 } else {
                     Image(
@@ -126,24 +141,22 @@ fun EditProfileContent(
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize()
                     )
-
                 }
-
 
                 Button(
                     onClick = onImageClick,
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
-                        .padding(bottom = 16.dp),
-                    shape = RoundedCornerShape(50)
-
+                        .padding(bottom = SpaceM),
+                    shape = RoundedCornerShape(ProfileImageButtonRadius)
                 ) {
                     Text(stringResource(R.string.profile_load_image))
                 }
             }
+
             Spacer(modifier = Modifier.height(SpaceL))
 
-            // ===== Input fields =====
+            // ===== Inputs =====
 
             InputField(
                 value = name,
@@ -160,6 +173,7 @@ fun EditProfileContent(
                 singleLine = false,
                 minLines = 3
             )
+
             Spacer(modifier = Modifier.height(SpaceL))
 
             InputField(
@@ -169,6 +183,83 @@ fun EditProfileContent(
             )
 
             Spacer(modifier = Modifier.height(SpaceL))
+
+            // ===== Location Row =====
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { isLocationExpanded = !isLocationExpanded }
+                    .padding(vertical = SpaceM),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+
+                Spacer(modifier = Modifier.width(SpaceS))
+
+                Text(
+                    text = location.ifBlank {
+                        stringResource(R.string.profile_add_location)
+                    },
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = if (hasLocation)
+                        MaterialTheme.colorScheme.onSurface
+                    else
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+            }
+
+            if (isLocationExpanded) {
+
+                Spacer(modifier = Modifier.height(SpaceS))
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(LocationMapHeight)
+                        .clip(RoundedCornerShape(ProfileImageRadius))
+                ) {
+                    Text(
+                        text = stringResource(R.string.profile_map_placeholder),
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(SpaceS))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(SpaceM)
+                ) {
+
+                    TextButton(
+                        onClick = {
+                            tempLocation = currentLocationText
+                        }
+                    ) {
+                        Text(stringResource(R.string.profile_use_current_location))
+                    }
+
+                    TextButton(
+                        onClick = {
+                            onLocationSelected(tempLocation)
+                            isLocationExpanded = false
+                        }
+                    ) {
+                        Text(stringResource(R.string.profile_save_location))
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(SpaceL))
+            }
+
+            // ===== Manage Menu =====
 
             Row(
                 modifier = Modifier
@@ -199,8 +290,6 @@ fun EditProfileContent(
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-
-
         }
     }
 }
@@ -221,7 +310,9 @@ fun EditProfileContentPreview() {
             onDescriptionChange = {},
             onFoodTypeChange = {},
             onMenuClick = {},
-            snackbarHost = {}
+            snackbarHost = {},
+            location = "",
+            onLocationSelected = {}
         )
     }
 }

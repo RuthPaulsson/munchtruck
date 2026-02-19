@@ -1,4 +1,4 @@
-package com.example.munchtruck.data.repository.firebase
+package com.example.munchtruck.data.firebase
 
 import android.net.Uri
 import com.example.munchtruck.data.repository.ImageRepository

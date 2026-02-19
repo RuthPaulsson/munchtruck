@@ -42,7 +42,8 @@ class LocationViewModel(
         loadSavedLocation()
     }
 
-    // --------------------------- Load saved location --------------------------- //
+    // ====== Load saved location ===============================
+
     private fun loadSavedLocation() {
         viewModelScope.launch {
             try {
@@ -71,7 +72,7 @@ class LocationViewModel(
         }
     }
 
-    // --------------------------- Permission --------------------------- //
+    // ====== Permission ===============================
 
     fun onPermissionResult(granted: Boolean) {
         _uiState.update { currentState ->
@@ -82,7 +83,7 @@ class LocationViewModel(
         }
     }
 
-    // --------------------------- Manual input --------------------------- //
+    // ====== Manual input ===============================
 
     fun onManualAddressChanged(address: String) {
         val error = validator.validateAddress(address)
@@ -105,8 +106,7 @@ class LocationViewModel(
         }
     }
 
-    // --------------------------- GPS --------------------------- //
-
+    // ====== GPS ===============================
 
     fun useCurrentLocation() {
 
@@ -162,7 +162,7 @@ class LocationViewModel(
         }
     }
 
-    // --------------------------- Save --------------------------- //
+    // ====== Save ===============================
 
     fun saveLocation() {
 
@@ -208,8 +208,8 @@ class LocationViewModel(
         }
     }
 
-    // --------------------------- Public helpers --------------------------- //
 
+    // ====== Public helpers ===============================
 
     fun clearError() {
         _uiState.update { currentState ->

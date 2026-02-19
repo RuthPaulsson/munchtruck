@@ -38,6 +38,12 @@ fun EditProfileScreen(
 
     var foodType by remember { mutableStateOf("") }
 
+    var location by remember { mutableStateOf("") }
+
+//    var location by remember(uiState.location) {
+//        mutableStateOf(uiState.location)
+//    }
+
     val snackbarHostState = remember { SnackbarHostState() }
 
     // ====== Handle Save Success ===============================
@@ -71,10 +77,12 @@ fun EditProfileScreen(
         name = name,
         description = description,
         foodType = foodType,
+        location = location,
         selectedImageUri = selectedImageUri,
         onNameChange = { name = it },
         onDescriptionChange = { description = it },
         onFoodTypeChange = { foodType = it },
+        onLocationSelected = { location = it },
         onBackClick = {
             navController.popBackStack()
         },

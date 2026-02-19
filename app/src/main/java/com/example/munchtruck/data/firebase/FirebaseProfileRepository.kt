@@ -1,4 +1,4 @@
-package com.example.munchtruck.data.repository.firebase
+package com.example.munchtruck.data.firebase
 
 
 import com.example.munchtruck.data.model.FoodTruck
@@ -8,6 +8,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.tasks.await
+import kotlin.collections.get
 
 
 class FirebaseProfileRepository (

@@ -11,7 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 
 import androidx.navigation.compose.rememberNavController
-import com.example.munchtruck.data.repository.firebase.FirebaseMenuRepository
+import com.example.munchtruck.data.firebase.FirebaseMenuRepository
 import com.example.munchtruck.ui.login.LoginScreen
 import com.example.munchtruck.ui.menu.EditMenuScreen
 import com.example.munchtruck.ui.profile.EditProfileScreen
@@ -25,8 +25,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 import androidx.lifecycle.ViewModelProvider
-import com.example.munchtruck.data.repository.firebase.FirebaseProfileRepository
-import com.example.munchtruck.data.repository.firebase.StorageImageRepository
+import com.example.munchtruck.data.firebase.FirebaseProfileRepository
+import com.example.munchtruck.data.firebase.StorageImageRepository
 import com.google.firebase.storage.FirebaseStorage
 
 
