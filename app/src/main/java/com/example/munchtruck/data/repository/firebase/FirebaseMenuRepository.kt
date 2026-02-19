@@ -35,11 +35,11 @@ class FirebaseMenuRepository (
 
             val menuItems = snapshot?.documents.orEmpty().map { doc ->
                 MenuItem(
-//                    id = doc.id,
-//                    name = doc.getString("name").orEmpty(),
-//                    price = doc.getLong("price") ?: 0L,
-//                    description = doc.getString("description").orEmpty(),
-//                    imageUrl = doc.getString("imageUrl").orEmpty()
+                    id = doc.id,
+                    name = doc.getString("name").orEmpty(),
+                    price = doc.getLong("price") ?: 0L,
+                    description = doc.getString("description").orEmpty(),
+                    imageUrl = doc.getString("imageUrl").orEmpty()
                 )
             }
             trySend(menuItems)
@@ -80,7 +80,7 @@ class FirebaseMenuRepository (
             "price" to price,
             "description" to description.trim()
         )
-        if (imageUrl.trim().isNotBlank()) updatedMenuItem["imageUrl"] = imageUrl.trim()
+        if (imageUrl.isNotBlank()) updatedMenuItem["imageUrl"] = imageUrl.trim()
 
         menuCollection().document(itemId).set(updatedMenuItem, SetOptions.merge())
             .await()

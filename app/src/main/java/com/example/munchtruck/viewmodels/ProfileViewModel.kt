@@ -4,6 +4,7 @@ package com.example.munchtruck.viewmodels
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.munchtruck.data.repository.ImageRepository
 import com.example.munchtruck.data.repository.ProfileRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,7 +22,8 @@ data class ProfileUiState(
 )
 
 class ProfileViewModel(
-    private val repository: ProfileRepository
+    private val repository: ProfileRepository,
+    private val imageRepository: ImageRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -43,20 +45,25 @@ class ProfileViewModel(
             _uiState.update { it.copy(isSaving = true, error = null, saveSuccess = false) }
 
             try {
-                repository.saveProfile(name, description, foodType, imageUri)
+                val imageUrl: String = if (imageUri != null) {
+                    imageRepository.uploadProfileImage(imageUri)
+                } else ""
+
+                repository.saveTruckProfile(name, description, foodType, imageUrl)
 
                 _uiState.update {
                     it.copy(isSaving = false, saveSuccess = true)
                 }
             } catch (e: Exception) {
                 _uiState.update {
-                    it.copy(isSaving = false, error = e.localizedMessage ?: "Failed to update profile")
+                    it.copy(
+                        isSaving = false,
+                        error = e.localizedMessage ?: "Failed to update profile"
+                    )
                 }
             }
         }
     }
-
     fun clearError() = _uiState.update { it.copy(error = null) }
     fun resetSaveStatus() = _uiState.update { it.copy(saveSuccess = false) }
-
 }
