@@ -13,16 +13,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.example.munchtruck.viewmodels.LocationViewModel
 import com.example.munchtruck.viewmodels.ProfileViewModel
 
 @Composable
 fun EditProfileScreen(
     navController: NavController,
     profileViewModel: ProfileViewModel
+    locationViewModel: LocationViewModel
 ) {
     // ====== State from ViewModel ===============================
 
     val uiState by profileViewModel.uiState.collectAsStateWithLifecycle()
+    val locationState by locationViewModel.uiState.collectAsStateWithLifecycle()
 
     // ====== Local UI State ===============================
 
@@ -38,11 +41,6 @@ fun EditProfileScreen(
 
     var foodType by remember { mutableStateOf("") }
 
-    var location by remember { mutableStateOf("") }
-
-//    var location by remember(uiState.location) {
-//        mutableStateOf(uiState.location)
-//    }
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -67,7 +65,7 @@ fun EditProfileScreen(
 
     val imageLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
+    ) { uri ->
         selectedImageUri = uri
     }
 
@@ -77,12 +75,20 @@ fun EditProfileScreen(
         name = name,
         description = description,
         foodType = foodType,
-        location = location,
         selectedImageUri = selectedImageUri,
+        locationState = locationState,
         onNameChange = { name = it },
         onDescriptionChange = { description = it },
         onFoodTypeChange = { foodType = it },
-        onLocationSelected = { location = it },
+        onMapPicked = { lat, lng ->
+            locationViewModel.onMapPicked(lat, lng)
+        },
+        onUseCurrentLocation = {
+            locationViewModel.useCurrentLocation()
+        },
+        onSaveLocation = {
+            locationViewModel.saveLocation()
+        },
         onBackClick = {
             navController.popBackStack()
         },
@@ -101,9 +107,7 @@ fun EditProfileScreen(
             navController.navigate("edit_menu/new")
         },
 
-        snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
-        },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
 
     )
 }

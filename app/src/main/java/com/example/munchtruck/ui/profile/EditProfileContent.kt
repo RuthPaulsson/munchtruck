@@ -43,7 +43,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.example.munchtruck.R
 import com.example.munchtruck.ui.components.InputField
@@ -56,8 +55,7 @@ import com.example.munchtruck.ui.theme.Dimens.ScreenPadding
 import com.example.munchtruck.ui.theme.Dimens.SpaceL
 import com.example.munchtruck.ui.theme.Dimens.SpaceM
 import com.example.munchtruck.ui.theme.Dimens.SpaceS
-import com.example.munchtruck.ui.theme.Dimens.SpaceXS
-import com.example.munchtruck.ui.theme.Dimens.TopBarLogoHeight
+import com.example.munchtruck.viewmodels.LocationUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,12 +63,14 @@ fun EditProfileContent(
     name: String,
     description: String,
     foodType: String,
-    location: String,
+    locationState: LocationUiState,
+    onMapPicked: (Double, Double) -> Unit,
+    onUseCurrentLocation: () -> Unit,
+    onSaveLocation: () -> Unit,
     selectedImageUri: Uri?,
     onNameChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
     onFoodTypeChange: (String) -> Unit,
-    onLocationSelected: (String) -> Unit,
     onBackClick: () -> Unit,
     onSaveClick: () -> Unit,
     onImageClick: () -> Unit,
@@ -78,10 +78,12 @@ fun EditProfileContent(
     snackbarHost: @Composable () -> Unit
 ) {
     var isLocationExpanded by remember { mutableStateOf(false) }
-    var tempLocation by remember(location) { mutableStateOf(location) }
-    val hasLocation = location.isNotBlank()
-    val currentLocationText =
-        stringResource(R.string.profile_use_current_location)
+
+    val hasLocation =
+        locationState.selectedLat != null &&
+                locationState.selectedLng != null
+
+
 
     Scaffold(
         snackbarHost = { snackbarHost() },
@@ -202,9 +204,10 @@ fun EditProfileContent(
                 Spacer(modifier = Modifier.width(SpaceS))
 
                 Text(
-                    text = location.ifBlank {
-                        stringResource(R.string.profile_add_location)
-                    },
+                    text = if (hasLocation)
+                        locationState.address
+                    else
+                        stringResource(R.string.profile_add_location),
                     style = MaterialTheme.typography.bodyLarge,
                     color = if (hasLocation)
                         MaterialTheme.colorScheme.onSurface
@@ -219,17 +222,11 @@ fun EditProfileContent(
 
                 Spacer(modifier = Modifier.height(SpaceS))
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(LocationMapHeight)
-                        .clip(RoundedCornerShape(ProfileImageRadius))
-                ) {
-                    Text(
-                        text = stringResource(R.string.profile_map_placeholder),
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
+//                LocationMap(
+//                    lat = locationState.selectedLat,
+//                    lng = locationState.selectedLng,
+//                    onMapClick = onMapPicked
+//                )
 
                 Spacer(modifier = Modifier.height(SpaceS))
 
@@ -238,20 +235,11 @@ fun EditProfileContent(
                     horizontalArrangement = Arrangement.spacedBy(SpaceM)
                 ) {
 
-                    TextButton(
-                        onClick = {
-                            tempLocation = currentLocationText
-                        }
-                    ) {
+                    TextButton(onClick = onUseCurrentLocation) {
                         Text(stringResource(R.string.profile_use_current_location))
                     }
 
-                    TextButton(
-                        onClick = {
-                            onLocationSelected(tempLocation)
-                            isLocationExpanded = false
-                        }
-                    ) {
+                    TextButton(onClick = onSaveLocation) {
                         Text(stringResource(R.string.profile_save_location))
                     }
                 }
@@ -294,6 +282,34 @@ fun EditProfileContent(
     }
 }
 
+//@Composable
+//fun LocationMap(
+//    lat: Double?,
+//    lng: Double?,
+//    onMapClick: (Double, Double) -> Unit
+//) {
+//    val cameraPositionState = rememberCameraPositionState()
+//
+//    GoogleMap(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .height(LocationMapHeight),
+//        cameraPositionState = cameraPositionState,
+//        onMapClick = { latLng ->
+//            onMapClick(latLng.latitude, latLng.longitude)
+//        }
+//    ) {
+//        if (lat != null && lng != null) {
+//            Marker(
+//                state = MarkerState(
+//                    position = LatLng(lat, lng)
+//                )
+//            )
+//        }
+//    }
+//}
+
+
 @Preview(showBackground = true)
 @Composable
 fun EditProfileContentPreview() {
@@ -302,7 +318,11 @@ fun EditProfileContentPreview() {
             name = "",
             description = "",
             foodType = "",
+            locationState = LocationUiState(),
             selectedImageUri = null,
+            onMapPicked = { _, _ -> },
+            onUseCurrentLocation = {},
+            onSaveLocation = {},
             onBackClick = {},
             onSaveClick = {},
             onImageClick = {},
@@ -310,9 +330,7 @@ fun EditProfileContentPreview() {
             onDescriptionChange = {},
             onFoodTypeChange = {},
             onMenuClick = {},
-            snackbarHost = {},
-            location = "",
-            onLocationSelected = {}
+            snackbarHost = {}
         )
     }
 }
