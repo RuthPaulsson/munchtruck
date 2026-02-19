@@ -1,5 +1,5 @@
 package com.example.munchtruck.util
-import com.example.munchtruck.ui.owner.LocationError
+import com.example.munchtruck.data.location.LocationError
 
 class LocationValidator {
 

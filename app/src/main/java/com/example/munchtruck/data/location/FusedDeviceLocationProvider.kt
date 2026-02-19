@@ -1,4 +1,4 @@
-package com.example.munchtruck.data.repository.firebase
+package com.example.munchtruck.data.location
 
 import android.Manifest
 import android.annotation.SuppressLint
