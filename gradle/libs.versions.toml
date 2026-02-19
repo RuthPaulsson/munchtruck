@@ -39,6 +39,7 @@ mockitoInline = "5.2.0"
 coreTesting = "2.2.0"
 coroutinesTest = "1.10.2"
 robolectric = "4.16.1"
+firebaseStorage = "22.0.1"
 
 
 [libraries]
@@ -89,6 +90,7 @@ robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectr
 # ========================== Android (instrumentation) testing ==========================
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
