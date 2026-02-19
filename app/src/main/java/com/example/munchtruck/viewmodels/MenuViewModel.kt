@@ -1,8 +1,10 @@
 package com.example.munchtruck.viewmodels
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.munchtruck.data.model.MenuItem
+import com.example.munchtruck.data.repository.ImageRepository
 import com.example.munchtruck.data.repository.MenuRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +19,8 @@ data class MenuUiState(
     val saveSuccess: Boolean = false
 )
 class MenuViewModel(
-    private val repository: MenuRepository
+    private val repository: MenuRepository,
+    private val imageRepository: ImageRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MenuUiState())
     val uiState: StateFlow<MenuUiState> = _uiState.asStateFlow()
@@ -40,15 +43,31 @@ class MenuViewModel(
         name: String,
         price: Long,
         description: String,
-        imageUrl: String
-    ){
+        imageUri: Uri?
+    ) {
         viewModelScope.launch {
             try {
-                repository.addMenuItem(name, price, description, imageUrl)
-                _uiState.update { it.copy(saveSuccess = true) }
 
-            } catch (e: Exception){
-                _uiState.update { it.copy(error = e.localizedMessage) }
+                _uiState.update { it.copy(isLoading = true, saveSuccess = true) }
+
+                val itemId = repository.addMenuItem(
+                    name,
+                    price,
+                    description,
+                    imageUrl = ""
+                )
+
+                if (imageUri != null) {
+                    val imageUrl = imageRepository.uploadMenuImage(itemId, imageUri)
+
+                    repository.updateMenuItem(itemId, name, price, description, imageUrl)
+
+                }
+
+                _uiState.update { it.copy(isLoading = false, saveSuccess = true) }
+
+            } catch (e: Exception) {
+                _uiState.update { it.copy(isLoading = false, error = e.localizedMessage) }
             }
         }
     }
