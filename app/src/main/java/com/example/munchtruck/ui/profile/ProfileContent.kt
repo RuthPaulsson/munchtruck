@@ -169,7 +169,7 @@ fun ProfileInfoRow(
         }
 
         if (!rating.isNullOrBlank() && !location.isNullOrBlank()) {
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(SpaceS))
 
             Text(
                 text = "•",
