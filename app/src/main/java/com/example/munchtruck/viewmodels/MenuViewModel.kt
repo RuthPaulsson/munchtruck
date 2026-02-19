@@ -77,15 +77,23 @@ class MenuViewModel(
         name: String,
         price: Long,
         description: String,
-        imageUrl: String
+        imageUri: Uri?
     ) {
         viewModelScope.launch {
             try {
+                _uiState.update { it.copy(isLoading = true, saveSuccess = true) }
+
+                var imageUrl = ""
+
+                if (imageUri != null) {
+                    imageUrl = imageRepository.uploadMenuImage(itemId, imageUri)
+                }
                 repository.updateMenuItem(itemId, name, price, description, imageUrl)
-                _uiState.update { it.copy(saveSuccess = true) }
+
+                _uiState.update { it.copy(isLoading = false, saveSuccess = true) }
 
             } catch (e: Exception) {
-                _uiState.update { it.copy(error = e.localizedMessage) }
+                _uiState.update { it.copy(isLoading = false, error = e.localizedMessage) }
             }
         }
     }
