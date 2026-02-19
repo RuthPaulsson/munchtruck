@@ -13,6 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -27,9 +28,14 @@ import androidx.compose.ui.unit.dp
 import com.example.munchtruck.R
 import com.example.munchtruck.ui.theme.AppPreviewWrapper
 import com.example.munchtruck.ui.theme.Dimens.SpaceL
+import com.example.munchtruck.ui.theme.Dimens.SpaceS
+import java.security.acl.Owner
 
 @Composable
 fun ProfileContent (
+    isOwner: Boolean,
+    truckName: String,
+    description: String,
     onLogoutClick: () -> Unit,
     onEditClick: () -> Unit
 ) {
@@ -38,30 +44,49 @@ fun ProfileContent (
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        ProfileHeroSection (onEditClick)
+        ProfileHeroSection(
+            isOwner = isOwner,
+            truckName = truckName,
+            onEditClick = onEditClick,
+        )
 
         Spacer(modifier = Modifier.height(SpaceL))
 
+        if(!description.isNullOrBlank()) {
+            Text(
+                text = "About",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(SpaceS))
+
         Text(
-            text ="About section coming next...",
+            text = description,
+            style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(horizontal = 16.dp)
         )
 
         Spacer(modifier = Modifier.height(SpaceL))
 
+        if(isOwner) {
+            Button(
+                onClick = onLogoutClick,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            ) {
+                Text("Log out")
+            }
 
-        Spacer(modifier = Modifier.height(SpaceL))
-        Button(
-            onClick = onLogoutClick,
-            modifier = Modifier.align(Alignment.Start)
-        ) {
-            Text("Log out")
+            Spacer(modifier = Modifier.height(SpaceL))
         }
-        Spacer(modifier = Modifier.height(SpaceL))
+
     }
 }
 @Composable
 fun ProfileHeroSection(
+    isOwner: Boolean,
+    truckName: String,
     onEditClick: () -> Unit
 ) {
     Box(
@@ -73,21 +98,22 @@ fun ProfileHeroSection(
             painter = painterResource(R.drawable.ic_launcher_background),
             contentDescription = null,
             contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxSize()
-                .clip(RoundedCornerShape(0.dp))
+            modifier = Modifier.fillMaxSize()
         )
-        TextButton(
-            onClick = onEditClick,
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(16.dp)
-        ) {
-            Text("Edit")
+        if (isOwner) {
+            TextButton(
+                onClick = onEditClick,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(16.dp)
+            ) {
+                Text("Edit")
+            }
         }
 
         Text(
-            text = "Truck Name",
+            text = truckName,
+            style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .padding(16.dp)
@@ -101,6 +127,9 @@ fun ProfileHeroSection(
 fun ProfileContentPreview() {
     AppPreviewWrapper() {
         ProfileContent(
+            isOwner = true,
+            truckName = "Crazy Burgers",
+            description = "Best smash burgers in town.",
             onLogoutClick = {},
             onEditClick = {}
         )

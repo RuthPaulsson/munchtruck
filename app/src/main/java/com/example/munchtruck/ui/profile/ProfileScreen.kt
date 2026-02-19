@@ -25,11 +25,13 @@ fun ProfileScreen(
     var showDialog by remember { mutableStateOf(false) }
 
     ProfileContent(
-        onEditClick = {
-            navController.navigate("edit_profile")
-        },
-        onLogoutClick  = { showDialog = true}
+        isOwner = true,
+        truckName = "Crazy Burgers", // change to viewmodel data later
+        description = "Best smash burgers in town.", // change to viewmodel data later
+        onEditClick = { navController.navigate("edit_profile") },
+        onLogoutClick  = { showDialog = true }
     )
+
 
 
     // ====== Logout Dialog ===============================
