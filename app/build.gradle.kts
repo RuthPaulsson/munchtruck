@@ -88,8 +88,7 @@ dependencies {
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.storage.ktx)
     implementation(libs.kotlinx.coroutines.play.services)
-    // ⬇️⬇️⬇️ LÄGG TILL DENNA RAD ⬇️⬇️⬇️
-    implementation("com.google.android.gms:play-services-location:21.3.0")
+    implementation(libs.google.play.services.location)
 
     // ========================== Unit Testing ===============================
 

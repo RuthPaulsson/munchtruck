@@ -1,26 +1,25 @@
 package com.example.munchtruck.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.munchtruck.data.model.TruckLocation
-import com.example.munchtruck.data.repository.TruckRepository
+import com.example.munchtruck.data.repository.ProfileRepository  // Rätt!
 import com.example.munchtruck.data.repository.firebase.DeviceLocationProvider
 import com.example.munchtruck.ui.owner.LocationError
 import com.example.munchtruck.ui.owner.LocationUiState
 import com.example.munchtruck.util.LocationConstants
 import com.example.munchtruck.util.LocationValidator
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
-import kotlinx.coroutines.TimeoutCancellationException
-import android.util.Log
 
 class OwnerLocationViewModel(
-    private val truckRepository: TruckRepository,
+    private val profileRepository: ProfileRepository,  // Bytte namn till profileRepository
     private val locationProvider: DeviceLocationProvider,
     private val truckId: String
 ) : ViewModel() {
@@ -39,13 +38,13 @@ class OwnerLocationViewModel(
         viewModelScope.launch {
             try {
                 _uiState.update { it.copy(isLoading = true) }
-                val truck = truckRepository.getTruckById(truckId)
+                val truck = profileRepository.getTruckProfile()
                 truck.location?.let { location ->
                     _uiState.update { currentState ->
                         currentState.copy(
                             selectedLat = location.latitude,
                             selectedLng = location.longitude,
-                            address = location.adress,
+                            address = location.address,
                             isLoading = false
                         )
                     }
@@ -111,7 +110,6 @@ class OwnerLocationViewModel(
                 val point = withTimeout(LocationConstants.GPS_TIMEOUT_MS) {
                     locationProvider.getCurrentLatLng()
                 }
-                delay(LocationConstants.LOADING_DELAY_MS)
                 val error = validator.validateCoordinates(point.first, point.second)
                 _uiState.update { currentState ->
                     currentState.copy(
@@ -150,11 +148,14 @@ class OwnerLocationViewModel(
 
     fun saveLocation() {
         val state = _uiState.value
-        val error = validator.validateCoordinates(state.selectedLat, state.selectedLng)
 
-        if (error != null) {
+        val coordError = validator.validateCoordinates(state.selectedLat, state.selectedLng)
+        val addressError = validator.validateAddress(state.address)
+
+        val firstError = coordError ?: addressError
+        if (firstError != null) {
             _uiState.update { currentState ->
-                currentState.copy(error = error)
+                currentState.copy(error = firstError)
             }
             return
         }
@@ -168,21 +169,21 @@ class OwnerLocationViewModel(
                 val location = TruckLocation(
                     latitude = state.selectedLat!!,
                     longitude = state.selectedLng!!,
-                    adress = state.address,
+                    address = state.address,
                     updatedAtMilis = System.currentTimeMillis()
                 )
-                // truckRepository.updateTruckLocation(truckId, location)
-                // Liten fördröjning för att visa loading-state
-                delay(500)
+                profileRepository.updateMyTruckLocation(location)
+
                 _uiState.update { currentState ->
                     currentState.copy(isLoading = false, saveSuccess = true)
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "Failed to save location", e)
+                Log.e(TAG, "Failed to save location with exception:", e)
+                val errorMessage = e.message ?: "Ett okänt fel inträffade vid sparande."
                 _uiState.update { currentState ->
                     currentState.copy(
                         isLoading = false,
-                        error = LocationError.SaveFailed
+                        error = LocationError.Unknown(errorMessage)
                     )
                 }
             }
