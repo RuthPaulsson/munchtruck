@@ -87,6 +87,7 @@ dependencies {
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.storage.ktx)
     implementation(libs.kotlinx.coroutines.play.services)
+    implementation(libs.firebase.storage)
 
     // ========================== Unit Testing ===============================
 
