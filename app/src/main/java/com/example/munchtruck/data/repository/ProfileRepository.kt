@@ -1,17 +1,21 @@
 package com.example.munchtruck.data.repository
 
 import com.example.munchtruck.data.model.FoodTruck
+import com.example.munchtruck.data.model.TruckLocation
 
 interface ProfileRepository {
-    suspend fun getTruckProfile (): FoodTruck
 
-    suspend fun updateTruckProfile (
+    suspend fun saveMyTruckProfile(
         name: String,
         description: String,
-        location: String,
+        foodType: String,
         imageUrl: String,
-        isOpen: Boolean,
-        foodType: String
-    ): FoodTruck
+//        isOpen: Boolean
+    )
+
+    suspend fun getTruckProfile (): FoodTruck
+
+    suspend fun updateMyTruckLocation(location: TruckLocation)
+
 
 }

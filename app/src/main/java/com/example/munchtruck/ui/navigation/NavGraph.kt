@@ -4,18 +4,31 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 
 import androidx.navigation.compose.rememberNavController
+import com.example.munchtruck.data.repository.firebase.FirebaseMenuRepository
 import com.example.munchtruck.ui.login.LoginScreen
+import com.example.munchtruck.ui.menu.EditMenuScreen
 import com.example.munchtruck.ui.profile.EditProfileScreen
 import com.example.munchtruck.ui.profile.ProfileScreen
 import com.example.munchtruck.ui.register.RegisterScreen
 import com.example.munchtruck.ui.start.StartScreen
 import com.example.munchtruck.viewmodels.AuthViewModel
+import com.example.munchtruck.viewmodels.MenuViewModel
 import com.example.munchtruck.viewmodels.ProfileViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+
+import androidx.lifecycle.ViewModelProvider
+import com.example.munchtruck.data.repository.firebase.FirebaseProfileRepository
+import com.example.munchtruck.data.repository.firebase.StorageImageRepository
+import com.google.firebase.storage.FirebaseStorage
+
 
 // ====== Navigation Graph ===============================
 
@@ -23,7 +36,49 @@ import com.example.munchtruck.viewmodels.ProfileViewModel
 fun NavGraph() {
     val navController = rememberNavController()
     val authViewModel: AuthViewModel = viewModel()
-    val profileViewModel: ProfileViewModel = viewModel()
+
+    val profileRepository = remember {
+        FirebaseProfileRepository(
+            FirebaseFirestore.getInstance(),
+            FirebaseAuth.getInstance()
+        )
+    }
+
+    val imageRepository = remember {
+        StorageImageRepository(
+            FirebaseStorage.getInstance(),
+            FirebaseAuth.getInstance()
+        )
+    }
+    val profileViewModel: ProfileViewModel = viewModel(
+        factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
+                    @Suppress("UNCHECKED_CAST")
+                    return ProfileViewModel(profileRepository, imageRepository) as T
+                }
+                throw IllegalArgumentException("Unknown ViewModel class")
+            }
+        }
+    )
+    val menuRepository = remember {
+        FirebaseMenuRepository(
+            FirebaseFirestore.getInstance(),
+            FirebaseAuth.getInstance()
+        )
+    }
+
+    val menuViewModel: MenuViewModel = viewModel(
+        factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                if (modelClass.isAssignableFrom(MenuViewModel::class.java)) {
+                    @Suppress("UNCHECKED_CAST")
+                    return MenuViewModel(menuRepository) as T
+                }
+                throw IllegalArgumentException("Unknown ViewModel class")
+            }
+        }
+    )
 
     val isLoggedIn by authViewModel.isLoggedIn.collectAsState()
 
@@ -62,6 +117,16 @@ fun NavGraph() {
             EditProfileScreen(
                 navController = navController,
                 profileViewModel = profileViewModel
+            )
+        }
+
+        composable ("edit_menu/{itemId}") { backStackEntry ->
+            val itemId = backStackEntry.arguments?.getString("itemId")
+
+            EditMenuScreen(
+                navController = navController,
+                viewModel = menuViewModel,
+                itemId = if (itemId == "new") null else itemId
             )
         }
     }

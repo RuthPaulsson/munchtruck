@@ -1,28 +1,25 @@
-package com.example.munchtruck.ui.profile
+package com.example.munchtruck.ui.menu
 
 import android.net.Uri
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.RestaurantMenu
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -31,52 +28,50 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.example.munchtruck.R
 import com.example.munchtruck.ui.components.InputField
 import com.example.munchtruck.ui.theme.AppPreviewWrapper
+import com.example.munchtruck.ui.theme.Dimens.ButtonRadius
+import com.example.munchtruck.ui.theme.Dimens.MenuImageButtonBottomPadding
+import com.example.munchtruck.ui.theme.Dimens.MenuImageHeight
+import com.example.munchtruck.ui.theme.Dimens.MenuImageRadius
 import com.example.munchtruck.ui.theme.Dimens.ScreenPadding
 import com.example.munchtruck.ui.theme.Dimens.SpaceL
 import com.example.munchtruck.ui.theme.Dimens.SpaceM
-import com.example.munchtruck.ui.theme.Dimens.SpaceS
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditProfileContent(
+fun EditMenuContent(
     name: String,
+    price: String,
     description: String,
-    foodType: String,
     selectedImageUri: Uri?,
+    isEditing: Boolean,
     onNameChange: (String) -> Unit,
+    onPriceChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
-    onFoodTypeChange: (String) -> Unit,
     onBackClick: () -> Unit,
     onSaveClick: () -> Unit,
+    onDeleteClick: () -> Unit,
     onImageClick: () -> Unit,
-    onMenuClick: () -> Unit,
     snackbarHost: @Composable () -> Unit
 ) {
+
     Scaffold(
         snackbarHost = { snackbarHost() },
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    Image(
-                        painterResource(R.drawable.munchtruck_text),
-                        contentDescription = stringResource(R.string.logo_munchtruck),
-                        modifier = Modifier.height(28.dp)
-                    )
+                    Text(text = stringResource(R.string.menu_title))
                 },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.common_back)
-
                         )
                     }
                 },
@@ -87,7 +82,6 @@ fun EditProfileContent(
                 }
             )
         }
-
     ) { innerPadding ->
 
         Column(
@@ -95,132 +89,115 @@ fun EditProfileContent(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(ScreenPadding)
-
         ) {
-            Spacer(modifier = Modifier.height(SpaceL))
-            Text(
-                text = stringResource(R.string.edit_profile_title),
-                style = MaterialTheme.typography.headlineSmall
-            )
 
             Spacer(modifier = Modifier.height(SpaceL))
 
-        // ===== Profile Image Section =====
+            // ===== Image Section =====
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp)
-                    .clip(RoundedCornerShape(16.dp))
+                    .height(MenuImageHeight)
+                    .clip(RoundedCornerShape(MenuImageRadius))
             ) {
-                if (selectedImageUri != null){
+
+                if (selectedImageUri != null) {
                     Image(
                         painter = rememberAsyncImagePainter(selectedImageUri),
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
-                        modifier =  Modifier.fillMaxSize()
-                    )
-                } else {
-                    Image(
-                        painter = painterResource(R.drawable.ic_launcher_background),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize()
                     )
-
+                } else {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(stringResource(R.string.menu_no_image))
+                    }
                 }
-
 
                 Button(
                     onClick = onImageClick,
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
-                        .padding(bottom = 16.dp),
-                    shape = RoundedCornerShape(50)
-
+                        .padding(bottom = MenuImageButtonBottomPadding),
+                    shape = RoundedCornerShape(ButtonRadius)
                 ) {
-                    Text(stringResource(R.string.profile_load_image))
+                    Text(stringResource(R.string.menu_select_image))
                 }
             }
+
             Spacer(modifier = Modifier.height(SpaceL))
 
-            // ===== Input fields =====
+            // ===== Dish Name =====
 
             InputField(
                 value = name,
                 onChange = onNameChange,
-                placeholder = stringResource(R.string.profile_name_hint)
+                placeholder = stringResource(R.string.menu_name_hint)
             )
 
-            Spacer(modifier = Modifier.height(SpaceL))
+            Spacer(modifier = Modifier.height(SpaceM))
+
+            // ===== Price =====
+
+            InputField(
+                value = price,
+                onChange = onPriceChange,
+                placeholder = stringResource(R.string.menu_price_hint)
+            )
+
+            Spacer(modifier = Modifier.height(SpaceM))
+
+            // ===== Description =====
 
             InputField(
                 value = description,
                 onChange = onDescriptionChange,
-                placeholder = stringResource(R.string.profile_description_hint),
+                placeholder = stringResource(R.string.menu_description_hint),
                 singleLine = false,
                 minLines = 3
             )
-            Spacer(modifier = Modifier.height(SpaceL))
-
-            InputField(
-                value = foodType,
-                onChange = onFoodTypeChange,
-                placeholder = stringResource(R.string.profile_food_type_hint)
-            )
 
             Spacer(modifier = Modifier.height(SpaceL))
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onMenuClick() }
-                    .padding(vertical = SpaceM),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            // ===== Delete Button (only when editing) =====
 
-                Icon(
-                    imageVector = Icons.Default.RestaurantMenu,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
-                )
-
-                Spacer(modifier = Modifier.width(SpaceS))
-
-                Text(
-                    text = stringResource(R.string.profile_manage_menu),
-                    style = MaterialTheme.typography.bodyLarge
-                )
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+            if (isEditing) {
+                OutlinedButton(
+                    onClick = onDeleteClick,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = MaterialTheme.colorScheme.error
+                    )
+                ) {
+                    Text(stringResource(R.string.menu_delete))
+                }
             }
-
-
         }
     }
 }
 
+
 @Preview(showBackground = true)
 @Composable
-fun EditProfileContentPreview() {
+fun EditMenuContentPreview() {
     AppPreviewWrapper {
-        EditProfileContent(
+        EditMenuContent(
             name = "",
+            price = "",
             description = "",
-            foodType = "",
             selectedImageUri = null,
+            isEditing = true,
+            onNameChange = {},
+            onPriceChange = {},
+            onDescriptionChange = {},
             onBackClick = {},
             onSaveClick = {},
+            onDeleteClick = {},
             onImageClick = {},
-            onNameChange = {},
-            onDescriptionChange = {},
-            onFoodTypeChange = {},
-            onMenuClick = {},
             snackbarHost = {}
         )
     }
