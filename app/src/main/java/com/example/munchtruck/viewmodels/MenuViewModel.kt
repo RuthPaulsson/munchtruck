@@ -48,7 +48,7 @@ class MenuViewModel(
         viewModelScope.launch {
             try {
 
-                _uiState.update { it.copy(isLoading = true, saveSuccess = true) }
+                _uiState.update { it.copy(isLoading = true, saveSuccess = false) }
 
                 val itemId = repository.addMenuItem(
                     name,
@@ -64,7 +64,7 @@ class MenuViewModel(
 
                 }
 
-                _uiState.update { it.copy(isLoading = false, saveSuccess = true) }
+                _uiState.update { it.copy(isLoading = false, saveSuccess = false) }
 
             } catch (e: Exception) {
                 _uiState.update { it.copy(isLoading = false, error = e.localizedMessage) }
@@ -83,11 +83,13 @@ class MenuViewModel(
             try {
                 _uiState.update { it.copy(isLoading = true, saveSuccess = true) }
 
-                var imageUrl = ""
 
-                if (imageUri != null) {
-                    imageUrl = imageRepository.uploadMenuImage(itemId, imageUri)
+                val imageUrl = if (imageUri != null) {
+                    imageRepository.uploadMenuImage(itemId, imageUri)
+                } else {
+                    ""
                 }
+
                 repository.updateMenuItem(itemId, name, price, description, imageUrl)
 
                 _uiState.update { it.copy(isLoading = false, saveSuccess = true) }
