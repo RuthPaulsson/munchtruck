@@ -1,5 +1,6 @@
 package com.example.munchtruck.viewmodels
 
+import android.location.Location
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,6 +18,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
+
+data class LocationUiState(
+    val isLoading: Boolean = false,
+    val isSaving: Boolean = false,
+    val error: String? = null,
+    val saveSuccess: Boolean = false,
+    val location: TruckLocation? = null
+)
 
 class OwnerLocationViewModel(
     private val profileRepository: ProfileRepository,  // Bytte namn till profileRepository
