@@ -26,6 +26,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 import androidx.lifecycle.ViewModelProvider
 import com.example.munchtruck.data.repository.firebase.FirebaseProfileRepository
+import com.example.munchtruck.data.repository.firebase.StorageImageRepository
+import com.google.firebase.storage.FirebaseStorage
 
 
 // ====== Navigation Graph ===============================
@@ -41,12 +43,19 @@ fun NavGraph() {
             FirebaseAuth.getInstance()
         )
     }
+
+    val imageRepository = remember {
+        StorageImageRepository(
+            FirebaseStorage.getInstance(),
+            FirebaseAuth.getInstance()
+        )
+    }
     val profileViewModel: ProfileViewModel = viewModel(
         factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
                     @Suppress("UNCHECKED_CAST")
-                    return ProfileViewModel(profileRepository) as T
+                    return ProfileViewModel(profileRepository, imageRepository) as T
                 }
                 throw IllegalArgumentException("Unknown ViewModel class")
             }

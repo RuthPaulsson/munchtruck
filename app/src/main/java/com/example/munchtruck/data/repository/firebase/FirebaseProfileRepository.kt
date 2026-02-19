@@ -18,19 +18,18 @@ class FirebaseProfileRepository (
     fun truckId () : String =
         auth.currentUser?.uid ?: throw IllegalStateException("Ej inloggad")
 
-    // Namn ska det vara myTruckDoc eller truckDoc?
-    // Kanske beror på om vi ska ha inline eller en "ownerProfileRepo (write only)... Och en guestProfileRepo (read only)"
+
     private fun myTruckDoc() =
         firestore.collection("foodTrucks")
         .document(truckId())
 
-    override suspend fun saveTruckProfile(
+    override suspend fun saveMyTruckProfile(
         name: String,
         description: String,
         foodType: String,
         imageUrl: String,
 //        isOpen: Boolean
-    ): FoodTruck {
+    ) {
 
         val truckUpdates = mutableMapOf<String, Any>(
             "name" to name.trim(),
@@ -38,17 +37,30 @@ class FirebaseProfileRepository (
             "foodType" to foodType.trim(),
 //            "isOpen" to isOpen
         )
-        if (imageUrl.isNotBlank()) truckUpdates["imageUrl"] = imageUrl.trim()
+        if (imageUrl.trim().isNotBlank()) truckUpdates["imageUrl"] = imageUrl.trim()
 
         myTruckDoc().set(truckUpdates,SetOptions.merge()).await()
-        return getTruckProfile()
+    }
+
+    override suspend fun updateMyTruckLocation(location: TruckLocation) {
+
+        val updatedLocation = mapOf(
+            "location" to mapOf(
+                "latitude" to location.latitude,
+                "longitude" to location.longitude,
+                "address" to location.address.trim(),
+                "updatedAtMilis" to location.updatedAtMilis
+            )
+        )
+        myTruckDoc().set(updatedLocation, SetOptions.merge()).await()
+
     }
 
     override suspend fun getTruckProfile(): FoodTruck {
         val doc = myTruckDoc().get().await()
         if (!doc.exists()) throw IllegalArgumentException ("FoodTruck profile is missing")
 
-        val loc = doc.getString("location") as? Map<*, *>
+        val loc = doc.get("location") as? Map<*, *>
         val lat = (loc?.get("latitude") as? Number)?.toDouble()
         val long = (loc?.get("longitude") as? Number)?.toDouble()
 
@@ -56,8 +68,8 @@ class FirebaseProfileRepository (
             TruckLocation(
                 latitude = lat,
                 longitude = long,
-                adress = (loc["address"] as? String).orEmpty(),
-                updatedAtMilis = doc.getLong("updatedAtMilis") ?: 0L
+                address = (loc["address"] as? String).orEmpty(),
+                updatedAtMilis = (loc["updatedAtMilis"] as? Number)?.toLong() ?: 0L
             )
         } else {
             null
