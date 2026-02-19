@@ -47,4 +47,12 @@ object Dimens {
     val MenuImageRadius = 16.dp
     val MenuImageButtonBottomPadding = 12.dp
 
+    // ===== Profile ===============================
+
+    val ProfileImageHeight = 200.dp
+    val ProfileImageRadius = 16.dp
+    val ProfileImageButtonRadius = 50.dp
+    val LocationMapHeight = 160.dp
+    val TopBarLogoHeight = 28.dp
+
 }
