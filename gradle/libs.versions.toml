@@ -32,6 +32,8 @@ googleid = "1.2.0"
 
 # ========================== Google Play Services ==========================
 playServicesLocation = "21.3.0"
+playServicesMaps = "18.2.0"
+mapsCompose = "4.3.0"
 
 # ========================== Testing ==========================
 junit = "4.13.2"
@@ -84,6 +86,8 @@ kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-cor
 
 # ========================== Google Play Services ==========================
 google-play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
+google-play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
+google-maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "mapsCompose" }
 
 # ========================== Unit testing ==========================
 junit = { group = "junit", name = "junit", version.ref = "junit" }
