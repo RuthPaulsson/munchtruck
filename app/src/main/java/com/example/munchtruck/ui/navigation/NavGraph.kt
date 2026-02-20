@@ -27,6 +27,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import androidx.lifecycle.ViewModelProvider
 import com.example.munchtruck.data.firebase.FirebaseProfileRepository
 import com.example.munchtruck.data.firebase.StorageImageRepository
+import com.example.munchtruck.viewmodels.LocationViewModel
 import com.google.firebase.storage.FirebaseStorage
 
 
@@ -36,6 +37,7 @@ import com.google.firebase.storage.FirebaseStorage
 fun NavGraph() {
     val navController = rememberNavController()
     val authViewModel: AuthViewModel = viewModel()
+    val locationViewModel: LocationViewModel = viewModel()
 
     val profileRepository = remember {
         FirebaseProfileRepository(
@@ -116,7 +118,8 @@ fun NavGraph() {
         composable ("edit_profile") {
             EditProfileScreen(
                 navController = navController,
-                profileViewModel = profileViewModel
+                profileViewModel = profileViewModel,
+                locationViewModel = locationViewModel
             )
         }
 
