@@ -5,11 +5,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-
 import androidx.navigation.compose.rememberNavController
 import com.example.munchtruck.data.firebase.FirebaseMenuRepository
 import com.example.munchtruck.ui.login.LoginScreen
@@ -27,6 +27,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import androidx.lifecycle.ViewModelProvider
 import com.example.munchtruck.data.firebase.FirebaseProfileRepository
 import com.example.munchtruck.data.firebase.StorageImageRepository
+import com.example.munchtruck.data.location.FusedDeviceLocationProvider
 import com.example.munchtruck.viewmodels.LocationViewModel
 import com.google.firebase.storage.FirebaseStorage
 
@@ -37,7 +38,7 @@ import com.google.firebase.storage.FirebaseStorage
 fun NavGraph() {
     val navController = rememberNavController()
     val authViewModel: AuthViewModel = viewModel()
-    val locationViewModel: LocationViewModel = viewModel()
+//    val locationViewModel: LocationViewModel = viewModel()
 
     val profileRepository = remember {
         FirebaseProfileRepository(
@@ -63,6 +64,28 @@ fun NavGraph() {
             }
         }
     )
+
+    val context = LocalContext.current
+
+    val locationProvider = remember {
+        FusedDeviceLocationProvider(context)
+    }
+
+    val locationViewModel: LocationViewModel = viewModel(
+        factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                if (modelClass.isAssignableFrom(LocationViewModel::class.java)) {
+                    @Suppress("UNCHECKED_CAST")
+                    return LocationViewModel(
+                        profileRepository,
+                        locationProvider
+                    ) as T
+                }
+                throw IllegalArgumentException("Unknown ViewModel class")
+            }
+        }
+    )
+
     val menuRepository = remember {
         FirebaseMenuRepository(
             FirebaseFirestore.getInstance(),
