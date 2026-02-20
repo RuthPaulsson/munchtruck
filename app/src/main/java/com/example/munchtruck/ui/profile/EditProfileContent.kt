@@ -56,6 +56,11 @@ import com.example.munchtruck.ui.theme.Dimens.SpaceL
 import com.example.munchtruck.ui.theme.Dimens.SpaceM
 import com.example.munchtruck.ui.theme.Dimens.SpaceS
 import com.example.munchtruck.viewmodels.LocationUiState
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.rememberCameraPositionState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -222,11 +227,11 @@ fun EditProfileContent(
 
                 Spacer(modifier = Modifier.height(SpaceS))
 
-//                LocationMap(
-//                    lat = locationState.selectedLat,
-//                    lng = locationState.selectedLng,
-//                    onMapClick = onMapPicked
-//                )
+                LocationMap(
+                    lat = locationState.selectedLat,
+                    lng = locationState.selectedLng,
+                    onMapClick = onMapPicked
+                )
 
                 Spacer(modifier = Modifier.height(SpaceS))
 
@@ -282,32 +287,32 @@ fun EditProfileContent(
     }
 }
 
-//@Composable
-//fun LocationMap(
-//    lat: Double?,
-//    lng: Double?,
-//    onMapClick: (Double, Double) -> Unit
-//) {
-//    val cameraPositionState = rememberCameraPositionState()
-//
-//    GoogleMap(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .height(LocationMapHeight),
-//        cameraPositionState = cameraPositionState,
-//        onMapClick = { latLng ->
-//            onMapClick(latLng.latitude, latLng.longitude)
-//        }
-//    ) {
-//        if (lat != null && lng != null) {
-//            Marker(
-//                state = MarkerState(
-//                    position = LatLng(lat, lng)
-//                )
-//            )
-//        }
-//    }
-//}
+@Composable
+fun LocationMap(
+    lat: Double?,
+    lng: Double?,
+    onMapClick: (Double, Double) -> Unit
+) {
+    val cameraPositionState = rememberCameraPositionState()
+
+    GoogleMap(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(LocationMapHeight),
+        cameraPositionState = cameraPositionState,
+        onMapClick = { latLng ->
+            onMapClick(latLng.latitude, latLng.longitude)
+        }
+    ) {
+        if (lat != null && lng != null) {
+            Marker(
+                state = MarkerState(
+                    position = LatLng(lat, lng)
+                )
+            )
+        }
+    }
+}
 
 
 @Preview(showBackground = true)
