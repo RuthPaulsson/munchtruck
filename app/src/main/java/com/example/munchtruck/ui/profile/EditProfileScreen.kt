@@ -19,7 +19,7 @@ import com.example.munchtruck.viewmodels.ProfileViewModel
 @Composable
 fun EditProfileScreen(
     navController: NavController,
-    profileViewModel: ProfileViewModel
+    profileViewModel: ProfileViewModel,
     locationViewModel: LocationViewModel
 ) {
     // ====== State from ViewModel ===============================
