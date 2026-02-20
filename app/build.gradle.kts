@@ -1,5 +1,7 @@
 import com.android.build.api.dsl.ApplicationExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
+
 
 plugins {
     alias(libs.plugins.android.application)
@@ -21,7 +23,20 @@ extensions.configure<ApplicationExtension> {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val props = Properties()
+        val localPropsFile = rootProject.file("local.properties")
+
+        if (localPropsFile.exists()) {
+            props.load(localPropsFile.inputStream())
+        }
+
+        val mapsApiKey = props.getProperty("MAPS_API_KEY")
+            ?: error("Missing MAPS_API_KEY in root local.properties")
+
+        resValue("string", "google_maps_key", mapsApiKey)
     }
+
 
     buildTypes {
         release {
@@ -88,9 +103,13 @@ dependencies {
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.storage.ktx)
     implementation(libs.kotlinx.coroutines.play.services)
-    implementation(libs.google.play.services.location)
     implementation(libs.firebase.storage)
 
+    // ========================= Google / location ===============================
+
+    implementation(libs.google.play.services.location)
+    implementation(libs.google.play.services.maps)
+    implementation(libs.google.maps.compose)
 
     // ========================== Unit Testing ===============================
 
