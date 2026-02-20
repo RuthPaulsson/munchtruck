@@ -55,4 +55,9 @@ object Dimens {
     val LocationMapHeight = 160.dp
     val TopBarLogoHeight = 28.dp
 
+    val HeroHeight = 220.dp
+    val MenuItemImageSize = 80.dp
+    val MenuItemImageRadius = 12.dp
+    val MenuItemImageIconSize = 64.dp
+
 }
