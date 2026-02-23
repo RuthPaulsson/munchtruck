@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -32,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.rememberAsyncImagePainter
 import com.example.munchtruck.R
@@ -56,6 +58,7 @@ fun EditMenuContent(
     selectedImageUri: Uri?,
     isEditing: Boolean,
     isLoading: Boolean,
+    priceError: String?,
     onNameChange: (String) -> Unit,
     onPriceChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
@@ -163,8 +166,14 @@ fun EditMenuContent(
             InputField(
                 value = price,
                 onChange = onPriceChange,
-                placeholder = stringResource(R.string.menu_price_hint)
+                placeholder = stringResource(R.string.menu_price_hint),
+                errorMessage = priceError,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Decimal
+                )
             )
+
+
 
             Spacer(modifier = Modifier.height(SpaceM))
 
@@ -185,6 +194,7 @@ fun EditMenuContent(
             if (isEditing) {
                 OutlinedButton(
                     onClick = onDeleteClick,
+                    enabled = !isLoading,
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.outlinedButtonColors(
                         contentColor = MaterialTheme.colorScheme.error
@@ -206,6 +216,7 @@ fun EditMenuContentPreview() {
             name = "",
             price = "",
             description = "",
+            priceError= "",
             selectedImageUri = null,
             isEditing = true,
             isLoading = true,

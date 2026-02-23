@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -31,7 +32,10 @@ fun InputField(
     isPassword: Boolean = false,
     singleLine: Boolean = true,
     minLines: Int = 1,
-    maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE
+    maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
+    errorMessage: String? = null,
+    keyboardOptions: KeyboardOptions =
+        KeyboardOptions.Default
 ){
     Column(modifier = Modifier.fillMaxWidth()) {
 
@@ -63,6 +67,8 @@ fun InputField(
             singleLine = singleLine,
             minLines = minLines,
             maxLines = maxLines,
+            isError = errorMessage != null,
+            keyboardOptions = keyboardOptions,
             visualTransformation =
                 if (isPassword) PasswordVisualTransformation()
                 else VisualTransformation.None,
@@ -76,5 +82,16 @@ fun InputField(
                 cursorColor = PrimaryText
             )
         )
+        // ====== Error Message ===============================
+
+        if (!errorMessage.isNullOrBlank()) {
+            Spacer(modifier = Modifier.height(SpaceXS))
+
+            Text(
+                text = errorMessage,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.error
+            )
+        }
     }
 }

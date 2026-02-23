@@ -22,6 +22,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.RestaurantMenu
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -283,82 +284,89 @@ fun EditProfileContent(
             }
 
             if (isMenuExpanded) {
+
                 Spacer(modifier = Modifier.height(SpaceS))
 
                 if (menuItems.isEmpty()) {
+
                     Text(
                         text = stringResource(R.string.menu_empty),
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
+
+                    Spacer(modifier = Modifier.height(SpaceS))
+
+                    TextButton(
+                        onClick = { onMenuClick() }
+                    ) {
+                        Text(stringResource(R.string.menu_add_dish))
+                    }
+
                 } else {
+
                     menuItems.forEach { item ->
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clickable { onEditMenuClick(item.id) }
                                 .padding(vertical = SpaceS),
                             verticalAlignment = Alignment.CenterVertically
-                        ){
+                        ) {
+
                             Icon(
                                 imageVector = Icons.Default.RestaurantMenu,
                                 contentDescription = null
                             )
+
                             Spacer(modifier = Modifier.width(SpaceS))
 
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(item.name)
 
                                 Text(
-                                    text = "\${item.price / 100} kr",
+                                    text = stringResource(
+                                        R.string.menu_price_format,
+                                        item.price / 100,
+                                        stringResource(R.string.currency_sek)
+                                    ),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
+
+                            IconButton(
+                                onClick = { onEditMenuClick(item.id) }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Edit,
+                                    contentDescription = stringResource(R.string.menu_edit),
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
+
                             IconButton(
                                 onClick = { onDeleteMenuClick(item.id) }
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Delete,
-                                    contentDescription = null
+                                    contentDescription = stringResource(R.string.menu_delete_icon),
+                                    tint = MaterialTheme.colorScheme.error
                                 )
                             }
                         }
                     }
+
+                    Spacer(modifier = Modifier.height(SpaceS))
+
+                    TextButton(
+                        onClick = { onMenuClick() }
+                    ) {
+                        Text(stringResource(R.string.menu_add_dish))
+                    }
                 }
+
                 Spacer(modifier = Modifier.height(SpaceL))
             }
 
-            // ===== Manage Menu =====
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onMenuClick() }
-                    .padding(vertical = SpaceM),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                Icon(
-                    imageVector = Icons.Default.RestaurantMenu,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
-                )
-
-                Spacer(modifier = Modifier.width(SpaceS))
-
-                Text(
-                    text = stringResource(R.string.profile_manage_menu),
-                    style = MaterialTheme.typography.bodyLarge
-                )
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
         }
     }
 }
