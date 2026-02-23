@@ -157,7 +157,8 @@ fun NavGraph() {
             EditProfileScreen(
                 navController = navController,
                 profileViewModel = profileViewModel,
-                locationViewModel = locationViewModel
+                locationViewModel = locationViewModel,
+                menuViewModel = menuViewModel
             )
         }
 
