@@ -70,6 +70,7 @@
     <string name="profile_save_location">Save</string>
     <string name="profile_map_placeholder">Map preview</string>
     <string name="menu_empty">No dishes added yet. Tap “Manage Menu” to add one.</string>
+    <string name="menu_add_dish">+ Add dish</string>
 
 
     <!-- ===== Edit Menu screen ====================================== -->
@@ -82,6 +83,19 @@
     <string name="menu_no_image">No image selected</string>
     <string name="menu_delete">Delete dish</string>
     <string name="menu_item_saved">Menu item saved</string>
+
+
+    <string name="invalid_price">Please enter a valid price.</string>
+    <string name="delete_title">Delete dish</string>
+    <string name="delete_message">Are you sure you want to delete this dish?</string>
+    <string name="delete_confirm">Delete</string>
+    <string name="dish_deleted">Dish deleted successfully.</string>
+    <string name="common_cancel">Cancel</string>
+    <string name="invalid_dish_name">Dish name cannot be empty.</string>
+    <string name="menu_edit">Edit dish</string>
+    <string name="menu_delete_icon">Delete dish</string>
+
+
 
     <!-- ===== Location strings ====================================== -->
 
