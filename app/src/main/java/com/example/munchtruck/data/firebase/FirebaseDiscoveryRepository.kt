@@ -12,7 +12,7 @@ class FirebaseDiscoveryRepository (
     private val firestore: FirebaseFirestore,
 ) : DiscoveryRepository {
 
-    override fun observeOpenTruck(): Flow<List<FoodTruck>> = callbackFlow {
+    override fun observeOpenTrucks(): Flow<List<FoodTruck>> = callbackFlow {
 
         val listener = firestore.collection("foodTrucks")
             .whereEqualTo("isOpen", true) // TODO Tänkt att isOpen är utkommenderad om du ska pröva!!
@@ -34,11 +34,14 @@ class FirebaseDiscoveryRepository (
                     val long = (loc?.get("longitude") as? Number)?.toDouble()
 
 
-                    val hasValidCoordinates = lat != null && long != null &&
-                            lat in -90.0..90.0 &&
-                            long in -180.0..180.0
-
-                    if (name.isBlank() || !hasValidCoordinates || !isOpen ){
+                    if (
+                        name.isBlank() ||
+                        !isOpen ||
+                        lat == null ||
+                        long == null ||
+                        lat !in -90.0..90.0 ||
+                        long !in -180.0..180.0
+                    ) {
                         null
                     } else {
 
@@ -48,6 +51,7 @@ class FirebaseDiscoveryRepository (
                             description = description,
                             foodType = foodType,
                             imageUrl = imageUrl,
+                            isOpen = true,
                             location = TruckLocation(
                                 latitude = lat,
                                 longitude = long,
@@ -56,7 +60,6 @@ class FirebaseDiscoveryRepository (
                             )
                         )
                     }
-
 
                 }
                     .filterNotNull()
