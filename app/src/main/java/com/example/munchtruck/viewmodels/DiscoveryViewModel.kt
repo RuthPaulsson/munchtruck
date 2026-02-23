@@ -78,7 +78,7 @@ class DiscoveryViewModel(
                     delay(10000)
                 }
             } catch (e: Exception) {
-                _uiState.update { it.copy(errorMessage = "Kunde inte hämta din plats") }
+                _uiState.update { it.copy(errorMessage = "Could not fetch your location") }
             }
         }
     }
