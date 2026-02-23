@@ -1,6 +1,7 @@
 package com.example.munchtruck.ui.menu
 
 import android.net.Uri
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,12 +10,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,6 +38,8 @@ import com.example.munchtruck.R
 import com.example.munchtruck.ui.components.InputField
 import com.example.munchtruck.ui.theme.AppPreviewWrapper
 import com.example.munchtruck.ui.theme.Dimens.ButtonRadius
+import com.example.munchtruck.ui.theme.Dimens.LoaderSize
+import com.example.munchtruck.ui.theme.Dimens.LoaderStroke
 import com.example.munchtruck.ui.theme.Dimens.MenuImageButtonBottomPadding
 import com.example.munchtruck.ui.theme.Dimens.MenuImageHeight
 import com.example.munchtruck.ui.theme.Dimens.MenuImageRadius
@@ -50,6 +55,7 @@ fun EditMenuContent(
     description: String,
     selectedImageUri: Uri?,
     isEditing: Boolean,
+    isLoading: Boolean,
     onNameChange: (String) -> Unit,
     onPriceChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
@@ -76,8 +82,19 @@ fun EditMenuContent(
                     }
                 },
                 actions = {
-                    TextButton(onClick = onSaveClick) {
-                        Text(stringResource(R.string.common_save))
+                    TextButton(
+                        onClick = onSaveClick,
+                        enabled = !isLoading,
+                        modifier = Modifier.animateContentSize()
+                    ) {
+                        if (isLoading) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(LoaderSize),
+                                strokeWidth = LoaderStroke
+                            )
+                        } else {
+                            Text(stringResource(R.string.common_save))
+                        }
                     }
                 }
             )
@@ -191,6 +208,7 @@ fun EditMenuContentPreview() {
             description = "",
             selectedImageUri = null,
             isEditing = true,
+            isLoading = true,
             onNameChange = {},
             onPriceChange = {},
             onDescriptionChange = {},

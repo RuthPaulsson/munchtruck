@@ -11,8 +11,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.example.munchtruck.R
 import com.example.munchtruck.viewmodels.MenuViewModel
 
 @Composable
@@ -23,6 +25,7 @@ fun EditMenuScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isEditing = itemId != null
+    var hasLoadedItem by remember { mutableStateOf(false) }
 
     var name by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
@@ -31,12 +34,27 @@ fun EditMenuScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
 
+    val message = stringResource(R.string.menu_item_saved)
+
     LaunchedEffect(Unit) {
         viewModel.observeMenu()
     }
 
+    LaunchedEffect(uiState.menuItems, itemId) {
+        if (!hasLoadedItem && isEditing && itemId != null) {
+            val item = uiState.menuItems.find { it.id == itemId }
+            item?.let {
+                name = it.name
+                price = (it.price / 100.0).toString()
+                description = it.description
+            }
+        }
+    }
+
+
     LaunchedEffect(uiState.saveSuccess) {
         if (uiState.saveSuccess) {
+            snackbarHostState.showSnackbar(message)
             navController.popBackStack()
             viewModel.resetSaveState()
         }
@@ -61,13 +79,18 @@ fun EditMenuScreen(
         description = description,
         selectedImageUri = selectedImageUri,
         isEditing = isEditing,
+        isLoading = uiState.isLoading,
         onNameChange = { name = it },
         onPriceChange = { price = it },
         onDescriptionChange = { description = it },
         onBackClick = { navController.popBackStack() },
         onSaveClick = {
-            val priceLong =
-                (price.toDoubleOrNull()?.times(100))?.toLong() ?: 0L
+            val priceLong = price
+                .replace(",", ".")
+                .toBigDecimalOrNull()
+                ?.multiply(100.toBigDecimal())
+                ?.toLong()
+                ?: 0L
             if (isEditing && itemId != null) {
                 viewModel.updateMenuItem(
                     itemId = itemId,

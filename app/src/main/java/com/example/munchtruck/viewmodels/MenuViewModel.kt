@@ -64,7 +64,7 @@ class MenuViewModel(
 
                 }
 
-                _uiState.update { it.copy(isLoading = false, saveSuccess = false) }
+                _uiState.update { it.copy(isLoading = false, saveSuccess = true) }
 
             } catch (e: Exception) {
                 _uiState.update { it.copy(isLoading = false, error = e.localizedMessage) }
@@ -81,7 +81,7 @@ class MenuViewModel(
     ) {
         viewModelScope.launch {
             try {
-                _uiState.update { it.copy(isLoading = true, saveSuccess = true) }
+                _uiState.update { it.copy(isLoading = true, saveSuccess = false) }
 
 
                 val imageUrl = if (imageUri != null) {
