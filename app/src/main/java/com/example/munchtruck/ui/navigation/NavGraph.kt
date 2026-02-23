@@ -110,8 +110,14 @@ fun NavGraph() {
     // LINNÉA !! Detta är en fix för att lösa att vi laddar hem rätt profil samt återställer states
     //  dubbelkolla gärna mvh Patrik
     LaunchedEffect(isLoggedIn) {
-        if (isLoggedIn) profileViewModel.loadProfile()
-        else profileViewModel.reseState()
+        if (isLoggedIn) {
+            profileViewModel.loadProfile()
+            menuViewModel.observeMenu()
+        } else {
+            profileViewModel.resetState()
+            locationViewModel.resetLocationForm()
+            menuViewModel.resetState()
+        }
     }
 
     // TEMP: Use start as entry for development until role/onboarding is implemented
@@ -134,7 +140,9 @@ fun NavGraph() {
         }
         composable("profile"){
             if (isLoggedIn) {
-                ProfileScreen(navController,authViewModel)
+                ProfileScreen(navController = navController,
+                    authViewModel= authViewModel,
+                    profileViewModel = profileViewModel)
             } else {
                 LaunchedEffect(Unit) {
                     navController.navigate("login"){

@@ -94,7 +94,7 @@ class ProfileViewModel(
 
     }
 
-    fun reseState(){
+    fun resetState(){
         _uiState.value = ProfileUiState()
     }
     fun clearError() = _uiState.update { it.copy(error = null) }

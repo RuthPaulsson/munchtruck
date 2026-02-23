@@ -110,6 +110,10 @@ class MenuViewModel(
         }
     }
 
+    fun resetState() {
+        _uiState.value = MenuUiState()
+        isObserving = false
+    }
     fun clearError() {
         _uiState.update { it.copy(error = null) }
     }
