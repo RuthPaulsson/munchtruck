@@ -64,7 +64,6 @@ fun EditMenuContent(
     onDescriptionChange: (String) -> Unit,
     onBackClick: () -> Unit,
     onSaveClick: () -> Unit,
-    onDeleteClick: () -> Unit,
     onImageClick: () -> Unit,
     snackbarHost: @Composable () -> Unit
 ) {
@@ -173,8 +172,6 @@ fun EditMenuContent(
                 )
             )
 
-
-
             Spacer(modifier = Modifier.height(SpaceM))
 
             // ===== Description =====
@@ -189,20 +186,6 @@ fun EditMenuContent(
 
             Spacer(modifier = Modifier.height(SpaceL))
 
-            // ===== Delete Button (only when editing) =====
-
-            if (isEditing) {
-                OutlinedButton(
-                    onClick = onDeleteClick,
-                    enabled = !isLoading,
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = MaterialTheme.colorScheme.error
-                    )
-                ) {
-                    Text(stringResource(R.string.menu_delete))
-                }
-            }
         }
     }
 }
@@ -225,7 +208,6 @@ fun EditMenuContentPreview() {
             onDescriptionChange = {},
             onBackClick = {},
             onSaveClick = {},
-            onDeleteClick = {},
             onImageClick = {},
             snackbarHost = {}
         )

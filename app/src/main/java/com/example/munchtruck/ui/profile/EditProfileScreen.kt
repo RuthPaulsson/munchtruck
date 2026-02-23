@@ -133,7 +133,7 @@ fun EditProfileScreen(
         },
 
         onDeleteMenuClick = { id ->
-            menuViewModel.deleteMenuItem(id)
+            menuItemToDelete = id
             showDeleteDialog = true
         },
 
@@ -159,6 +159,7 @@ fun EditProfileScreen(
                                 snackbarHostState.showSnackbar(deletedMessage)
                             }
                         }
+                        menuItemToDelete = null
                     }
                 ) {
                     Text(stringResource(R.string.delete_confirm))
