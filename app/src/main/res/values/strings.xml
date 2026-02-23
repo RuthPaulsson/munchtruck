@@ -69,6 +69,8 @@
     <string name="profile_use_current_location">Use current location</string>
     <string name="profile_save_location">Save</string>
     <string name="profile_map_placeholder">Map preview</string>
+    <string name="menu_empty">No dishes added yet. Tap “Manage Menu” to add one.</string>
+
 
     <!-- ===== Edit Menu screen ====================================== -->
 

@@ -21,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.RestaurantMenu
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -45,6 +46,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.rememberAsyncImagePainter
 import com.example.munchtruck.R
+import com.example.munchtruck.data.model.MenuItem
 import com.example.munchtruck.ui.components.InputField
 import com.example.munchtruck.ui.theme.AppPreviewWrapper
 import com.example.munchtruck.ui.theme.Dimens.LocationMapHeight
@@ -69,6 +71,9 @@ fun EditProfileContent(
     description: String,
     foodType: String,
     locationState: LocationUiState,
+    menuItems: List<MenuItem>,
+    onEditMenuClick: (String) -> Unit,
+    onDeleteMenuClick: (String) -> Unit,
     onMapPicked: (Double, Double) -> Unit,
     onUseCurrentLocation: () -> Unit,
     onSaveLocation: () -> Unit,
@@ -83,6 +88,7 @@ fun EditProfileContent(
     snackbarHost: @Composable () -> Unit
 ) {
     var isLocationExpanded by remember { mutableStateOf(false) }
+    var isMenuExpanded by remember { mutableStateOf(false) }
 
     val hasLocation =
         locationState.selectedLat != null &&
@@ -252,6 +258,76 @@ fun EditProfileContent(
                 Spacer(modifier = Modifier.height(SpaceL))
             }
 
+            // ===== Menu Row =====
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable{ isMenuExpanded = !isMenuExpanded }
+                    .padding(vertical = SpaceM),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+
+                Spacer(modifier = Modifier.width(SpaceS))
+
+                Text(
+                    text = stringResource(R.string.profile_menu),
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Spacer(modifier = Modifier.weight(1f))
+            }
+
+            if (isMenuExpanded) {
+                Spacer(modifier = Modifier.height(SpaceS))
+
+                if (menuItems.isEmpty()) {
+                    Text(
+                        text = stringResource(R.string.menu_empty),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                } else {
+                    menuItems.forEach { item ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { onEditMenuClick(item.id) }
+                                .padding(vertical = SpaceS),
+                            verticalAlignment = Alignment.CenterVertically
+                        ){
+                            Icon(
+                                imageVector = Icons.Default.RestaurantMenu,
+                                contentDescription = null
+                            )
+                            Spacer(modifier = Modifier.width(SpaceS))
+
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(item.name)
+
+                                Text(
+                                    text = "\${item.price / 100} kr",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                            IconButton(
+                                onClick = { onDeleteMenuClick(item.id) }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = null
+                                )
+                            }
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.height(SpaceL))
+            }
+
             // ===== Manage Menu =====
 
             Row(
@@ -335,6 +411,12 @@ fun EditProfileContentPreview() {
             onDescriptionChange = {},
             onFoodTypeChange = {},
             onMenuClick = {},
+            menuItems = listOf(
+                MenuItem("1", "Classic Burger", 9500, "Best burger"),
+                MenuItem("2", "Fries", 7500, "Crispy fries")
+            ),
+            onEditMenuClick = {},
+            onDeleteMenuClick = {},
             snackbarHost = {}
         )
     }

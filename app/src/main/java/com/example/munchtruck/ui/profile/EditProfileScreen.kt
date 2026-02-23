@@ -14,18 +14,21 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.munchtruck.viewmodels.LocationViewModel
+import com.example.munchtruck.viewmodels.MenuViewModel
 import com.example.munchtruck.viewmodels.ProfileViewModel
 
 @Composable
 fun EditProfileScreen(
     navController: NavController,
     profileViewModel: ProfileViewModel,
-    locationViewModel: LocationViewModel
+    locationViewModel: LocationViewModel,
+    menuViewModel: MenuViewModel
 ) {
     // ====== State from ViewModel ===============================
 
     val uiState by profileViewModel.uiState.collectAsStateWithLifecycle()
     val locationState by locationViewModel.uiState.collectAsStateWithLifecycle()
+    val menuUiState by menuViewModel.uiState.collectAsStateWithLifecycle()
 
     // ====== Local UI State ===============================
 
@@ -77,6 +80,7 @@ fun EditProfileScreen(
         foodType = foodType,
         selectedImageUri = selectedImageUri,
         locationState = locationState,
+        menuItems = menuUiState.menuItems,
         onNameChange = { name = it },
         onDescriptionChange = { description = it },
         onFoodTypeChange = { foodType = it },
@@ -105,6 +109,13 @@ fun EditProfileScreen(
         },
         onMenuClick = {
             navController.navigate("edit_menu/new")
+        },
+        onEditMenuClick = { id ->
+            navController.navigate("edit_menu/$id")
+        },
+
+        onDeleteMenuClick = { id ->
+            menuViewModel.deleteMenuItem(id)
         },
 
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
