@@ -4,6 +4,8 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -12,13 +14,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.munchtruck.R
 import com.example.munchtruck.viewmodels.AuthViewModel
+import com.example.munchtruck.viewmodels.ProfileViewModel
 
 // ====== Profile Screen ===============================
 @Composable
 fun ProfileScreen(
     navController: NavController,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    profileViewModel: ProfileViewModel
 ){
+    val uiState by profileViewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        profileViewModel.loadProfile()
+    }
 
     // ====== UI State ===============================
 
@@ -26,13 +35,13 @@ fun ProfileScreen(
 
     ProfileContent(
         isOwner = true,
-        truckName = "Crazy Burgers", // change to viewmodel data later
-        description = "Best smash burgers in town.", // change to viewmodel data later
+        truckName = uiState.name,
+        description = uiState.description,
         onEditClick = { navController.navigate("edit_profile") },
         rating = null,
         location = null,
         openingHours = null,
-        imageUrl = null,
+        imageUrl = uiState.imageUrl,
         menuItems = emptyList(),
         onLogoutClick  = { showDialog = true }
     )
