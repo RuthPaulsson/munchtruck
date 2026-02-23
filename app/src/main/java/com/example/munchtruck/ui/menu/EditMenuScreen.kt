@@ -3,11 +3,8 @@ package com.example.munchtruck.ui.menu
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -35,7 +32,6 @@ fun EditMenuScreen(
     var name by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
     var priceError by remember { mutableStateOf<String?>(null) }
-    var showDeleteDialog by remember { mutableStateOf(false) }
 
     var description by remember { mutableStateOf("") }
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
@@ -46,9 +42,6 @@ fun EditMenuScreen(
     val message = stringResource(R.string.menu_item_saved)
     val invalidNameMessage = stringResource(R.string.invalid_dish_name)
     val invalidPriceMessage = stringResource(R.string.invalid_price)
-
-
-
 
 
     LaunchedEffect(Unit) {
@@ -153,10 +146,6 @@ fun EditMenuScreen(
                 )
             }
         },
-        onDeleteClick = {
-            showDeleteDialog = true
-
-        },
         onImageClick = {
             imageLauncher.launch("image/*")
         },
@@ -164,33 +153,4 @@ fun EditMenuScreen(
             SnackbarHost(hostState = snackbarHostState)
         }
     )
-    if (showDeleteDialog) {
-        AlertDialog(
-            onDismissRequest = { showDeleteDialog = false },
-            title = { Text(stringResource(R.string.delete_title)) },
-            text = { Text(stringResource(R.string.delete_message)) },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        showDeleteDialog = false
-
-                        if (itemId != null) {
-                            viewModel.deleteMenuItem(itemId)
-                            navController.popBackStack()
-                        }
-                    }
-                ) {
-                    Text(stringResource(R.string.delete_confirm))
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = { showDeleteDialog = false }
-                ) {
-                    Text(stringResource(R.string.common_cancel))
-                }
-            }
-        )
-    }
-
 }
