@@ -107,6 +107,13 @@ fun NavGraph() {
 
     val isLoggedIn by authViewModel.isLoggedIn.collectAsState()
 
+    // LINNÉA !! Detta är en fix för att lösa att vi laddar hem rätt profil samt återställer states
+    //  dubbelkolla gärna mvh Patrik
+    LaunchedEffect(isLoggedIn) {
+        if (isLoggedIn) profileViewModel.loadProfile()
+        else profileViewModel.reseState()
+    }
+
     // TEMP: Use start as entry for development until role/onboarding is implemented
     val startDestination = if (isLoggedIn) "profile" else "start"
     NavHost(
