@@ -79,6 +79,7 @@
     <string name="menu_select_image">Select image</string>
     <string name="menu_no_image">No image selected</string>
     <string name="menu_delete">Delete dish</string>
+    <string name="menu_item_saved">Menu item saved</string>
 
     <!-- ===== Location strings ====================================== -->
 
