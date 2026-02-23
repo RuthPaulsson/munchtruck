@@ -11,9 +11,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.munchtruck.R
 import com.example.munchtruck.viewmodels.AuthViewModel
+import com.example.munchtruck.viewmodels.MenuViewModel
 import com.example.munchtruck.viewmodels.ProfileViewModel
 
 // ====== Profile Screen ===============================
@@ -21,9 +23,17 @@ import com.example.munchtruck.viewmodels.ProfileViewModel
 fun ProfileScreen(
     navController: NavController,
     authViewModel: AuthViewModel,
-    profileViewModel: ProfileViewModel
+    profileViewModel: ProfileViewModel,
+    menuViewModel: MenuViewModel
 ){
     val uiState by profileViewModel.uiState.collectAsState()
+    val menuUiState by menuViewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        menuViewModel.observeMenu()
+    }
+
+
 
     LaunchedEffect(Unit) {
         profileViewModel.loadProfile()
@@ -42,7 +52,7 @@ fun ProfileScreen(
         location = null,
         openingHours = null,
         imageUrl = uiState.imageUrl,
-        menuItems = emptyList(),
+        menuItems = menuUiState.menuItems,
         onLogoutClick  = { showDialog = true }
     )
 

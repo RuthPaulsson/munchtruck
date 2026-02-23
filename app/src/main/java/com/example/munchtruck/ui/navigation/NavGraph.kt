@@ -142,7 +142,10 @@ fun NavGraph() {
             if (isLoggedIn) {
                 ProfileScreen(navController = navController,
                     authViewModel= authViewModel,
-                    profileViewModel = profileViewModel)
+                    profileViewModel = profileViewModel,
+                    menuViewModel = menuViewModel
+                )
+
             } else {
                 LaunchedEffect(Unit) {
                     navController.navigate("login"){
