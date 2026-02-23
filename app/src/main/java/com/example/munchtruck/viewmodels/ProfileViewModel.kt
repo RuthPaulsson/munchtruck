@@ -18,7 +18,9 @@ data class ProfileUiState(
     val error: String? = null,
     val saveSuccess: Boolean = false,
     val name: String = "",
-    val description: String = ""
+    val description: String = "",
+    val foodType: String = "",
+    val imageUrl: String = ""
 )
 
 class ProfileViewModel(
@@ -63,6 +65,37 @@ class ProfileViewModel(
                 }
             }
         }
+    }
+
+    fun loadProfile() {
+
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, error = null) }
+            try {
+                val truck = repository.getTruckProfile()
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        name = truck.name,
+                        description = truck.description,
+                        foodType = truck.foodType,
+                        imageUrl = truck.imageUrl
+                    )
+                }
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        error = e.localizedMessage ?: "Failed to load profile"
+                    )
+                }
+            }
+        }
+
+    }
+
+    fun reseState(){
+        _uiState.value = ProfileUiState()
     }
     fun clearError() = _uiState.update { it.copy(error = null) }
     fun resetSaveStatus() = _uiState.update { it.copy(saveSuccess = false) }
