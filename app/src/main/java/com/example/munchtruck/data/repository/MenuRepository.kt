@@ -5,7 +5,10 @@ import kotlinx.coroutines.flow.Flow
 
 interface MenuRepository {
 
-    fun observeMenu(): Flow<List<MenuItem>>
+
+    fun observeMyMenu(): Flow<List<MenuItem>> // FoodTruck owner
+
+    fun observeTruckMenu(truckId: String): Flow<List<MenuItem>> // FoodLover guest
 
     suspend fun addMenuItem(
         name: String,
