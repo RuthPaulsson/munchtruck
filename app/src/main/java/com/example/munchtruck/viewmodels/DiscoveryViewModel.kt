@@ -10,7 +10,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import android.location.Location
 import com.example.munchtruck.data.location.DeviceLocationProvider
+import com.example.munchtruck.data.model.MenuItem
 import com.example.munchtruck.data.repository.DiscoveryRepository
+import com.example.munchtruck.data.repository.MenuRepository
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 
 data class DiscoveryUiState(
@@ -18,15 +21,45 @@ data class DiscoveryUiState(
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
     val userLocation: Location? = null,
-    val isListEmpty: Boolean = false
+    val isListEmpty: Boolean = false,
+    val selectedTruckMenu: List<MenuItem> = emptyList(),
+    val isMenuLoading: Boolean = false
 )
 
 class DiscoveryViewModel(
     private val discoveryRepository: DiscoveryRepository,
-    private val locationProvider: DeviceLocationProvider
+    private val locationProvider: DeviceLocationProvider,
+    private val menuRepository: MenuRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(DiscoveryUiState())
     val uiState: StateFlow<DiscoveryUiState> = _uiState.asStateFlow()
+    private var menuJob: Job? = null
+
+    fun selectedTruckAndLoadMenu(truckId: String) {
+        menuJob?.cancel()
+
+        _uiState.update { it.copy(isMenuLoading = true) }
+
+        menuJob = viewModelScope.launch {
+            try {
+                menuRepository.observeTruckMenu(truckId).collect { items ->
+                    _uiState.update { it.copy(
+                        selectedTruckMenu = items,
+                        isMenuLoading = false
+                    ) }
+                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(
+                    isMenuLoading = false,
+                    errorMessage = "Could not load menu: ${e.localizedMessage}"
+                ) }
+            }
+        }
+    }
+
+    fun formatPrice(price: Long): String {
+        return "$price kr"
+    }
 
     init {
         observeTrucks()
