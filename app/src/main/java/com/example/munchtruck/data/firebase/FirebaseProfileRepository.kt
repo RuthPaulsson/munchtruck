@@ -15,18 +15,24 @@ import kotlinx.coroutines.tasks.await
 import kotlin.collections.get
 
 
-class FirebaseProfileRepository (
+class FirebaseProfileRepository(
     private val firestore: FirebaseFirestore,
-    private val auth : FirebaseAuth
+    private val auth: FirebaseAuth
 ) : ProfileRepository {
 
-    fun truckId () : String =
+
+    // ============ TRUCK ID/DOC =============================================
+
+    fun truckId(): String =
         auth.currentUser?.uid ?: throw IllegalStateException("Ej inloggad")
 
 
     private fun myTruckDoc() =
         firestore.collection("foodTrucks")
-        .document(truckId())
+            .document(truckId())
+
+
+    // ============ SAVE TRUCK =============================================
 
 
     override suspend fun saveMyTruckProfile(
@@ -45,8 +51,12 @@ class FirebaseProfileRepository (
         )
         if (imageUrl.trim().isNotBlank()) truckUpdates["imageUrl"] = imageUrl.trim()
 
-        myTruckDoc().set(truckUpdates,SetOptions.merge()).await()
+        myTruckDoc().set(truckUpdates, SetOptions.merge()).await()
     }
+
+
+    // ============ UPDATE TRUCK =============================================
+
 
     override suspend fun updateMyTruckLocation(location: TruckLocation) {
 
@@ -65,7 +75,7 @@ class FirebaseProfileRepository (
     override suspend fun updateMyTruckOpeningHours(hours: OpeningHours) {
         val timezone = hours.timeZone.trim().ifBlank { "Europe/Stockholm" }
 
-        val weeklyMap: Map <String, Any?> = mapOf(
+        val weeklyMap: Map<String, Any?> = mapOf(
             "mon" to hours.weekly.mon?.toFirestoreMap(),
             "tue" to hours.weekly.tue?.toFirestoreMap(),
             "wed" to hours.weekly.wed?.toFirestoreMap(),
@@ -87,15 +97,19 @@ class FirebaseProfileRepository (
         myTruckDoc().set(hoursMap, SetOptions.merge()).await()
     }
 
+
+    // ============ GET TRUCK =============================================
+
+
     override suspend fun getTruckProfile(): FoodTruck {
         val doc = myTruckDoc().get().await()
-        if (!doc.exists()) throw IllegalArgumentException ("FoodTruck profile is missing")
+        if (!doc.exists()) throw IllegalArgumentException("FoodTruck profile is missing")
 
         val loc = doc.get("location") as? Map<*, *>
         val lat = (loc?.get("latitude") as? Number)?.toDouble()
         val long = (loc?.get("longitude") as? Number)?.toDouble()
 
-        val location = if (lat != null && long != null){
+        val location = if (lat != null && long != null) {
             TruckLocation(
                 latitude = lat,
                 longitude = long,
@@ -121,7 +135,7 @@ class FirebaseProfileRepository (
 
         val openingHours: OpeningHours? =
             if (hoursMap != null) {
-                OpeningHours (
+                OpeningHours(
                     timeZone = (hoursMap["timeZone"] as? String)?.ifBlank { "Europe/Stockholm" }
                         ?: "Europe/Stockholm",
                     weekly = weeklyHours,
@@ -133,24 +147,22 @@ class FirebaseProfileRepository (
             }
 
 
-            return FoodTruck(
-                id = doc.id,
-                name = doc.getString("name").orEmpty(),
-                description = doc.getString("description").orEmpty(),
-                foodType = doc.getString("foodType").orEmpty(),
-                location = location,
-                imageUrl = doc.getString("imageUrl").orEmpty(),
-                openingHours = openingHours,
+        return FoodTruck(
+            id = doc.id,
+            name = doc.getString("name").orEmpty(),
+            description = doc.getString("description").orEmpty(),
+            foodType = doc.getString("foodType").orEmpty(),
+            location = location,
+            imageUrl = doc.getString("imageUrl").orEmpty(),
+            openingHours = openingHours,
 //            isOpen = doc.getBoolean("isOpen") ?: false
-            )
-
-
-
+        )
 
 
     }
 
-    //============== Helpers =============================================
+    // ============ HELPERS =============================================
+
 
     private fun OpeningInterval.toFirestoreMap(): Map<String, Any> {
         return mapOf(
@@ -167,6 +179,5 @@ class FirebaseProfileRepository (
 
         return OpeningInterval(start = start, end = end)
     }
-
 
 }

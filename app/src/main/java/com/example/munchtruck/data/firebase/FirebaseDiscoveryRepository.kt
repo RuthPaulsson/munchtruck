@@ -15,7 +15,7 @@ class FirebaseDiscoveryRepository (
     override fun observeOpenTrucks(): Flow<List<FoodTruck>> = callbackFlow {
 
         val listener = firestore.collection("foodTrucks")
-            .whereEqualTo("isOpen", true) // TODO Tänkt att isOpen är utkommenderad om du ska pröva!!
+            .whereEqualTo("isOpen", true) // Tänkt att isOpen är utkommenderad om du ska pröva!!
             .addSnapshotListener { snapshots, e ->
                 if (e != null) {
                     close(e)
