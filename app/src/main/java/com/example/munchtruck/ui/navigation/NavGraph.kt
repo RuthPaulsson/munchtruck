@@ -1,5 +1,6 @@
 package com.example.munchtruck.ui.navigation
 
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -25,9 +26,12 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 import androidx.lifecycle.ViewModelProvider
+import com.example.munchtruck.data.firebase.FirebaseDiscoveryRepository
 import com.example.munchtruck.data.firebase.FirebaseProfileRepository
 import com.example.munchtruck.data.firebase.StorageImageRepository
 import com.example.munchtruck.data.location.FusedDeviceLocationProvider
+import com.example.munchtruck.ui.discovery.DiscoveryScreen
+import com.example.munchtruck.viewmodels.DiscoveryViewModel
 import com.example.munchtruck.viewmodels.LocationViewModel
 import com.google.firebase.storage.FirebaseStorage
 
@@ -105,6 +109,27 @@ fun NavGraph() {
         }
     )
 
+    val discoveryRepository = remember {
+        FirebaseDiscoveryRepository(
+            FirebaseFirestore.getInstance()
+        )
+    }
+
+    val discoveryViewModel: DiscoveryViewModel = viewModel(
+        factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                if (modelClass.isAssignableFrom(DiscoveryViewModel::class.java)) {
+                    @Suppress("UNCHECKED_CAST")
+                    return DiscoveryViewModel(
+                        discoveryRepository,
+                        locationProvider
+                    ) as T
+                }
+                throw IllegalArgumentException("Unknown ViewModel class")
+            }
+        }
+    )
+
     val isLoggedIn by authViewModel.isLoggedIn.collectAsState()
 
     // LINNÉA !! Detta är en fix för att lösa att vi laddar hem rätt profil samt återställer states
@@ -156,6 +181,16 @@ fun NavGraph() {
 
         }
 
+        composable("discovery") {
+
+            DiscoveryScreen(
+                viewModel = discoveryViewModel,
+                onTruckClick = { truckId ->
+                    navController.navigate("public_profile/$truckId")
+                }
+            )
+        }
+
         composable ("edit_profile") {
             EditProfileScreen(
                 navController = navController,
@@ -173,6 +208,12 @@ fun NavGraph() {
                 viewModel = menuViewModel,
                 itemId = if (itemId == "new") null else itemId
             )
+        }
+
+        composable("public_profile/{truckId}") { backStackEntry ->
+            val truckId = backStackEntry.arguments?.getString("truckId")
+
+            Text(text = "Public profile for $truckId")
         }
     }
 }
