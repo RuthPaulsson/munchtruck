@@ -31,7 +31,7 @@ class MenuViewModel(
      isObserving = true
 
      viewModelScope.launch {
-            repository.observeMenu().collect { items ->
+            repository.observeMyMenu().collect { items ->
                 _uiState.update {
                     it.copy(menuItems = items)
                 }

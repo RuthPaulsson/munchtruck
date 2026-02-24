@@ -20,14 +20,22 @@ class FirebaseMenuRepository (
         auth.currentUser?.uid ?: throw IllegalStateException("Not logged in")
 
 
-    private fun menuCollection() = firestore.collection(
-        "foodTrucks")
+    // OWNER path
+    private fun myMenuCollection() =
+        firestore.collection("foodTrucks")
         .document(truckId())
         .collection("menu")
 
+    // FoodTruck GUEST path (selected truck)
+    private fun truckMenuCollection(truckId: String) =
+        firestore.collection("foodTrucks")
+            .document(truckId)
+            .collection("menu")
 
-    override fun observeMenu(): Flow<List<MenuItem>> = callbackFlow {
-        val listener = menuCollection().addSnapshotListener { snapshot, e ->
+
+
+    override fun observeMyMenu(): Flow<List<MenuItem>> = callbackFlow {
+        val listener = myMenuCollection().addSnapshotListener { snapshot, e ->
             if (e != null) {
                 close(e)
                 return@addSnapshotListener
@@ -52,6 +60,31 @@ class FirebaseMenuRepository (
         awaitClose { listener.remove() }
     }
 
+    override fun observeTruckMenu(truckId: String): Flow<List<MenuItem>> = callbackFlow {
+        val listener = truckMenuCollection(truckId).addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                close(e)
+                return@addSnapshotListener
+            }
+
+            val menuItems = snapshot?.documents.orEmpty().map { doc ->
+                MenuItem(
+                    id = doc.id,
+                    name = doc.getString("name").orEmpty(),
+                    price = doc.getLong("price") ?: 0L,
+                    description = doc.getString("description").orEmpty(),
+                    imageUrl = doc.getString("imageUrl").orEmpty(),
+                    createdAt = doc.getTimestamp("createdAt"),
+                    updatedAt = doc.getTimestamp("updatedAt")
+                )
+            }
+            trySend(menuItems)
+        }
+
+        awaitClose { listener.remove() }
+    }
+
+
     override suspend fun addMenuItem(
         name: String,
         price: Long,
@@ -59,7 +92,7 @@ class FirebaseMenuRepository (
         imageUrl: String
     ) : String {
 
-        val itemRef = menuCollection().document()
+        val itemRef = myMenuCollection().document()
         val itemData = mutableMapOf(
             "name" to name.trim(),
             "price" to price,
@@ -89,12 +122,12 @@ class FirebaseMenuRepository (
         )
         if (imageUrl.isNotBlank()) updatedMenuItem["imageUrl"] = imageUrl.trim()
 
-        menuCollection().document(itemId).set(updatedMenuItem, SetOptions.merge())
+        myMenuCollection().document(itemId).set(updatedMenuItem, SetOptions.merge())
             .await()
 
     }
 
     override suspend fun deleteMenuItem(itemId: String) {
-        menuCollection().document(itemId).delete().await()
+        myMenuCollection().document(itemId).delete().await()
     }
 }
