@@ -1,6 +1,7 @@
 package com.example.munchtruck.data.repository
 
 import com.example.munchtruck.data.model.FoodTruck
+import com.example.munchtruck.data.model.OpeningHours
 import com.example.munchtruck.data.model.TruckLocation
 
 interface ProfileRepository {
@@ -17,4 +18,5 @@ interface ProfileRepository {
 
     suspend fun updateMyTruckLocation(location: TruckLocation)
 
+    suspend fun updateMyTruckOpeningHours(hours: OpeningHours)
 }

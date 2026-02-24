@@ -56,7 +56,7 @@ class FirebaseDiscoveryRepository (
                                 latitude = lat,
                                 longitude = long,
                                 address = (loc["address"] as? String).orEmpty(),
-                                updatedAtMilis = (loc["updatedAtMilis"] as? Number)?.toLong() ?: 0L
+                                updatedAt = (loc["updatedAtMilis"] as? Number)?.toLong() ?: 0L
                             )
                         )
                     }

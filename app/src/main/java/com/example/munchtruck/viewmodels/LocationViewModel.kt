@@ -188,7 +188,7 @@ class LocationViewModel(
                     latitude = state.selectedLat!!,
                     longitude = state.selectedLng!!,
                     address = state.address,
-                    updatedAtMilis = System.currentTimeMillis()
+                    updatedAt = System.currentTimeMillis()
                 )
                 profileRepository.updateMyTruckLocation(location)
 

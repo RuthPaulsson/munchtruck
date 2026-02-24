@@ -2,7 +2,7 @@ package com.example.munchtruck.data.model
 
 data class OpeningHours (
     val timeZone: String = "",
-    val openingHours: WeeklyOpeningHours = WeeklyOpeningHours(),
+    val weekly: WeeklyOpeningHours = WeeklyOpeningHours(),
     val tempClosed: Boolean = false
 )
 
