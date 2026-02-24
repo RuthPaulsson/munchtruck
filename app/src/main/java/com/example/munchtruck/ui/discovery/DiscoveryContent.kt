@@ -28,6 +28,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -61,60 +62,71 @@ fun DiscoveryContent(
     onRefresh: () -> Unit,
     onTruckClick: (String) -> Unit
 ) {
-
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
 
-        when {
-            uiState.isLoading -> {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            }
+        PullToRefreshBox(
+            isRefreshing = uiState.isLoading,
+            onRefresh = onRefresh,
+            modifier = Modifier.fillMaxSize()
+        ) {
 
-            uiState.errorMessage != null -> {
-                Text(
-                    text = uiState.errorMessage,
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            }
+            LazyColumn(
+                modifier = Modifier.fillMaxSize()
+            ) {
 
-            else -> {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize()
-                ) {
+                item {
+                    HeroSection(
+                        searchQuery = searchQuery,
+                        onSearchChange = onSearchChange
+                    )
+                }
 
+                // Error state
+                if (uiState.errorMessage != null) {
                     item {
-                        HeroSection(
-                            searchQuery = searchQuery,
-                            onSearchChange = onSearchChange
-                        )
-                    }
-
-                    // EMPTY STATE
-                    if (uiState.isListEmpty) {
-                        item {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(32.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text("No trucks near you")
-                            }
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(32.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(uiState.errorMessage)
                         }
                     }
+                }
 
-                    items(uiState.trucks) { truck ->
-                        TruckItem(
-                            truck = truck,
-                            userLocation = uiState.userLocation,
-                            onClick = { onTruckClick(truck.id) }
-                        )
+                // Empty state
+                if (uiState.isListEmpty) {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(32.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("No trucks near you")
+                        }
                     }
                 }
+
+                // List
+                items(uiState.trucks) { truck ->
+                    TruckItem(
+                        truck = truck,
+                        userLocation = uiState.userLocation,
+                        onClick = { onTruckClick(truck.id) }
+                    )
+                }
             }
+        }
+
+        // Center spinner ONLY on first load
+        if (uiState.isLoading && uiState.trucks.isEmpty()) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center)
+            )
         }
     }
 }
