@@ -17,6 +17,4 @@ interface ProfileRepository {
 
     suspend fun updateMyTruckLocation(location: TruckLocation)
 
-    suspend fun getAllTrucks(): List<FoodTruck>
-
 }

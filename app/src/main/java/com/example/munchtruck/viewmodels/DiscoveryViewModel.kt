@@ -6,12 +6,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.munchtruck.data.model.FoodTruck
-import com.example.munchtruck.data.repository.ProfileRepository
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import android.location.Location
 import com.example.munchtruck.data.location.DeviceLocationProvider
-import kotlinx.coroutines.flow.collect
+import com.example.munchtruck.data.repository.DiscoveryRepository
 import kotlinx.coroutines.delay
 
 data class DiscoveryUiState(
@@ -23,7 +22,7 @@ data class DiscoveryUiState(
 )
 
 class DiscoveryViewModel(
-    private val profileRepository: ProfileRepository,
+    private val discoveryRepository: DiscoveryRepository,
     private val locationProvider: DeviceLocationProvider
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(DiscoveryUiState())
@@ -37,17 +36,21 @@ class DiscoveryViewModel(
     fun observeTrucks() {
         _uiState.update { it.copy(isLoading = true) }
 
+        
+
         viewModelScope.launch {
             try {
-                val allTrucks = profileRepository.getAllTrucks()
-                _uiState.update {
-                    it.copy(
-                        trucks = allTrucks,
-                        isLoading = false,
-                        isListEmpty = allTrucks.isEmpty()
-                    )
-                }
-
+                discoveryRepository.observeOpenTrucks()
+                    .collect { trucks ->
+                        _uiState.update {
+                            it.copy(
+                                trucks = trucks,
+                                isLoading = false,
+                                isListEmpty = trucks.isEmpty(),
+                                errorMessage = null
+                            )
+                        }
+                    }
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(
@@ -83,15 +86,29 @@ class DiscoveryViewModel(
         }
     }
 
-    fun sortTrucks(trucks: List<FoodTruck>, location: Location?): List<FoodTruck> {
+
+
+    private fun sortTrucks(
+        trucks: List<FoodTruck>,
+        location: Location?
+    ): List<FoodTruck> {
+
         if (location == null) return trucks
 
-        return trucks.sortedBy { truck ->
-            val truckLocation = Location("").apply {
-                latitude = truck.location?.latitude ?: 0.0
-                longitude = truck.location?.longitude ?: 0.0
+        return trucks
+
+            .filter { it.location != null }
+
+            .sortedBy { truck ->
+
+                val loc = truck.location ?: return@sortedBy Double.MAX_VALUE
+
+                val truckLoc = Location("").apply {
+                    latitude = loc.latitude
+                    longitude = loc.longitude
+                }
+
+                location.distanceTo(truckLoc).toDouble()
             }
-            location.distanceTo(truckLocation)
-        }
     }
 }
