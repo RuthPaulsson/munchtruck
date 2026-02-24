@@ -7,5 +7,6 @@ data class FoodTruck (
     val foodType: String = "",
     val location: TruckLocation? = null,
     val imageUrl: String = "",
+    val openHours: OpeningHours? = null,
     val isOpen: Boolean = false
 )
