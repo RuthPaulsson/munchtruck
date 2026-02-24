@@ -20,6 +20,7 @@ import com.example.munchtruck.ui.theme.AppColors.TextMuted
 import com.example.munchtruck.ui.theme.AppColors.White
 import com.example.munchtruck.ui.theme.Dimens.InputRadius
 import com.example.munchtruck.ui.theme.Dimens.SpaceXS
+import androidx.compose.material3.TextFieldColors
 
 // ====== Input Field Component ===============================
 
@@ -34,8 +35,20 @@ fun InputField(
     minLines: Int = 1,
     maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
     errorMessage: String? = null,
-    keyboardOptions: KeyboardOptions =
-        KeyboardOptions.Default
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    leadingIcon: (@Composable (() -> Unit))? = null,
+    trailingIcon: (@Composable (() -> Unit))? = null,
+    shape: RoundedCornerShape = RoundedCornerShape(InputRadius),
+    colors: TextFieldColors = OutlinedTextFieldDefaults.colors(
+        focusedContainerColor = White,
+        unfocusedContainerColor = White,
+        focusedBorderColor = InputBorder,
+        unfocusedBorderColor = InputBorder,
+        focusedTextColor = PrimaryText,
+        unfocusedTextColor = PrimaryText,
+        cursorColor = PrimaryText
+    )
+
 ){
     Column(modifier = Modifier.fillMaxWidth()) {
 
@@ -63,7 +76,7 @@ fun InputField(
             },
 
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(InputRadius),
+            shape = shape,
             singleLine = singleLine,
             minLines = minLines,
             maxLines = maxLines,
@@ -72,15 +85,10 @@ fun InputField(
             visualTransformation =
                 if (isPassword) PasswordVisualTransformation()
                 else VisualTransformation.None,
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = White,
-                unfocusedContainerColor = White,
-                focusedBorderColor = InputBorder,
-                unfocusedBorderColor = InputBorder,
-                focusedTextColor = PrimaryText,
-                unfocusedTextColor = PrimaryText,
-                cursorColor = PrimaryText
-            )
+            leadingIcon = leadingIcon,
+            trailingIcon = trailingIcon,
+            colors = colors
+
         )
         // ====== Error Message ===============================
 
