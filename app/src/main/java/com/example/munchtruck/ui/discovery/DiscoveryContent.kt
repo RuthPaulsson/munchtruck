@@ -106,7 +106,7 @@ fun DiscoveryContent(
                                 .padding(32.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text("No trucks near you")
+                            Text(stringResource(R.string.discovery_empty_nearby))
                         }
                     }
                 }
@@ -183,7 +183,7 @@ fun HeroSection(
             InputField(
                 value = searchQuery,
                 onChange = onSearchChange,
-                placeholder = "What are you craving?",
+                placeholder = stringResource(R.string.discovery_search_placeholder),
                 singleLine = true,
                 leadingIcon = {
                     Icon(
@@ -212,9 +212,9 @@ fun HeroSection(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                CategoryChip("Burger", "🍔")
-                CategoryChip("Tacos", "🌮")
-                CategoryChip("Pizza", "🍕")
+                CategoryChip(stringResource(R.string.discovery_category_burger), "🍔")
+                CategoryChip(stringResource(R.string.discovery_category_tacos), "🌮")
+                CategoryChip(stringResource(R.string.discovery_category_pizza), "🍕")
             }
             Spacer(modifier = Modifier.height(45.dp))
 
@@ -226,13 +226,13 @@ fun HeroSection(
             ) {
 
                 Text(
-                    text = "Discover burgers",
+                    text = stringResource(R.string.discovery_hero_title_line1),
                     style = MaterialTheme.typography.headlineSmall,
                     color = Color.White
                 )
 
                 Text(
-                    text = "near you",
+                    text = stringResource(R.string.discovery_hero_title_line2),
                     style = MaterialTheme.typography.headlineSmall,
                     color = Color.White
                 )
@@ -240,7 +240,7 @@ fun HeroSection(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "Tasty burgers delivered quickly",
+                    text = stringResource(R.string.discovery_hero_subtitle),
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.White
                 )
