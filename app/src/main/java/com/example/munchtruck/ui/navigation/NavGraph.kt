@@ -121,8 +121,9 @@ fun NavGraph() {
                 if (modelClass.isAssignableFrom(DiscoveryViewModel::class.java)) {
                     @Suppress("UNCHECKED_CAST")
                     return DiscoveryViewModel(
-                        discoveryRepository,
-                        locationProvider
+                        discoveryRepository = discoveryRepository,
+                        locationProvider = locationProvider,
+                        menuRepository = menuRepository
                     ) as T
                 }
                 throw IllegalArgumentException("Unknown ViewModel class")
