@@ -20,6 +20,8 @@ class FirebaseMenuRepository (
         auth.currentUser?.uid ?: throw IllegalStateException("Not logged in")
 
 
+    // ============ COLLECTION PATHS ====================================
+
     // OWNER path
     private fun myMenuCollection() =
         firestore.collection("foodTrucks")
@@ -32,6 +34,8 @@ class FirebaseMenuRepository (
             .document(truckId)
             .collection("menu")
 
+
+    // ============ OBSERVE ==============================================
 
 
     override fun observeMyMenu(): Flow<List<MenuItem>> = callbackFlow {
@@ -87,6 +91,8 @@ class FirebaseMenuRepository (
         awaitClose { listener.remove() }
     }
 
+    // ============ CREATE ===============================================
+
 
     override suspend fun addMenuItem(
         name: String,
@@ -109,6 +115,9 @@ class FirebaseMenuRepository (
         return itemRef.id
     }
 
+    // ============ UPDATE ===============================================
+
+
     override suspend fun updateMenuItem(
         itemId: String,
         name: String,
@@ -129,6 +138,10 @@ class FirebaseMenuRepository (
             .await()
 
     }
+
+
+    // ============ DELETE ===============================================
+
 
     override suspend fun deleteMenuItem(itemId: String) {
         myMenuCollection().document(itemId).delete().await()

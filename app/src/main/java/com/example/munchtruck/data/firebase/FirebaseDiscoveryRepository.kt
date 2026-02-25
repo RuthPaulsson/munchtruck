@@ -15,7 +15,6 @@ class FirebaseDiscoveryRepository (
     override fun observeOpenTrucks(): Flow<List<FoodTruck>> = callbackFlow {
 
         val listener = firestore.collection("foodTrucks")
-            .whereEqualTo("isOpen", true) // Tänkt att isOpen är utkommenderad om du ska pröva!!
             .addSnapshotListener { snapshots, e ->
                 if (e != null) {
                     close(e)
@@ -27,7 +26,6 @@ class FirebaseDiscoveryRepository (
                     val description = doc.getString("description").orEmpty()
                     val foodType = doc.getString("foodType").orEmpty()
                     val imageUrl = doc.getString("imageUrl").orEmpty()
-                    val isOpen = doc.getBoolean("isOpen") ?: false
 
                     val loc = doc.get("location") as? Map<*, *>
                     val lat = (loc?.get("latitude") as? Number)?.toDouble()
@@ -36,7 +34,6 @@ class FirebaseDiscoveryRepository (
 
                     if (
                         name.isBlank() ||
-                        !isOpen ||
                         lat == null ||
                         long == null ||
                         lat !in -90.0..90.0 ||
@@ -51,12 +48,11 @@ class FirebaseDiscoveryRepository (
                             description = description,
                             foodType = foodType,
                             imageUrl = imageUrl,
-                            isOpen = true,
                             location = TruckLocation(
                                 latitude = lat,
                                 longitude = long,
                                 address = (loc["address"] as? String).orEmpty(),
-                                updatedAt = (loc["updatedAtMilis"] as? Number)?.toLong() ?: 0L
+                                updatedAt = (loc["updatedAt"] as? Number)?.toLong() ?: 0L
                             )
                         )
                     }

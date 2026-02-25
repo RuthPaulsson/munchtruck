@@ -39,15 +39,13 @@ class FirebaseProfileRepository(
         name: String,
         description: String,
         foodType: String,
-        imageUrl: String,
-//        isOpen: Boolean
+        imageUrl: String
     ) {
 
         val truckUpdates = mutableMapOf<String, Any>(
             "name" to name.trim(),
             "description" to description.trim(),
-            "foodType" to foodType.trim(),
-//            "isOpen" to isOpen
+            "foodType" to foodType.trim()
         )
         if (imageUrl.trim().isNotBlank()) truckUpdates["imageUrl"] = imageUrl.trim()
 
@@ -154,8 +152,7 @@ class FirebaseProfileRepository(
             foodType = doc.getString("foodType").orEmpty(),
             location = location,
             imageUrl = doc.getString("imageUrl").orEmpty(),
-            openingHours = openingHours,
-//            isOpen = doc.getBoolean("isOpen") ?: false
+            openingHours = openingHours
         )
 
 
