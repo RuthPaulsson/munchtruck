@@ -31,6 +31,7 @@ import com.example.munchtruck.data.firebase.FirebaseProfileRepository
 import com.example.munchtruck.data.firebase.StorageImageRepository
 import com.example.munchtruck.data.location.FusedDeviceLocationProvider
 import com.example.munchtruck.ui.discovery.DiscoveryScreen
+import com.example.munchtruck.ui.profile.PublicProfileScreen
 import com.example.munchtruck.viewmodels.DiscoveryViewModel
 import com.example.munchtruck.viewmodels.LocationViewModel
 import com.google.firebase.storage.FirebaseStorage
@@ -214,7 +215,12 @@ fun NavGraph() {
         composable("public_profile/{truckId}") { backStackEntry ->
             val truckId = backStackEntry.arguments?.getString("truckId")
 
-            Text(text = "Public profile for $truckId")
+            if (truckId != null) {
+                PublicProfileScreen(
+                    truckId = truckId,
+                    discoveryViewModel = discoveryViewModel
+                )
+            }
         }
     }
 }
