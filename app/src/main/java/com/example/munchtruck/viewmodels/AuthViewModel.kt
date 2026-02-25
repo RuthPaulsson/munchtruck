@@ -5,17 +5,19 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.munchtruck.util.LoginValidationError
 import com.example.munchtruck.util.ValidationResult
 import com.example.munchtruck.util.Validators
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 sealed class AuthError {
-    object EmptyFields : AuthError()
-    object InvalidEmail : AuthError()
-    object PasswordTooShort : AuthError()
-    object LoginFailed : AuthError()
-    object RegistrationFailed : AuthError()
+    data object EmptyFields : AuthError()
+    data object InvalidEmail : AuthError()
+    data object PasswordTooShort : AuthError()
+    data object LoginFailed : AuthError()
+    data object RegistrationFailed : AuthError()
+    data object PasswordsDoNotMatch : AuthError()
 }
 class AuthViewModel(
     private val repository: AuthRepository = AuthRepository()
@@ -25,7 +27,7 @@ class AuthViewModel(
     val isLoading: StateFlow<Boolean> = _isLoading
 
     private val _error = MutableStateFlow<AuthError?>(null)
-    val error: StateFlow<AuthError?> = _error
+    val error: StateFlow<AuthError?> = _error.asStateFlow()
 
   private val _isLoggedIn = MutableStateFlow(repository.isUserLoggedIn())
 
@@ -41,6 +43,7 @@ class AuthViewModel(
                         is LoginValidationError.EmptyFields -> AuthError.EmptyFields
                         is LoginValidationError.InvalidEmail -> AuthError.InvalidEmail
                         is LoginValidationError.PasswordTooShort -> AuthError.PasswordTooShort
+                        else -> AuthError.LoginFailed
                     }
                     return@launch
                 }
@@ -70,7 +73,13 @@ class AuthViewModel(
 
             when (val validate = Validators.validateRegister(email,password, confirmPassword)) {
                 is ValidationResult.Invalid -> {
-                    _error.value = validate.message
+                    _error.value = when (validate.error) {
+                        is LoginValidationError.EmptyFields -> AuthError.EmptyFields
+                        is LoginValidationError.InvalidEmail -> AuthError.InvalidEmail
+                        is LoginValidationError.PasswordTooShort -> AuthError.PasswordTooShort
+                        is LoginValidationError.PasswordsDoNotMatch -> AuthError.PasswordsDoNotMatch
+                        else -> AuthError.RegistrationFailed
+                    }
                     return@launch
                 }
 
@@ -80,13 +89,12 @@ class AuthViewModel(
             val trimmedEmail = email.trim()
             val trimmedPassword = password.trim()
 
-
             _isLoading.value = true
             try {
                 repository.register(trimmedEmail, trimmedPassword)
                 _isLoggedIn.value = repository.isUserLoggedIn()
             } catch (e: Exception) {
-                _error.value = e.message ?: "Registration failed"
+                _error.value = AuthError.RegistrationFailed
             } finally {
                 _isLoading.value = false
             }
@@ -98,11 +106,5 @@ class AuthViewModel(
         _isLoggedIn.value = false
         _isLoading.value = false
         _error.value = null
-    }
-
-    sealed class LoginValidationError {
-        object EmptyFields : LoginValidationError()
-        object InvalidEmail : LoginValidationError()
-        object PasswordTooShort : LoginValidationError()
     }
 }
