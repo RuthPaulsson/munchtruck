@@ -138,8 +138,19 @@
     <string name="error_location_fetch_failed">Could not fetch your location</string>
 
     <!-- Menu -->
-    <string name="error_invalid_price">Please enter a valid price.</string>
-    <string name="error_invalid_dish_name">Dish name cannot be empty.</string>
+    <string name="error_menu_name_empty">Dish name cannot be empty.</string>
+    <string name="error_menu_name_too_short">Dish name must be at least 2 characters.</string>
+    <string name="error_menu_name_too_long">Dish name can be at most 50 characters.</string>
+    <string name="error_menu_name_only_numbers">Dish name cannot contain only numbers.</string>
+    <string name="error_menu_name_invalid_characters">Dish name contains invalid characters.</string>
+    <string name="error_menu_description_too_long">Description can be at most 200 characters.</string>
+    <string name="error_menu_price_empty">Price cannot be empty.</string>
+    <string name="error_menu_price_invalid_format">Invalid price format.</string>
+    <string name="error_menu_price_must_be_positive">Price must be greater than 0.</string>
+    <string name="error_menu_price_too_high">Price can be at most 9 999.99 kr.</string>
+    <string name="error_menu_price_max_two_decimals">Maximum 2 decimal places allowed.</string>
+    <string name="error_menu_image_invalid_url">Invalid URL. Must start with http:// or https://</string>
+
 
     <!-- Discovery -->
     <string name="error_menu_load_failed">Could not load menu</string>
