@@ -13,6 +13,7 @@ import com.example.munchtruck.data.location.DeviceLocationProvider
 import com.example.munchtruck.data.model.MenuItem
 import com.example.munchtruck.data.repository.DiscoveryRepository
 import com.example.munchtruck.data.repository.MenuRepository
+import com.example.munchtruck.data.repository.ProfileRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 
@@ -23,13 +24,24 @@ data class DiscoveryUiState(
     val userLocation: Location? = null,
     val isListEmpty: Boolean = false,
     val selectedTruckMenu: List<MenuItem> = emptyList(),
-    val isMenuLoading: Boolean = false
+    val isMenuLoading: Boolean = false,
+    val mapMarkers: List<MapMarker> = emptyList(),
+    val isMapLoading: Boolean = false,
+    val locationPermissionError: Boolean = false
+)
+
+data class MapMarker(
+    val id: String,
+    val title: String,
+    val latitude: Double,
+    val longitude: Double
 )
 
 class DiscoveryViewModel(
     private val discoveryRepository: DiscoveryRepository,
     private val locationProvider: DeviceLocationProvider,
-    private val menuRepository: MenuRepository
+    private val menuRepository: MenuRepository,
+    profileRepository: ProfileRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(DiscoveryUiState())
     val uiState: StateFlow<DiscoveryUiState> = _uiState.asStateFlow()
@@ -66,21 +78,38 @@ class DiscoveryViewModel(
         startLocationUpdates()
     }
 
+    private fun updateMapMarkers(trucks: List<FoodTruck>) {
+        val markers = trucks.map { truck ->
+            MapMarker(
+                id = truck.id,
+                title = truck.name,
+                latitude = truck.location?.latitude ?: 0.0,
+                longitude = truck.location?.longitude ?: 0.0
+            )
+        }
+        _uiState.update { it.copy(mapMarkers = markers) }
+    }
     fun observeTrucks() {
         _uiState.update { it.copy(isLoading = true) }
-
-        
 
         viewModelScope.launch {
             try {
                 discoveryRepository.observeOpenTrucks()
                     .collect { trucks ->
-                        _uiState.update {
-                            it.copy(
+                        _uiState.update { currentState ->
+                            currentState.copy(
                                 trucks = trucks,
                                 isLoading = false,
                                 isListEmpty = trucks.isEmpty(),
-                                errorMessage = null
+                                errorMessage = null,
+                                mapMarkers = trucks.map { truck ->
+                                MapMarker(
+                                    id = truck.id,
+                                    title = truck.name,
+                                    latitude = truck.location?.latitude ?: 0.0,
+                                    longitude = truck.location?.longitude ?: 0.0
+                                )
+                                }
                             )
                         }
                     }
@@ -108,18 +137,22 @@ class DiscoveryViewModel(
                     _uiState.update { currentState ->
                         currentState.copy(
                             userLocation = newLocation,
-                            trucks = sortTrucks(currentState.trucks, newLocation)
+                            trucks = sortTrucks(currentState.trucks, newLocation),
+                            locationPermissionError = false
                         )
                     }
                     delay(10000)
                 }
+            } catch (e: SecurityException) {
+                _uiState.update { it.copy(
+                    locationPermissionError = true,
+                    errorMessage = "Location permission denied"
+                )}
             } catch (e: Exception) {
                 _uiState.update { it.copy(errorMessage = "Could not fetch your location") }
             }
         }
     }
-
-
 
     private fun sortTrucks(
         trucks: List<FoodTruck>,
