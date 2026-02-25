@@ -7,9 +7,10 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
-class FirebaseMapRepository : MapRepository {
+class FirebaseMapRepository (
+    private val firestore: FirebaseFirestore,
+): MapRepository {
 
-    private val firestore = FirebaseFirestore.getInstance()
 
     override fun observeActiveTrucksForMap(): Flow<Result<List<MapTruck>>> = callbackFlow {
 
