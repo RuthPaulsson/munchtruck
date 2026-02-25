@@ -42,28 +42,33 @@ object MenuItemValidator {
         }
     }
 
-    fun validatePrice(priceString: String): String? {
+    fun validatePrice(priceString: String): MenuItemValidationError? {
+        val trimmedPrice = priceString.trim()
+        if (trimmedPrice.isBlank()) return MenuItemValidationError.PriceEmpty
+
+        val normalizedPrice = trimmedPrice.replace(",", ".")
+        val price =
+            normalizedPrice.toDoubleOrNull() ?: return MenuItemValidationError.PriceInvalidFormat
+
         return when {
-            priceString.isBlank() -> "Pris kan inte vara tomt"
-            else -> {
-                val price = priceString.replace(",", ".").toDoubleOrNull()
-                when {
-                    price == null -> "Ogiltigt prisformat"
-                    price <= 0 -> "Priset måste vara större än 0"
-                    price > 9999.99 -> "Priset kan vara max 9 999,99 kr"
-                    priceString.contains(".") && priceString.split(".").last().length > 2 ->
-                        "Max 2 decimaler"
-                    else -> null
-                }
-            }
+            price <= 0 -> MenuItemValidationError.PriceMustBeGreaterThanZero
+            price > 9999.99 -> MenuItemValidationError.PriceTooHigh
+            normalizedPrice.contains(".") && normalizedPrice.split(".").last()
+                .length > 2 -> MenuItemValidationError.PriceTooManyDecimals
+
+            else -> null
+
+
         }
     }
 
-    fun validateImageUrl(imageUrl: String): String? {
-        return when {
-            imageUrl.isNotBlank() && !imageUrl.matches(Regex("^(http|https)://.*$")) ->
-                "Ogiltig URL. Måste börja med http:// eller https://"
-            else -> null
+    fun validateImageUrl(imageUrl: String): MenuItemValidationError? {
+        val trimmedImageUrl = imageUrl.trim()
+        
+        return if (trimmedImageUrl.isBlank() && trimmedImageUrl.matches(Regex("^(http|https)://.*$"))) {
+            MenuItemValidationError.ImageUrlInvalid
+        } else {
+            null
         }
     }
 
