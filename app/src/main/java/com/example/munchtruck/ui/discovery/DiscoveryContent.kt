@@ -375,7 +375,7 @@ fun DiscoveryContentPreview() {
                     latitude = 59.33,
                     longitude = 18.06,
                     address = "Stockholm",
-                    updatedAtMilis = 0L
+                    updatedAt = 0L
                 )
             )
         )
