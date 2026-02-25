@@ -12,10 +12,16 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.update
 
+sealed class ProfileError {
+    data object LoadProfileFailed : ProfileError()
+    data object UpdateFailed : ProfileError()
+    data object SignOutFailed : ProfileError()
+    data object EmptyName : ProfileError()
+}
 data class ProfileUiState(
     val isLoading: Boolean = false,
     val isSaving: Boolean = false,
-    val error: String? = null,
+    val error: ProfileError? = null,
     val saveSuccess: Boolean = false,
     val name: String = "",
     val description: String = "",
@@ -39,7 +45,7 @@ class ProfileViewModel(
     ) {
 
         if (name.isBlank()) {
-            _uiState.update { it.copy(error = "Name cannot be empty") }
+            _uiState.update { it.copy(error = ProfileError.EmptyName) }
             return
         }
 
@@ -60,7 +66,7 @@ class ProfileViewModel(
                 _uiState.update {
                     it.copy(
                         isSaving = false,
-                        error = e.localizedMessage ?: "Failed to update profile"
+                        error = ProfileError.UpdateFailed
                     )
                 }
             }
@@ -86,7 +92,7 @@ class ProfileViewModel(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = e.localizedMessage ?: "Failed to load profile"
+                        error = ProfileError.LoadProfileFailed
                     )
                 }
             }

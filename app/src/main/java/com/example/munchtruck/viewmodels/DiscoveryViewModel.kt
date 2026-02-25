@@ -17,17 +17,23 @@ import com.example.munchtruck.data.repository.ProfileRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 
+sealed class DiscoveryError {
+    data object LocationPermissionDenied : DiscoveryError()
+    data object LocationFetchFailed : DiscoveryError()
+    data object LoadTrucksFailed : DiscoveryError()
+    data object LoadMenuFailed : DiscoveryError()
+}
 data class DiscoveryUiState(
     val trucks: List<FoodTruck> = emptyList(),
     val isLoading: Boolean = false,
-    val errorMessage: String? = null,
+    val error: DiscoveryError? = null,
     val userLocation: Location? = null,
     val isListEmpty: Boolean = false,
     val selectedTruckMenu: List<MenuItem> = emptyList(),
     val isMenuLoading: Boolean = false,
     val mapMarkers: List<MapMarker> = emptyList(),
     val isMapLoading: Boolean = false,
-    val locationPermissionError: Boolean = false
+
 )
 
 data class MapMarker(
@@ -63,7 +69,7 @@ class DiscoveryViewModel(
             } catch (e: Exception) {
                 _uiState.update { it.copy(
                     isMenuLoading = false,
-                    errorMessage = "Could not load menu: ${e.localizedMessage}"
+                    error = DiscoveryError.LoadMenuFailed
                 ) }
             }
         }
@@ -101,7 +107,7 @@ class DiscoveryViewModel(
                                 trucks = trucks,
                                 isLoading = false,
                                 isListEmpty = trucks.isEmpty(),
-                                errorMessage = null,
+                                error = null,
                                 mapMarkers = trucks.map { truck ->
                                 MapMarker(
                                     id = truck.id,
@@ -117,7 +123,7 @@ class DiscoveryViewModel(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        errorMessage = e.localizedMessage ?: "Failed to load trucks"
+                        error = DiscoveryError.LoadTrucksFailed
                     )
                 }
             }
@@ -138,18 +144,17 @@ class DiscoveryViewModel(
                         currentState.copy(
                             userLocation = newLocation,
                             trucks = sortTrucks(currentState.trucks, newLocation),
-                            locationPermissionError = false
+                            error = null
                         )
                     }
                     delay(10000)
                 }
             } catch (e: SecurityException) {
                 _uiState.update { it.copy(
-                    locationPermissionError = true,
-                    errorMessage = "Location permission denied"
+                    error = DiscoveryError.LocationPermissionDenied
                 )}
             } catch (e: Exception) {
-                _uiState.update { it.copy(errorMessage = "Could not fetch your location") }
+                _uiState.update { it.copy(error = DiscoveryError.LocationFetchFailed) }
             }
         }
     }
