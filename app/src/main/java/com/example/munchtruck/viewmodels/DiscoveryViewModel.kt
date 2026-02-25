@@ -75,10 +75,6 @@ class DiscoveryViewModel(
         }
     }
 
-    fun formatPrice(price: Long): String {
-        return "$price kr"
-    }
-
     init {
         observeTrucks()
         startLocationUpdates()
