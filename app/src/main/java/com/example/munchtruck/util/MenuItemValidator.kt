@@ -11,7 +11,6 @@ object MenuItemValidator {
 
         data object DescriptionTooLong : MenuItemValidationError()
 
-
         data object PriceEmpty : MenuItemValidationError()
         data object PriceInvalidFormat : MenuItemValidationError()
         data object PriceMustBeGreaterThanZero : MenuItemValidationError()
@@ -73,41 +72,4 @@ object MenuItemValidator {
         }
     }
 
-
-
-    fun validateFields(
-        name: String,
-        priceString: String,
-        description: String = "",
-        imageUrl: String = ""
-    ): MenuItemFieldErrors {
-        return MenuItemFieldErrors(
-            name = validateName(name),
-            price = validatePrice(priceString),
-            description = validateDescription(description),
-            imageUrl = validateImageUrl(imageUrl)
-        )
-    }
-
-    fun validateFirst(
-        name: String,
-        priceString: String,
-        description: String = "",
-        imageUrl: String = ""
-    ): MenuItemValidationError? {
-        return validateName(name)
-            ?: validatePrice(priceString)
-            ?: validateDescription(description)
-            ?: validateImageUrl(imageUrl)
-    }
-
-
-    fun validateAll(
-        name: String,
-        priceString: String,
-        description: String = "",
-        imageUrl: String = ""
-    ): Boolean {
-        return validateFirst(name, priceString, description, imageUrl) == null
-    }
 }
