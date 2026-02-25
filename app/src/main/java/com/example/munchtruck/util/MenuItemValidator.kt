@@ -65,12 +65,42 @@ object MenuItemValidator {
     fun validateImageUrl(imageUrl: String): MenuItemValidationError? {
         val trimmedImageUrl = imageUrl.trim()
         
-        return if (trimmedImageUrl.isBlank() && trimmedImageUrl.matches(Regex("^(http|https)://.*$"))) {
+        return if (trimmedImageUrl.isBlank() &&
+            !trimmedImageUrl.matches(Regex("^(http|https)://.*$"))) {
             MenuItemValidationError.ImageUrlInvalid
         } else {
             null
         }
     }
+
+
+
+    fun validateFields(
+        name: String,
+        priceString: String,
+        description: String = "",
+        imageUrl: String = ""
+    ): MenuItemFieldErrors {
+        return MenuItemFieldErrors(
+            name = validateName(name),
+            price = validatePrice(priceString),
+            description = validateDescription(description),
+            imageUrl = validateImageUrl(imageUrl)
+        )
+    }
+
+    fun validateFirst(
+        name: String,
+        priceString: String,
+        description: String = "",
+        imageUrl: String = ""
+    ): MenuItemValidationError? {
+        return validateName(name)
+            ?: validatePrice(priceString)
+            ?: validateDescription(description)
+            ?: validateImageUrl(imageUrl)
+    }
+
 
     fun validateAll(
         name: String,
@@ -78,9 +108,6 @@ object MenuItemValidator {
         description: String = "",
         imageUrl: String = ""
     ): Boolean {
-        return validateName(name) == null &&
-                validatePrice(priceString) == null &&
-                validateDescription(description) == null &&
-                validateImageUrl(imageUrl) == null
+        return validateFirst(name, priceString, description, imageUrl) == null
     }
 }
