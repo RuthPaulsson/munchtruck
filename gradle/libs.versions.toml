@@ -45,6 +45,8 @@ coreTesting = "2.2.0"
 coroutinesTest = "1.10.2"
 robolectric = "4.16.1"
 firebaseStorage = "22.0.1"
+runtime = "1.10.3"
+foundationLayout = "1.10.3"
 
 
 [libraries]
@@ -101,6 +103,8 @@ robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectr
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
+androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
+androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "foundationLayout" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
