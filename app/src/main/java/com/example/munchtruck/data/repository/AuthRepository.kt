@@ -38,7 +38,8 @@ class AuthRepository {
             "location" to "",
             "imageUrl" to "",
             "foodType" to "",
-            "isOpen" to false
+            "openingHours" to ""
+//            "isOpen" to false
         )
 
         firestore.runBatch { batch ->
