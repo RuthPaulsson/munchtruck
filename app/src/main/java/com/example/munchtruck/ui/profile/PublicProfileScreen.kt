@@ -4,7 +4,9 @@ package com.example.munchtruck.ui.profile
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.munchtruck.R
 import com.example.munchtruck.ui.components.CenteredLoading
 import com.example.munchtruck.ui.components.CenteredMessage
 import com.example.munchtruck.ui.components.CenteredMessageWithRetry
@@ -39,11 +41,16 @@ fun PublicProfileScreen(
             )
         }
         truck == null -> {
-            CenteredMessage("Truck not found")
+            CenteredMessage(
+                stringResource(R.string.public_profile_truck_not_found)
+            )
         }
 
         uiState.selectedTruckMenu.isEmpty() -> {
-            CenteredMessage("This truck has no menu items yet")
+            CenteredMessage(
+                stringResource(R.string.public_profile_menu_empty)
+
+            )
         }
 
 

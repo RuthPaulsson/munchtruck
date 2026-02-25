@@ -6,10 +6,15 @@
     <string name="input_password_hint">Password</string>
     <string name="input_confirm_password_hint">Enter password again</string>
 
-    <!-- ===== Start screen ======================================  -->
+    <!-- ===== Common actions ====================================== -->
+
+    <string name="common_back">Back</string>
+    <string name="common_save">Save</string>
+    <string name="common_cancel">Cancel</string>
+
+    <!-- ===== Start screen ====================================== -->
 
     <string name="app_name">munchtruck</string>
-
     <string name="logo_munchtruck">MunchTruck logo</string>
     <string name="start_welcome">Welcome to</string>
 
@@ -19,26 +24,21 @@
     <string name="start_lover_title">I\'m a Food Lover</string>
     <string name="start_lover_subtitle">For those of you who want to find a food truck</string>
 
-
     <!-- ===== Login screen ====================================== -->
 
     <string name="login_forgot_password">Forgot password?</string>
     <string name="login_button">Log In</string>
-
     <string name="login_no_account">Don\'t have an account?</string>
     <string name="login_create_account">Create one here</string>
 
     <!-- ===== Register screen ====================================== -->
 
     <string name="register_subtitle">Register as a food truck owner</string>
-
     <string name="register_company_label">Company name</string>
     <string name="register_company_hint">Enter name</string>
-
     <string name="register_email_label">Email address</string>
     <string name="register_password_label">Password</string>
     <string name="register_confirm_label">Confirm password</string>
-
     <string name="register_button">Get Started</string>
 
     <!-- ===== Profile screen ====================================== -->
@@ -52,13 +52,19 @@
     <string name="profile_options">Profile options</string>
     <string name="profile_edit">Edit profile</string>
     <string name="profile_logout">Log out</string>
+
+    <!-- ===== Public Profile screen ====================================== -->
+
+    <string name="public_profile_truck_not_found">Truck not found</string>
+    <string name="public_profile_menu_empty">This truck has no menu items yet</string>
+
+    <!-- ===== Formatting / Currency ====================================== -->
+
     <string name="menu_price_format">%1$d %2$s</string>
     <string name="currency_sek">kr</string>
 
     <!-- ===== Edit Profile screen ====================================== -->
 
-    <string name="common_back">Back</string>
-    <string name="common_save">Save</string>
     <string name="edit_profile_title">Edit Profile</string>
     <string name="profile_name_hint">Add Truck name..</string>
     <string name="profile_description_hint">Add a short info about your food truck and the food you serve..</string>
@@ -72,7 +78,6 @@
     <string name="menu_empty">No dishes added yet. Tap “Manage Menu” to add one.</string>
     <string name="menu_add_dish">+ Add dish</string>
 
-
     <!-- ===== Edit Menu screen ====================================== -->
 
     <string name="menu_title">Menu</string>
@@ -83,35 +88,28 @@
     <string name="menu_no_image">No image selected</string>
     <string name="menu_delete">Delete dish</string>
     <string name="menu_item_saved">Menu item saved</string>
-
-
-    <string name="invalid_price">Please enter a valid price.</string>
     <string name="delete_title">Delete dish</string>
     <string name="delete_message">Are you sure you want to delete this dish?</string>
     <string name="delete_confirm">Delete</string>
     <string name="dish_deleted">Dish deleted successfully.</string>
-    <string name="common_cancel">Cancel</string>
-    <string name="invalid_dish_name">Dish name cannot be empty.</string>
     <string name="menu_edit">Edit dish</string>
     <string name="menu_delete_icon">Delete dish</string>
 
+    <!-- ===== Discovery screen ====================================== -->
 
+    <string name="discovery_empty_nearby">No trucks near you</string>
+    <string name="discovery_search_placeholder">What are you craving?</string>
+    <string name="discovery_category_burger">Burger</string>
+    <string name="discovery_category_tacos">Tacos</string>
+    <string name="discovery_category_pizza">Pizza</string>
+    <string name="discovery_hero_title_line1">Discover burgers</string>
+    <string name="discovery_hero_title_line2">near you</string>
+    <string name="discovery_hero_subtitle">Tasty burgers delivered quickly</string>
 
     <!-- ===== Location strings ====================================== -->
 
     <string name="location_permission_required">Location permission required</string>
-    <string name="location_permission_denied">Location permission denied</string>
-
-    <string name="location_error_permission_denied">Location permission denied</string>
-    <string name="location_error_no_location">Could not get current location</string>
-    <string name="location_error_invalid_coordinates">Invalid location selected</string>
-    <string name="location_error_gps_timeout">GPS timeout - please try again or select manually</string>
-    <string name="location_error_address_too_short">Address must be at least 3 characters</string>
-    <string name="location_error_save_failed">Failed to save location</string>
-    <string name="location_error_unknown">An unknown error occurred</string>
-
     <string name="location_save_success">Location saved successfully</string>
-
     <string name="location_no_location_selected">No location selected</string>
     <string name="location_use_current">Use current location</string>
     <string name="location_select_on_map">Select on map</string>
@@ -120,4 +118,40 @@
     <string name="location_latitude">Latitude</string>
     <string name="location_longitude">Longitude</string>
     <string name="location_formatted">Formatted</string>
+
+    <!-- ===== Error Messages ====================================== -->
+
+    <!-- Profile -->
+    <string name="error_profile_name_empty">Name cannot be empty</string>
+    <string name="error_profile_update_failed">Failed to update profile</string>
+    <string name="error_profile_load_failed">Failed to load profile</string>
+
+    <!-- Location -->
+    <string name="error_location_load_failed">Could not load saved location</string>
+    <string name="error_location_permission_denied">Location permission denied</string>
+    <string name="error_location_no_location">Could not get current location</string>
+    <string name="error_location_invalid_coordinates">Invalid location selected</string>
+    <string name="error_location_gps_timeout">GPS timeout - please try again or select manually</string>
+    <string name="error_location_address_too_short">Address must be at least 3 characters</string>
+    <string name="error_location_save_failed">Failed to save location</string>
+    <string name="error_location_unknown">An unknown error occurred</string>
+    <string name="error_location_fetch_failed">Could not fetch your location</string>
+
+    <!-- Menu -->
+    <string name="error_invalid_price">Please enter a valid price.</string>
+    <string name="error_invalid_dish_name">Dish name cannot be empty.</string>
+
+    <!-- Discovery -->
+    <string name="error_menu_load_failed">Could not load menu</string>
+    <string name="error_trucks_load_failed">Failed to load trucks</string>
+
+    <!-- Auth -->
+    <string name="error_login_failed">Login failed</string>
+    <string name="error_registration_failed">Registration failed</string>
+    <string name="error_login_empty_fields">Email and password cannot be empty</string>
+    <string name="error_invalid_email">Invalid email address</string>
+    <string name="error_password_too_short">Password must be at least 6 characters long</string>
+    <string name="error_confirm_password_empty">Confirm password cannot be empty</string>
+    <string name="error_passwords_not_matching">Passwords do not match</string>
+
 </resources>
