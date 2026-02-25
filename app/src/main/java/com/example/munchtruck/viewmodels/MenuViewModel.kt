@@ -12,10 +12,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+sealed class MenuError {
+    data object LoadMenuFailed : MenuError()
+    data object SaveItemFailed : MenuError()
+    data object DeleteItemFailed : MenuError()
+}
 data class MenuUiState(
     val menuItems: List<MenuItem> = emptyList(),
     val isLoading: Boolean = false,
-    val error: String? = null,
+    val error: MenuError? = null,
     val saveSuccess: Boolean = false
 )
 class MenuViewModel(
@@ -67,7 +72,7 @@ class MenuViewModel(
                 _uiState.update { it.copy(isLoading = false, saveSuccess = true) }
 
             } catch (e: Exception) {
-                _uiState.update { it.copy(isLoading = false, error = e.localizedMessage) }
+                _uiState.update { it.copy(isLoading = false, error = MenuError.SaveItemFailed) }
             }
         }
     }
@@ -95,7 +100,7 @@ class MenuViewModel(
                 _uiState.update { it.copy(isLoading = false, saveSuccess = true) }
 
             } catch (e: Exception) {
-                _uiState.update { it.copy(isLoading = false, error = e.localizedMessage) }
+                _uiState.update { it.copy(isLoading = false, error = MenuError.SaveItemFailed) }
             }
         }
     }
@@ -105,7 +110,7 @@ class MenuViewModel(
             try {
                 repository.deleteMenuItem(itemId)
             } catch (e: Exception) {
-                _uiState.update { it.copy(error = e.localizedMessage) }
+                _uiState.update { it.copy(error = MenuError.DeleteItemFailed) }
             }
         }
     }
@@ -121,5 +126,4 @@ class MenuViewModel(
     fun resetSaveState() {
         _uiState.update { it.copy(saveSuccess = false) }
     }
-
 }

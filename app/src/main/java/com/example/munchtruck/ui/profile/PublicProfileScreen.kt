@@ -17,7 +17,7 @@ fun PublicProfileScreen(
 
 ) {
     val uiState by discoveryViewModel.uiState.collectAsStateWithLifecycle()
-    val error = uiState.errorMessage
+    val error = uiState.error
 
     LaunchedEffect(truckId) {
         discoveryViewModel.selectedTruckAndLoadMenu(truckId)

@@ -84,7 +84,7 @@ fun DiscoveryContent(
                 }
 
                 // Error state
-                if (uiState.errorMessage != null) {
+                if (uiState.error != null) {
                     item {
                         Box(
                             modifier = Modifier
@@ -92,7 +92,7 @@ fun DiscoveryContent(
                                 .padding(32.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(uiState.errorMessage)
+                            Text(uiState.error)
                         }
                     }
                 }
@@ -384,7 +384,7 @@ fun DiscoveryContentPreview() {
             uiState = DiscoveryUiState(
                 trucks = mockTrucks,
                 isLoading = false,
-                errorMessage = null,
+                error = null,
                 isListEmpty = false
             ),
             searchQuery= searchQuery.value,
