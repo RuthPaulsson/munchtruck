@@ -6,12 +6,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.munchtruck.data.model.FoodTruck
-import com.example.munchtruck.data.repository.ProfileRepository
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import android.location.Location
 import com.example.munchtruck.data.location.DeviceLocationProvider
-import kotlinx.coroutines.flow.collect
+import com.example.munchtruck.data.model.MenuItem
+import com.example.munchtruck.data.repository.DiscoveryRepository
+import com.example.munchtruck.data.repository.MenuRepository
+import com.example.munchtruck.data.repository.ProfileRepository
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 
 data class DiscoveryUiState(
@@ -19,35 +22,97 @@ data class DiscoveryUiState(
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
     val userLocation: Location? = null,
-    val isListEmpty: Boolean = false
+    val isListEmpty: Boolean = false,
+    val selectedTruckMenu: List<MenuItem> = emptyList(),
+    val isMenuLoading: Boolean = false,
+    val mapMarkers: List<MapMarker> = emptyList(),
+    val isMapLoading: Boolean = false,
+    val locationPermissionError: Boolean = false
+)
+
+data class MapMarker(
+    val id: String,
+    val title: String,
+    val latitude: Double,
+    val longitude: Double
 )
 
 class DiscoveryViewModel(
-    private val profileRepository: ProfileRepository,
-    private val locationProvider: DeviceLocationProvider
+    private val discoveryRepository: DiscoveryRepository,
+    private val locationProvider: DeviceLocationProvider,
+    private val menuRepository: MenuRepository,
+    profileRepository: ProfileRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(DiscoveryUiState())
     val uiState: StateFlow<DiscoveryUiState> = _uiState.asStateFlow()
+    private var menuJob: Job? = null
+
+    fun selectedTruckAndLoadMenu(truckId: String) {
+        menuJob?.cancel()
+
+        _uiState.update { it.copy(isMenuLoading = true) }
+
+        menuJob = viewModelScope.launch {
+            try {
+                menuRepository.observeTruckMenu(truckId).collect { items ->
+                    _uiState.update { it.copy(
+                        selectedTruckMenu = items,
+                        isMenuLoading = false
+                    ) }
+                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(
+                    isMenuLoading = false,
+                    errorMessage = "Could not load menu: ${e.localizedMessage}"
+                ) }
+            }
+        }
+    }
+
+    fun formatPrice(price: Long): String {
+        return "$price kr"
+    }
 
     init {
         observeTrucks()
         startLocationUpdates()
     }
 
+    private fun updateMapMarkers(trucks: List<FoodTruck>) {
+        val markers = trucks.map { truck ->
+            MapMarker(
+                id = truck.id,
+                title = truck.name,
+                latitude = truck.location?.latitude ?: 0.0,
+                longitude = truck.location?.longitude ?: 0.0
+            )
+        }
+        _uiState.update { it.copy(mapMarkers = markers) }
+    }
     fun observeTrucks() {
         _uiState.update { it.copy(isLoading = true) }
 
         viewModelScope.launch {
             try {
-                val allTrucks = profileRepository.getAllTrucks()
-                _uiState.update {
-                    it.copy(
-                        trucks = allTrucks,
-                        isLoading = false,
-                        isListEmpty = allTrucks.isEmpty()
-                    )
-                }
-
+                discoveryRepository.observeOpenTrucks()
+                    .collect { trucks ->
+                        _uiState.update { currentState ->
+                            currentState.copy(
+                                trucks = trucks,
+                                isLoading = false,
+                                isListEmpty = trucks.isEmpty(),
+                                errorMessage = null,
+                                mapMarkers = trucks.map { truck ->
+                                MapMarker(
+                                    id = truck.id,
+                                    title = truck.name,
+                                    latitude = truck.location?.latitude ?: 0.0,
+                                    longitude = truck.location?.longitude ?: 0.0
+                                )
+                                }
+                            )
+                        }
+                    }
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(
@@ -72,26 +137,44 @@ class DiscoveryViewModel(
                     _uiState.update { currentState ->
                         currentState.copy(
                             userLocation = newLocation,
-                            trucks = sortTrucks(currentState.trucks, newLocation)
+                            trucks = sortTrucks(currentState.trucks, newLocation),
+                            locationPermissionError = false
                         )
                     }
                     delay(10000)
                 }
+            } catch (e: SecurityException) {
+                _uiState.update { it.copy(
+                    locationPermissionError = true,
+                    errorMessage = "Location permission denied"
+                )}
             } catch (e: Exception) {
                 _uiState.update { it.copy(errorMessage = "Could not fetch your location") }
             }
         }
     }
 
-    fun sortTrucks(trucks: List<FoodTruck>, location: Location?): List<FoodTruck> {
+    private fun sortTrucks(
+        trucks: List<FoodTruck>,
+        location: Location?
+    ): List<FoodTruck> {
+
         if (location == null) return trucks
 
-        return trucks.sortedBy { truck ->
-            val truckLocation = Location("").apply {
-                latitude = truck.location?.latitude ?: 0.0
-                longitude = truck.location?.longitude ?: 0.0
+        return trucks
+
+            .filter { it.location != null }
+
+            .sortedBy { truck ->
+
+                val loc = truck.location ?: return@sortedBy Double.MAX_VALUE
+
+                val truckLoc = Location("").apply {
+                    latitude = loc.latitude
+                    longitude = loc.longitude
+                }
+
+                location.distanceTo(truckLoc).toDouble()
             }
-            location.distanceTo(truckLocation)
-        }
     }
 }

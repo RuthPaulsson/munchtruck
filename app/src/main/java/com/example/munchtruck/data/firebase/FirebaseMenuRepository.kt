@@ -61,7 +61,10 @@ class FirebaseMenuRepository (
     }
 
     override fun observeTruckMenu(truckId: String): Flow<List<MenuItem>> = callbackFlow {
-        val listener = truckMenuCollection(truckId).addSnapshotListener { snapshot, e ->
+        val listener = firestore.collection("foodTrucks")
+            .document(truckId)
+            .collection("menu")
+            .addSnapshotListener { snapshot, e ->
             if (e != null) {
                 close(e)
                 return@addSnapshotListener
