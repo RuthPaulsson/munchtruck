@@ -1,9 +1,14 @@
 package com.example.munchtruck.util
 
-
+sealed class LoginValidationError {
+    data object EmptyFields : LoginValidationError()
+    data object InvalidEmail : LoginValidationError()
+    data object PasswordTooShort : LoginValidationError()
+    data object PasswordsDoNotMatch : LoginValidationError()
+}
 sealed class ValidationResult {
     data object Valid : ValidationResult()
-    data class Invalid(val message: String) : ValidationResult()
+    data class Invalid(val error: LoginValidationError) : ValidationResult()
 }
 
 object Validators {
@@ -15,15 +20,15 @@ object Validators {
         val trimmedPassword = password.trim()
 
         if (trimmedEmail.isBlank() || trimmedPassword.isBlank()) {
-            return ValidationResult.Invalid("Email and password cannot be empty")
+            return ValidationResult.Invalid(LoginValidationError.EmptyFields)
         }
 
         if (!trimmedEmail.matches(EMAIL_REGEX)) {
-            return ValidationResult.Invalid("Invalid email address")
+            return ValidationResult.Invalid(LoginValidationError.InvalidEmail)
         }
 
         if (trimmedPassword.length < 6) {
-            return ValidationResult.Invalid("Password must be at least 6 characters long")
+            return ValidationResult.Invalid(LoginValidationError.PasswordTooShort)
         }
 
         return ValidationResult.Valid
@@ -40,11 +45,11 @@ object Validators {
         }
 
         if (trimmedConfirmPassword.isBlank()) {
-            return ValidationResult.Invalid("Confirm password cannot be empty")
+            return ValidationResult.Invalid(LoginValidationError.EmptyFields)
         }
 
         if (trimmedPassword != trimmedConfirmPassword) {
-            return ValidationResult.Invalid("Passwords do not match")
+            return ValidationResult.Invalid(LoginValidationError.PasswordsDoNotMatch)
         }
         return ValidationResult.Valid
     }
