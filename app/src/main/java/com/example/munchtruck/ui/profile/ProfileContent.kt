@@ -48,6 +48,7 @@ import com.example.munchtruck.ui.theme.Dimens.SpaceXS
 import com.example.munchtruck.R
 import com.example.munchtruck.ui.theme.Dimens
 import com.example.munchtruck.ui.theme.Dimens.HeroHeight
+import com.example.munchtruck.ui.theme.Dimens.MenuItemImageIconSize
 import com.example.munchtruck.ui.theme.Dimens.MenuItemImageRadius
 import com.example.munchtruck.ui.theme.Dimens.MenuItemImageSize
 import com.example.munchtruck.ui.theme.Dimens.SpaceM
@@ -108,7 +109,7 @@ fun ProfileContent (
             Text(
                 text = stringResource(R.string.profile_about),
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier.padding(horizontal = SpaceM)
             )
         }
 
@@ -117,7 +118,7 @@ fun ProfileContent (
         Text(
             text = description,
             style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = SpaceM)
         )
 
         Spacer(modifier = Modifier.height(SpaceL))
@@ -186,7 +187,6 @@ fun ProfileHeroSection(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(RoundedCornerShape(0.dp))
                     .background(MaterialTheme.colorScheme.surfaceVariant),
                 contentAlignment = Alignment.Center
             ) {
@@ -194,7 +194,7 @@ fun ProfileHeroSection(
                     imageVector = Icons.Default.RestaurantMenu,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.height(64.dp)
+                    modifier = Modifier.height(MenuItemImageIconSize)
                 )
             }
         }
@@ -205,7 +205,7 @@ fun ProfileHeroSection(
             Box(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(16.dp)
+                    .padding(SpaceM)
             ){
                 IconButton(onClick = { expanded = true }) {
                     Icon(

@@ -12,52 +12,69 @@ object Dimens {
 
     // ====== Spacing / Padding ===============================
 
-    val ScreenPadding = 24.dp
     val SpaceXS = 4.dp
     val SpaceS = 8.dp
+    val SpaceSM = 12.dp
     val SpaceM = 16.dp
     val SpaceL = 24.dp
+    val SpaceXL = 32.dp
+    val SpaceXXL = 40.dp
+    val SpaceXXXL = 45.dp
+    val ScreenPadding = 24.dp
     val SpaceBetweenLinkAndButton = 15.dp
     val SpaceAfterButton = 10.dp
+
+    // ====== Radius ===============================
+
+    val ButtonRadius = 16.dp
+    val InputRadius = 12.dp
+    val CardRadiusLarge = 20.dp
+    val ChipRadius = 12.dp
+    val TruckImageRadius = 16.dp
+    val ProfileImageRadius = 16.dp
+    val MenuImageRadius = 16.dp
+    val MenuItemImageRadius = 12.dp
+    val ProfileImageButtonRadius = 50.dp
+
+    // ====== Text Sizes ===============================
+
+    val TitleLarge = 45.sp
 
     // ====== Logo / Images ===============================
 
     val LogoHeightSmall = 60.dp
     val LogoHeightLarge = 90.dp
     val LogoWidthSmall = 0.7f
+    val HeroLogoWidth = 200.dp
+    val HeroLogoTopPadding = 20.dp
 
-    // ====== Buttons ===============================
-
-    val ButtonRadius = 16.dp
-    val InputRadius = 12.dp
-
-    // ====== Top spacing (hero sections) ===============================
+    // ====== Start ===============================
 
     val StartTopSpacing = 230.dp
     val LoginTopSpacing = 180.dp
 
+    // ====== Discovery ===============================
 
-    // ====== Text sizes ===============================
+    val DiscoveryHeroHeight = 380.dp
+    val SearchFieldRadius = 16.dp
 
-    val TitleLarge = 45.sp
+    val ChipHorizontalPadding = 12.dp
+    val ChipVerticalPadding = 6.dp
+    val ChipSpacing = 6.dp
+
+    val TruckImageSize = 64.dp
+
+    // ====== Profile ===============================
+
+    val ProfileImageHeight = 200.dp
+    val LocationMapHeight = 160.dp
+    val TopBarLogoHeight = 28.dp
+    val HeroHeight = 220.dp
+    val MenuItemImageSize = 80.dp
+    val MenuItemImageIconSize = 64.dp
 
     // ====== Menu ===============================
 
     val MenuImageHeight = 180.dp
-    val MenuImageRadius = 16.dp
     val MenuImageButtonBottomPadding = 12.dp
-
-    // ===== Profile ===============================
-
-    val ProfileImageHeight = 200.dp
-    val ProfileImageRadius = 16.dp
-    val ProfileImageButtonRadius = 50.dp
-    val LocationMapHeight = 160.dp
-    val TopBarLogoHeight = 28.dp
-
-    val HeroHeight = 220.dp
-    val MenuItemImageSize = 80.dp
-    val MenuItemImageRadius = 12.dp
-    val MenuItemImageIconSize = 64.dp
-
 }

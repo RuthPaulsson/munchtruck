@@ -48,6 +48,24 @@ import com.example.munchtruck.data.model.FoodTruck
 import com.example.munchtruck.data.model.TruckLocation
 import com.example.munchtruck.ui.components.InputField
 import com.example.munchtruck.ui.theme.AppPreviewWrapper
+import com.example.munchtruck.ui.theme.Dimens.CardRadiusLarge
+import com.example.munchtruck.ui.theme.Dimens.ChipHorizontalPadding
+import com.example.munchtruck.ui.theme.Dimens.ChipRadius
+import com.example.munchtruck.ui.theme.Dimens.ChipSpacing
+import com.example.munchtruck.ui.theme.Dimens.ChipVerticalPadding
+import com.example.munchtruck.ui.theme.Dimens.DiscoveryHeroHeight
+import com.example.munchtruck.ui.theme.Dimens.HeroLogoTopPadding
+import com.example.munchtruck.ui.theme.Dimens.HeroLogoWidth
+import com.example.munchtruck.ui.theme.Dimens.ScreenPadding
+import com.example.munchtruck.ui.theme.Dimens.SearchFieldRadius
+import com.example.munchtruck.ui.theme.Dimens.SpaceM
+import com.example.munchtruck.ui.theme.Dimens.SpaceS
+import com.example.munchtruck.ui.theme.Dimens.SpaceSM
+import com.example.munchtruck.ui.theme.Dimens.SpaceXL
+import com.example.munchtruck.ui.theme.Dimens.SpaceXXL
+import com.example.munchtruck.ui.theme.Dimens.SpaceXXXL
+import com.example.munchtruck.ui.theme.Dimens.TruckImageRadius
+import com.example.munchtruck.ui.theme.Dimens.TruckImageSize
 import com.example.munchtruck.util.DistanceUtils.formatDistance
 import com.example.munchtruck.viewmodels.DiscoveryUiState
 
@@ -89,7 +107,7 @@ fun DiscoveryContent(
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(32.dp),
+                                .padding(SpaceXL),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(uiState.error)
@@ -103,7 +121,7 @@ fun DiscoveryContent(
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(32.dp),
+                                .padding(SpaceXL),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(stringResource(R.string.discovery_empty_nearby))
@@ -139,7 +157,7 @@ fun HeroSection(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(380.dp)
+            .height(DiscoveryHeroHeight)
     ){
         Image(
             painter = painterResource(R.drawable.discovery_hero),
@@ -166,7 +184,7 @@ fun HeroSection(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 24.dp),
+                .padding(horizontal = ScreenPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -174,11 +192,11 @@ fun HeroSection(
                 painter = painterResource(R.drawable.munchtruck_text),
                 contentDescription = stringResource(R.string.logo_munchtruck),
                 modifier = Modifier
-                    .padding(top = 20.dp)
-                    .width(200.dp)
+                    .padding(top = HeroLogoTopPadding)
+                    .width(HeroLogoWidth)
             )
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(SpaceXXL))
 
             InputField(
                 value = searchQuery,
@@ -197,7 +215,7 @@ fun HeroSection(
                         contentDescription = null
                     )
                 },
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(SearchFieldRadius),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -207,21 +225,21 @@ fun HeroSection(
 
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(SpaceSM))
 
             Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(SpaceSM)
             ) {
                 CategoryChip(stringResource(R.string.discovery_category_burger), "🍔")
                 CategoryChip(stringResource(R.string.discovery_category_tacos), "🌮")
                 CategoryChip(stringResource(R.string.discovery_category_pizza), "🍕")
             }
-            Spacer(modifier = Modifier.height(45.dp))
+            Spacer(modifier = Modifier.height(SpaceXXXL))
 
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 40.dp),
+                    .padding(bottom = SpaceXXL),
                 horizontalAlignment = Alignment.Start
             ) {
 
@@ -237,7 +255,7 @@ fun HeroSection(
                     color = Color.White
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(SpaceS))
 
                 Text(
                     text = stringResource(R.string.discovery_hero_subtitle),
@@ -254,19 +272,19 @@ fun HeroSection(
 @Composable
 fun CategoryChip(text: String, emoji: String) {
     Card(
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(ChipRadius),
         modifier = Modifier.clickable { }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+            modifier = Modifier.padding(horizontal = ChipHorizontalPadding, vertical = ChipVerticalPadding)
         ) {
             Text(
                 text = emoji,
                 style = MaterialTheme.typography.bodyMedium
             )
 
-            Spacer(modifier = Modifier.width(6.dp))
+            Spacer(modifier = Modifier.width(ChipSpacing))
 
             Text(
                 text = text,
@@ -286,14 +304,14 @@ fun TruckItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp, vertical = 8.dp)
+            .padding(SpaceM, vertical = SpaceS)
             .clickable{ onClick() },
-        shape = RoundedCornerShape(20.dp)
+        shape = RoundedCornerShape(CardRadiusLarge)
 
     ) {
         Row(
             modifier = Modifier
-                .padding(16.dp),
+                .padding(SpaceM),
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
@@ -301,17 +319,17 @@ fun TruckItem(
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(64.dp)
+                    .size(TruckImageSize)
                     .clip(
                         RoundedCornerShape(
-                            topStart = 16.dp,
-                            bottomStart = 16.dp,
+                            topStart = TruckImageRadius,
+                            bottomStart = TruckImageRadius,
                             topEnd = 0.dp,
                             bottomEnd = 0.dp
                         )
                     )
             )
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(SpaceM))
 
             Column(
                 modifier = Modifier.weight(1f)
@@ -336,17 +354,17 @@ fun TruckItem(
                     }
                 }
             }
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(SpaceM))
             AsyncImage(
                 model = truck.imageUrl,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(64.dp)
+                    .size(TruckImageSize)
                     .clip(
                         RoundedCornerShape(
-                            topStart = 16.dp,
-                            bottomStart = 16.dp,
+                            topStart = TruckImageRadius,
+                            bottomStart = TruckImageRadius,
                             topEnd = 0.dp,
                             bottomEnd = 0.dp
                         )
