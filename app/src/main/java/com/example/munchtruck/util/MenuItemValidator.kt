@@ -21,21 +21,24 @@ object MenuItemValidator {
         data object ImageUrlInvalid : MenuItemValidationError()
     }
 
-    fun validateName(name: String): String? {
+    fun validateName(name: String): MenuItemValidationError? {
+        val trimmedName = name.trim()
+
         return when {
-            name.isBlank() -> "Namn kan inte vara tomt"
-            name.length < 2 -> "Namnet måste vara minst 2 tecken"
-            name.length > 50 -> "Namnet kan vara max 50 tecken"
-            name.matches(Regex("^[0-9\\s]+$")) -> "Namnet kan inte bara innehålla siffror"
-            !name.matches(Regex("^[a-zA-ZåäöÅÄÖ0-9\\s\\-']+$")) -> "Namnet innehåller ogiltiga tecken"
+            trimmedName.isBlank() -> MenuItemValidationError.NameEmpty
+            trimmedName.length < 2 -> MenuItemValidationError.NameTooShort
+            trimmedName.length > 50 -> MenuItemValidationError.NameTooLong
+            trimmedName.matches(Regex("^[0-9\\s]+$")) -> MenuItemValidationError.NameOnlyNumbers
+            !trimmedName.matches(Regex("^[a-zA-ZåäöÅÄÖ0-9\\s\\-']+$")) -> MenuItemValidationError.NameInvalidCharacters
             else -> null
         }
     }
 
-    fun validateDescription(description: String): String? {
-        return when {
-            description.length > 200 -> "Beskrivningen kan vara max 200 tecken"
-            else -> null
+    fun validateDescription(description: String): MenuItemValidationError? {
+        return if (description.length > 200) {
+            MenuItemValidationError.DescriptionTooLong
+        } else {
+            null
         }
     }
 
