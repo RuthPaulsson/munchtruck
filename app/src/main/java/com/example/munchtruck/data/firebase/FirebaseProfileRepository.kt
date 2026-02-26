@@ -41,13 +41,39 @@ class FirebaseProfileRepository(
         myTruckDoc().update(FirestoreFields.IS_ACTIVE, isActive).await()
     }
 
-    override suspend fun saveMyTruckProfile(name: String, description: String, foodType: String, imageUrl: String) {
+    override suspend fun saveMyTruckProfile(
+        name: String,
+        description: String,
+        foodType: String,
+        imageUrl: String,
+        openingHours: OpeningHours?
+    ) {
         val updates = mutableMapOf<String, Any>(
             FirestoreFields.NAME to name.trim(),
             FirestoreFields.DESCRIPTION to description.trim(),
             FirestoreFields.FOOD_TYPE to foodType.trim()
         )
+
         if (imageUrl.isNotBlank()) updates[FirestoreFields.IMAGE_URL] = imageUrl.trim()
+
+        openingHours?.let { hours ->
+            val weeklyMap = mapOf(
+                "mon" to hours.weekly.mon?.toFirestoreMap(),
+                "tue" to hours.weekly.tue?.toFirestoreMap(),
+                "wed" to hours.weekly.wed?.toFirestoreMap(),
+                "thu" to hours.weekly.thu?.toFirestoreMap(),
+                "fri" to hours.weekly.fri?.toFirestoreMap(),
+                "sat" to hours.weekly.sat?.toFirestoreMap(),
+                "sun" to hours.weekly.sun?.toFirestoreMap()
+            )
+
+            updates[FirestoreFields.HOURS] = mapOf(
+                FirestoreFields.TIME_ZONE to hours.timeZone.ifBlank { "Europe/Stockholm" },
+                FirestoreFields.WEEKLY to weeklyMap,
+                FirestoreFields.TEMP_CLOSED to hours.tempClosed,
+                "updatedAt" to FieldValue.serverTimestamp()
+            )
+        }
 
         myTruckDoc().set(updates, SetOptions.merge()).await()
     }
