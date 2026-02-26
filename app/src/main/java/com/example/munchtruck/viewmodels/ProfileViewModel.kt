@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.munchtruck.data.model.OpeningHours
+import com.example.munchtruck.data.model.isCurrentlyOpen
 import com.example.munchtruck.data.repository.ImageRepository
 import com.example.munchtruck.data.repository.ProfileRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -82,13 +83,16 @@ class ProfileViewModel(
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
                 val truck = repository.getTruckProfile()
+                val openStatus = truck.openingHours?.isCurrentlyOpen() ?: false
                 _uiState.update {
                     it.copy(
                         isLoading = false,
                         name = truck.name,
                         description = truck.description,
                         foodType = truck.foodType,
-                        imageUrl = truck.imageUrl
+                        imageUrl = truck.imageUrl,
+                        openingHours = truck.openingHours,
+                        isOpenNow = openStatus
                     )
                 }
             } catch (e: Exception) {
@@ -100,7 +104,6 @@ class ProfileViewModel(
                 }
             }
         }
-
     }
 
     fun resetState(){
