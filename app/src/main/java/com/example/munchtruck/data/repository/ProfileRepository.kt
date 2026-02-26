@@ -5,7 +5,6 @@ import com.example.munchtruck.data.model.OpeningHours
 import com.example.munchtruck.data.model.TruckLocation
 
 interface ProfileRepository {
-
     suspend fun saveMyTruckProfile(
         name: String,
         description: String,

@@ -26,6 +26,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 import androidx.lifecycle.ViewModelProvider
+import com.example.munchtruck.data.firebase.FirebaseAuthRepository
 import com.example.munchtruck.data.firebase.FirebaseDiscoveryRepository
 import com.example.munchtruck.data.firebase.FirebaseProfileRepository
 import com.example.munchtruck.data.firebase.StorageImageRepository
@@ -45,6 +46,10 @@ fun NavGraph() {
     val authViewModel: AuthViewModel = viewModel()
 //    val locationViewModel: LocationViewModel = viewModel()
 
+//    val authRepository = remember {
+//        FirebaseAuthRepository()
+//    }
+
     val profileRepository = remember {
         FirebaseProfileRepository(
             FirebaseFirestore.getInstance(),
@@ -58,6 +63,21 @@ fun NavGraph() {
             FirebaseAuth.getInstance()
         )
     }
+
+
+//    val authViewModel: AuthViewModel = viewModel(
+//        factory = object : ViewModelProvider.Factory {
+//            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+//                if (modelClass.isAssignableFrom(AuthViewModel::class.java)) {
+//                    @Suppress("UNCHECKED_CAST")
+//                    return AuthViewModel(authRepository) as T
+//                }
+//                throw IllegalArgumentException("Unknown ViewModel class")
+//            }
+//        }
+//    )
+
+
     val profileViewModel: ProfileViewModel = viewModel(
         factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
