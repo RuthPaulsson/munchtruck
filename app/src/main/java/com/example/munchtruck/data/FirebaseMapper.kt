@@ -74,3 +74,13 @@ fun Map<*, *>.toInterval(): OpeningInterval? {
     val e = this["end"] as? String ?: return null
     return OpeningInterval(s, e)
 }
+
+fun DocumentSnapshot.toMenuItem() = MenuItem(
+    id = id,
+    name = getString("name").orEmpty(),
+    price = getLong("price") ?: 0L,
+    description = getString("description").orEmpty(),
+    imageUrl = getString("imageUrl").orEmpty(),
+    createdAt = getTimestamp("createdAt"),
+    updatedAt = getTimestamp("updatedAt")
+)
