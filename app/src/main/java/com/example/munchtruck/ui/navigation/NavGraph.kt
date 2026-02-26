@@ -43,12 +43,12 @@ import com.google.firebase.storage.FirebaseStorage
 @Composable
 fun NavGraph() {
     val navController = rememberNavController()
-    val authViewModel: AuthViewModel = viewModel()
-//    val locationViewModel: LocationViewModel = viewModel()
+    val context = LocalContext.current
 
-//    val authRepository = remember {
-//        FirebaseAuthRepository()
-//    }
+
+    val authRepository = remember {
+        FirebaseAuthRepository()
+    }
 
     val profileRepository = remember {
         FirebaseProfileRepository(
@@ -64,53 +64,6 @@ fun NavGraph() {
         )
     }
 
-
-//    val authViewModel: AuthViewModel = viewModel(
-//        factory = object : ViewModelProvider.Factory {
-//            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-//                if (modelClass.isAssignableFrom(AuthViewModel::class.java)) {
-//                    @Suppress("UNCHECKED_CAST")
-//                    return AuthViewModel(authRepository) as T
-//                }
-//                throw IllegalArgumentException("Unknown ViewModel class")
-//            }
-//        }
-//    )
-
-
-    val profileViewModel: ProfileViewModel = viewModel(
-        factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
-                    @Suppress("UNCHECKED_CAST")
-                    return ProfileViewModel(profileRepository, imageRepository) as T
-                }
-                throw IllegalArgumentException("Unknown ViewModel class")
-            }
-        }
-    )
-
-    val context = LocalContext.current
-
-    val locationProvider = remember {
-        FusedDeviceLocationProvider(context)
-    }
-
-    val locationViewModel: LocationViewModel = viewModel(
-        factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                if (modelClass.isAssignableFrom(LocationViewModel::class.java)) {
-                    @Suppress("UNCHECKED_CAST")
-                    return LocationViewModel(
-                        profileRepository,
-                        locationProvider
-                    ) as T
-                }
-                throw IllegalArgumentException("Unknown ViewModel class")
-            }
-        }
-    )
-
     val menuRepository = remember {
         FirebaseMenuRepository(
             FirebaseFirestore.getInstance(),
@@ -118,45 +71,69 @@ fun NavGraph() {
         )
     }
 
-    val menuViewModel: MenuViewModel = viewModel(
-        factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                if (modelClass.isAssignableFrom(MenuViewModel::class.java)) {
-                    @Suppress("UNCHECKED_CAST")
-                    return MenuViewModel(menuRepository, imageRepository) as T
-                }
-                throw IllegalArgumentException("Unknown ViewModel class")
-            }
-        }
-    )
-
     val discoveryRepository = remember {
         FirebaseDiscoveryRepository(
             FirebaseFirestore.getInstance()
         )
     }
 
+    val locationProvider = remember {
+        FusedDeviceLocationProvider(context)
+    }
+
+
+    val authViewModel: AuthViewModel = viewModel(
+        factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                @Suppress("UNCHECKED_CAST")
+                return AuthViewModel(authRepository) as T
+            }
+        }
+    )
+
+    val profileViewModel: ProfileViewModel = viewModel(
+        factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                @Suppress("UNCHECKED_CAST")
+                return ProfileViewModel(profileRepository, imageRepository) as T
+            }
+        }
+    )
+
+    val locationViewModel: LocationViewModel = viewModel(
+        factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                @Suppress("UNCHECKED_CAST")
+                return LocationViewModel(profileRepository, locationProvider) as T
+            }
+        }
+    )
+
+    val menuViewModel: MenuViewModel = viewModel(
+        factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                @Suppress("UNCHECKED_CAST")
+                return MenuViewModel(menuRepository, imageRepository) as T
+            }
+        }
+    )
+
     val discoveryViewModel: DiscoveryViewModel = viewModel(
         factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                if (modelClass.isAssignableFrom(DiscoveryViewModel::class.java)) {
-                    @Suppress("UNCHECKED_CAST")
-                    return DiscoveryViewModel(
-                        discoveryRepository = discoveryRepository,
-                        locationProvider = locationProvider,
-                        menuRepository = menuRepository,
-                        profileRepository = profileRepository
-                    ) as T
-                }
-                throw IllegalArgumentException("Unknown ViewModel class")
+                @Suppress("UNCHECKED_CAST")
+                return DiscoveryViewModel(
+                    discoveryRepository = discoveryRepository,
+                    locationProvider = locationProvider,
+                    menuRepository = menuRepository,
+                    profileRepository = profileRepository
+                ) as T
             }
         }
     )
 
     val isLoggedIn by authViewModel.isLoggedIn.collectAsState()
 
-    // LINNÉA !! Detta är en fix för att lösa att vi laddar hem rätt profil samt återställer states
-    //  dubbelkolla gärna mvh Patrik
     LaunchedEffect(isLoggedIn) {
         if (isLoggedIn) {
             profileViewModel.loadProfile()
@@ -170,6 +147,7 @@ fun NavGraph() {
 
     // TEMP: Use start as entry for development until role/onboarding is implemented
     val startDestination = if (isLoggedIn) "profile" else "start"
+
     NavHost(
         navController = navController,
         startDestination = startDestination
@@ -188,7 +166,8 @@ fun NavGraph() {
         }
         composable("profile"){
             if (isLoggedIn) {
-                ProfileScreen(navController = navController,
+                ProfileScreen(
+                    navController = navController,
                     authViewModel= authViewModel,
                     profileViewModel = profileViewModel,
                     menuViewModel = menuViewModel
@@ -225,7 +204,6 @@ fun NavGraph() {
 
         composable ("edit_menu/{itemId}") { backStackEntry ->
             val itemId = backStackEntry.arguments?.getString("itemId")
-
             EditMenuScreen(
                 navController = navController,
                 viewModel = menuViewModel,
@@ -235,7 +213,6 @@ fun NavGraph() {
 
         composable("public_profile/{truckId}") { backStackEntry ->
             val truckId = backStackEntry.arguments?.getString("truckId")
-
             if (truckId != null) {
                 PublicProfileScreen(
                     truckId = truckId,
