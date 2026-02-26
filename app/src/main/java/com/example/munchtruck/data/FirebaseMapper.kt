@@ -15,18 +15,33 @@ object FirestoreFields {
     const val TIME_ZONE = "timeZone"
 }
 
-fun DocumentSnapshot.toFoodTruck(): FoodTruck {
+fun DocumentSnapshot.toFoodTruck(): FoodTruck? {
+    val name = getString(FirestoreFields.NAME)?.trim().orEmpty()
     val locMap = get(FirestoreFields.LOCATION) as? Map<*, *>
+    val lat = (locMap?.get("latitude") as? Number)?.toDouble()
+    val lng = (locMap?.get("longitude") as? Number)?.toDouble()
+
+
+    if (
+        name.isBlank() ||
+        lat == null ||
+        lng == null ||
+        lat !in -90.0..90.0 ||
+        lng !in -180.0..180.0
+    ) {
+        return null
+    }
+
     val hoursMap = get(FirestoreFields.HOURS) as? Map<*, *>
     val weeklyMap = hoursMap?.get(FirestoreFields.WEEKLY) as? Map<*, *>
 
     return FoodTruck(
         id = id,
-        name = getString(FirestoreFields.NAME).orEmpty(),
+        name = name,
         description = getString(FirestoreFields.DESCRIPTION).orEmpty(),
         foodType = getString(FirestoreFields.FOOD_TYPE).orEmpty(),
         imageUrl = getString(FirestoreFields.IMAGE_URL).orEmpty(),
-        location = locMap?.let {
+        location = locMap.let {
             TruckLocation(
                 latitude = (it["latitude"] as? Number)?.toDouble() ?: 0.0,
                 longitude = (it["longitude"] as? Number)?.toDouble() ?: 0.0,

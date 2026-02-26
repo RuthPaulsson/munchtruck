@@ -12,7 +12,6 @@ import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.tasks.await
 
 
-
 class FirebaseProfileRepository(
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth
@@ -85,8 +84,14 @@ class FirebaseProfileRepository(
 
     override suspend fun getTruckProfile(): FoodTruck {
         val doc = myTruckDoc().get().await()
-        if (!doc.exists()) throw IllegalArgumentException("Profil saknas")
-        return doc.toFoodTruck()
+        if (!doc.exists()) throw IllegalArgumentException("Profil saknas i databasen")
+
+
+        return doc.toFoodTruck() ?: FoodTruck(
+            id = doc.id,
+            name = "Namn saknas",
+            location = TruckLocation(0.0, 0.0, "Ingen adress")
+        )
     }
 
 }
