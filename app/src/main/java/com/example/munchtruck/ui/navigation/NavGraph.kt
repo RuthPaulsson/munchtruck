@@ -43,12 +43,12 @@ import com.google.firebase.storage.FirebaseStorage
 @Composable
 fun NavGraph() {
     val navController = rememberNavController()
-//    val authViewModel: AuthViewModel = viewModel()
+    val authViewModel: AuthViewModel = viewModel()
 //    val locationViewModel: LocationViewModel = viewModel()
 
-    val authRepository = remember {
-        FirebaseAuthRepository()
-    }
+//    val authRepository = remember {
+//        FirebaseAuthRepository()
+//    }
 
     val profileRepository = remember {
         FirebaseProfileRepository(
@@ -64,18 +64,18 @@ fun NavGraph() {
         )
     }
 
-    
-    val authViewModel: AuthViewModel = viewModel(
-        factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                if (modelClass.isAssignableFrom(AuthViewModel::class.java)) {
-                    @Suppress("UNCHECKED_CAST")
-                    return AuthViewModel(authRepository) as T
-                }
-                throw IllegalArgumentException("Unknown ViewModel class")
-            }
-        }
-    )
+
+//    val authViewModel: AuthViewModel = viewModel(
+//        factory = object : ViewModelProvider.Factory {
+//            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+//                if (modelClass.isAssignableFrom(AuthViewModel::class.java)) {
+//                    @Suppress("UNCHECKED_CAST")
+//                    return AuthViewModel(authRepository) as T
+//                }
+//                throw IllegalArgumentException("Unknown ViewModel class")
+//            }
+//        }
+//    )
 
 
     val profileViewModel: ProfileViewModel = viewModel(

@@ -16,10 +16,8 @@ data class WeeklyOpeningHours(
     val sun: OpeningInterval? = null
 )
 
-
 data class OpeningInterval(
     val start: String = "",
     val end: String = ""
-
 )
 
