@@ -23,7 +23,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -48,8 +47,11 @@ import com.example.munchtruck.data.model.FoodTruck
 import com.example.munchtruck.data.model.TruckLocation
 import com.example.munchtruck.ui.components.CenteredLoading
 import com.example.munchtruck.ui.components.CenteredMessage
+import com.example.munchtruck.ui.components.DiscoveryBottom
 import com.example.munchtruck.ui.components.InputField
+import com.example.munchtruck.ui.theme.AppColors.PrimaryBackground
 import com.example.munchtruck.ui.theme.AppPreviewWrapper
+import com.example.munchtruck.ui.theme.Dimens.BottomNavHeight
 import com.example.munchtruck.ui.theme.Dimens.CardRadiusLarge
 import com.example.munchtruck.ui.theme.Dimens.ChipHorizontalPadding
 import com.example.munchtruck.ui.theme.Dimens.ChipRadius
@@ -63,15 +65,12 @@ import com.example.munchtruck.ui.theme.Dimens.SearchFieldRadius
 import com.example.munchtruck.ui.theme.Dimens.SpaceM
 import com.example.munchtruck.ui.theme.Dimens.SpaceS
 import com.example.munchtruck.ui.theme.Dimens.SpaceSM
-import com.example.munchtruck.ui.theme.Dimens.SpaceXL
 import com.example.munchtruck.ui.theme.Dimens.SpaceXXL
 import com.example.munchtruck.ui.theme.Dimens.SpaceXXXL
 import com.example.munchtruck.ui.theme.Dimens.TruckImageRadius
 import com.example.munchtruck.ui.theme.Dimens.TruckImageSize
 import com.example.munchtruck.util.DistanceUtils.formatDistance
 import com.example.munchtruck.viewmodels.DiscoveryUiState
-
-
 
 
 @Composable
@@ -81,9 +80,15 @@ fun DiscoveryContent(
     searchQuery: String,
     onSearchChange: (String) -> Unit,
     onRefresh: () -> Unit,
-    onTruckClick: (String) -> Unit
+    onTruckClick: (String) -> Unit,
+    onMapClick: () -> Unit,
+    onHomeClick: () -> Unit
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(PrimaryBackground)
+    ) {
         PullToRefreshBox(
             isRefreshing = uiState.isLoading,
             onRefresh = onRefresh,
@@ -97,7 +102,6 @@ fun DiscoveryContent(
                     )
                 }
 
-                // Felhantering med din Retry-komponent
                 if (errorMessage != null) {
                     item {
                         CenteredMessageWithRetry(
@@ -107,7 +111,6 @@ fun DiscoveryContent(
                     }
                 }
 
-                // Tom lista
                 if (uiState.isListEmpty && errorMessage == null) {
                     item {
                         CenteredMessage(
@@ -123,10 +126,21 @@ fun DiscoveryContent(
                         onClick = { onTruckClick(truck.id) }
                     )
                 }
+
+                item {
+                    Spacer(modifier = Modifier.height(BottomNavHeight))
+                }
             }
         }
 
-        // Använd din CenteredLoading istället för manuell spinner
+        Box(modifier = Modifier.align(Alignment.BottomCenter)) {
+            DiscoveryBottom(
+                currentRoute = "home",
+                onMapClick = onMapClick,
+                onHomeClick = onHomeClick
+            )
+        }
+
         if (uiState.isLoading && uiState.trucks.isEmpty()) {
             CenteredLoading()
         }
@@ -398,7 +412,9 @@ fun DiscoveryContentPreview() {
             searchQuery= searchQuery.value,
             onSearchChange = { searchQuery.value = it },
             onRefresh = {},
-            onTruckClick = {}
+            onTruckClick = {},
+            onMapClick = {},
+            onHomeClick = {}
         )
     }
 }
