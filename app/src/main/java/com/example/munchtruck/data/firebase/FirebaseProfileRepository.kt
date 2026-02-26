@@ -1,65 +1,88 @@
 package com.example.munchtruck.data.firebase
 
-
-import com.example.munchtruck.data.model.FoodTruck
-import com.example.munchtruck.data.model.OpeningHours
-import com.example.munchtruck.data.model.OpeningInterval
-import com.example.munchtruck.data.model.TruckLocation
-import com.example.munchtruck.data.model.WeeklyOpeningHours
+import com.example.munchtruck.data.model.*
 import com.example.munchtruck.data.repository.ProfileRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.tasks.await
-import kotlin.collections.get
 
+object FirestoreFields {
+    const val COLLECTION_TRUCKS = "foodTrucks"
+    const val NAME = "name"
+    const val DESCRIPTION = "description"
+    const val FOOD_TYPE = "foodType"
+    const val IMAGE_URL = "imageUrl"
+    const val IS_ACTIVE = "isActive"
+
+    const val LOCATION = "location"
+    const val HOURS = "hours"
+    const val WEEKLY = "weekly"
+    const val TEMP_CLOSED = "tempClosed"
+    const val TIME_ZONE = "timeZone"
+}
 
 class FirebaseProfileRepository(
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth
 ) : ProfileRepository {
 
-
-    // ============ TRUCK ID/DOC =============================================
-
-    fun truckId(): String =
-        auth.currentUser?.uid ?: throw IllegalStateException("Ej inloggad")
-
+    private fun truckId(): String =
+        auth.currentUser?.uid ?: throw IllegalStateException("User not logged in")
 
     private fun myTruckDoc() =
-        firestore.collection("foodTrucks")
-            .document(truckId())
+        firestore.collection(FirestoreFields.COLLECTION_TRUCKS).document(truckId())
 
+    // ============ STATUS & PROFILE ========================================
 
-    // ============ SAVE TRUCK =============================================
-
+    override suspend fun updateActiveStatus(isActive: Boolean) {
+        // Updates the manual Online/Offline flag in Firestore
+        myTruckDoc().update(FirestoreFields.IS_ACTIVE, isActive).await()
+    }
 
     override suspend fun saveMyTruckProfile(
         name: String,
         description: String,
         foodType: String,
-        imageUrl: String
+        imageUrl: String,
+        openingHours: OpeningHours?
     ) {
-
-        val truckUpdates = mutableMapOf<String, Any>(
-            "name" to name.trim(),
-            "description" to description.trim(),
-            "foodType" to foodType.trim()
+        val updates = mutableMapOf<String, Any>(
+            FirestoreFields.NAME to name.trim(),
+            FirestoreFields.DESCRIPTION to description.trim(),
+            FirestoreFields.FOOD_TYPE to foodType.trim()
         )
-        if (imageUrl.trim().isNotBlank()) truckUpdates["imageUrl"] = imageUrl.trim()
 
-        myTruckDoc().set(truckUpdates, SetOptions.merge()).await()
+        if (imageUrl.isNotBlank()) updates[FirestoreFields.IMAGE_URL] = imageUrl.trim()
+
+        openingHours?.let { hours ->
+            val weeklyMap = mapOf(
+                "mon" to hours.weekly.mon?.toFirestoreMap(),
+                "tue" to hours.weekly.tue?.toFirestoreMap(),
+                "wed" to hours.weekly.wed?.toFirestoreMap(),
+                "thu" to hours.weekly.thu?.toFirestoreMap(),
+                "fri" to hours.weekly.fri?.toFirestoreMap(),
+                "sat" to hours.weekly.sat?.toFirestoreMap(),
+                "sun" to hours.weekly.sun?.toFirestoreMap()
+            )
+
+            updates[FirestoreFields.HOURS] = mapOf(
+                FirestoreFields.TIME_ZONE to hours.timeZone.ifBlank { "Europe/Stockholm" },
+                FirestoreFields.WEEKLY to weeklyMap,
+                FirestoreFields.TEMP_CLOSED to hours.tempClosed,
+                "updatedAt" to FieldValue.serverTimestamp()
+            )
+        }
+
+        myTruckDoc().set(updates, SetOptions.merge()).await()
     }
 
-
-    // ============ UPDATE TRUCK =============================================
-
+    // ============ LOCATION & HOURS ========================================
 
     override suspend fun updateMyTruckLocation(location: TruckLocation) {
-
         val updatedLocation = mapOf(
-            "location" to mapOf(
+            FirestoreFields.LOCATION to mapOf(
                 "latitude" to location.latitude,
                 "longitude" to location.longitude,
                 "address" to location.address.trim(),
@@ -67,13 +90,10 @@ class FirebaseProfileRepository(
             )
         )
         myTruckDoc().set(updatedLocation, SetOptions.merge()).await()
-
     }
 
     override suspend fun updateMyTruckOpeningHours(hours: OpeningHours) {
-        val timezone = hours.timeZone.trim().ifBlank { "Europe/Stockholm" }
-
-        val weeklyMap: Map<String, Any?> = mapOf(
+        val weeklyMap = mapOf(
             "mon" to hours.weekly.mon?.toFirestoreMap(),
             "tue" to hours.weekly.tue?.toFirestoreMap(),
             "wed" to hours.weekly.wed?.toFirestoreMap(),
@@ -83,98 +103,70 @@ class FirebaseProfileRepository(
             "sun" to hours.weekly.sun?.toFirestoreMap()
         )
 
-        val hoursMap = mapOf(
-            "hours" to mapOf(
-                "timeZone" to timezone,
-                "weekly" to weeklyMap,
-                "tempClosed" to hours.tempClosed,
+        val hoursData = mapOf(
+            FirestoreFields.HOURS to mapOf(
+                FirestoreFields.TIME_ZONE to hours.timeZone.ifBlank { "Europe/Stockholm" },
+                FirestoreFields.WEEKLY to weeklyMap,
+                FirestoreFields.TEMP_CLOSED to hours.tempClosed,
                 "updatedAt" to FieldValue.serverTimestamp()
             )
         )
-
-        myTruckDoc().set(hoursMap, SetOptions.merge()).await()
+        myTruckDoc().set(hoursData, SetOptions.merge()).await()
     }
 
-
-    // ============ GET TRUCK =============================================
-
+    // ============ GET PROFILE (Fetches raw data for UI/ViewModel) ============
 
     override suspend fun getTruckProfile(): FoodTruck {
         val doc = myTruckDoc().get().await()
-        if (!doc.exists()) throw IllegalArgumentException("FoodTruck profile is missing")
+        if (!doc.exists()) throw IllegalArgumentException("Profile missing in database")
 
-        val loc = doc.get("location") as? Map<*, *>
-        val lat = (loc?.get("latitude") as? Number)?.toDouble()
-        val long = (loc?.get("longitude") as? Number)?.toDouble()
+        val isActive = doc.getBoolean(FirestoreFields.IS_ACTIVE) ?: false
 
-        val location = if (lat != null && long != null) {
+        val locMap = doc.get(FirestoreFields.LOCATION) as? Map<*, *>
+        val location = locMap?.let {
             TruckLocation(
-                latitude = lat,
-                longitude = long,
-                address = (loc["address"] as? String).orEmpty(),
-                updatedAt = (loc["updatedAt"] as? Number)?.toLong() ?: 0L
+                latitude = (it["latitude"] as? Number)?.toDouble() ?: 0.0,
+                longitude = (it["longitude"] as? Number)?.toDouble() ?: 0.0,
+                address = (it["address"] as? String).orEmpty()
             )
-        } else {
-            null
         }
 
-        val hoursMap = doc.get("hours") as? Map<*, *>
-        val weekly = (hoursMap?.get("weekly") as? Map<*, *>)
+        val hoursMap = doc.get(FirestoreFields.HOURS) as? Map<*, *>
+        val weeklyMap = hoursMap?.get(FirestoreFields.WEEKLY) as? Map<*, *>
 
-        val weeklyHours = WeeklyOpeningHours(
-            mon = (weekly?.get("mon") as? Map<*, *>)?.toOpeningIntervalOrNull(),
-            tue = (weekly?.get("tue") as? Map<*, *>)?.toOpeningIntervalOrNull(),
-            wed = (weekly?.get("wed") as? Map<*, *>)?.toOpeningIntervalOrNull(),
-            thu = (weekly?.get("thu") as? Map<*, *>)?.toOpeningIntervalOrNull(),
-            fri = (weekly?.get("fri") as? Map<*, *>)?.toOpeningIntervalOrNull(),
-            sat = (weekly?.get("sat") as? Map<*, *>)?.toOpeningIntervalOrNull(),
-            sun = (weekly?.get("sun") as? Map<*, *>)?.toOpeningIntervalOrNull()
+        val openingHours = OpeningHours(
+            timeZone = hoursMap?.get(FirestoreFields.TIME_ZONE) as? String ?: "Europe/Stockholm",
+            tempClosed = hoursMap?.get(FirestoreFields.TEMP_CLOSED) as? Boolean ?: false,
+            weekly = WeeklyOpeningHours(
+                mon = (weeklyMap?.get("mon") as? Map<*, *>)?.toInterval(),
+                tue = (weeklyMap?.get("tue") as? Map<*, *>)?.toInterval(),
+                wed = (weeklyMap?.get("wed") as? Map<*, *>)?.toInterval(),
+                thu = (weeklyMap?.get("thu") as? Map<*, *>)?.toInterval(),
+                fri = (weeklyMap?.get("fri") as? Map<*, *>)?.toInterval(),
+                sat = (weeklyMap?.get("sat") as? Map<*, *>)?.toInterval(),
+                sun = (weeklyMap?.get("sun") as? Map<*, *>)?.toInterval()
+            )
         )
-
-        val openingHours: OpeningHours? =
-            if (hoursMap != null) {
-                OpeningHours(
-                    timeZone = (hoursMap["timeZone"] as? String)?.ifBlank { "Europe/Stockholm" }
-                        ?: "Europe/Stockholm",
-                    weekly = weeklyHours,
-                    tempClosed = hoursMap["tempClosed"] as? Boolean ?: false
-
-                )
-            } else {
-                null
-            }
-
 
         return FoodTruck(
             id = doc.id,
-            name = doc.getString("name").orEmpty(),
-            description = doc.getString("description").orEmpty(),
-            foodType = doc.getString("foodType").orEmpty(),
+            name = doc.getString(FirestoreFields.NAME).orEmpty(),
+            description = doc.getString(FirestoreFields.DESCRIPTION).orEmpty(),
+            foodType = doc.getString(FirestoreFields.FOOD_TYPE).orEmpty(),
+            imageUrl = doc.getString(FirestoreFields.IMAGE_URL).orEmpty(),
             location = location,
-            imageUrl = doc.getString("imageUrl").orEmpty(),
+            isOpen = isActive,
             openingHours = openingHours
         )
-
-
     }
 
     // ============ HELPERS =============================================
 
+    private fun OpeningInterval.toFirestoreMap() = mapOf("start" to start, "end" to end)
 
-    private fun OpeningInterval.toFirestoreMap(): Map<String, Any> {
-        return mapOf(
-            "start" to start.trim(),
-            "end" to end.trim()
-        )
+    private fun Map<*, *>.toInterval(): OpeningInterval? {
+        val s = this["start"] as? String ?: return null
+        val e = this["end"] as? String ?: return null
+        return OpeningInterval(s, e)
     }
-
-    private fun Map<*, *>.toOpeningIntervalOrNull(): OpeningInterval? {
-        val start = (this["start"] as? String)?.trim().orEmpty()
-        val end = (this["end"] as? String)?.trim().orEmpty()
-
-        if (start.isBlank() || end.isBlank()) return null
-
-        return OpeningInterval(start = start, end = end)
-    }
-
 }
