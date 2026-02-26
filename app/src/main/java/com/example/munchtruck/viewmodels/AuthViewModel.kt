@@ -1,10 +1,11 @@
 package com.example.munchtruck.viewmodels
 
-import com.example.munchtruck.data.repository.AuthRepository
+import com.example.munchtruck.data.firebase.FirebaseAuthRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.munchtruck.data.repository.AuthRepository
 import com.example.munchtruck.util.LoginValidationError
 import com.example.munchtruck.util.ValidationResult
 import com.example.munchtruck.util.Validators
@@ -20,7 +21,7 @@ sealed class AuthError {
     data object PasswordsDoNotMatch : AuthError()
 }
 class AuthViewModel(
-    private val repository: AuthRepository = AuthRepository()
+    private val repository: AuthRepository
 ) : ViewModel() {
 
     private val _isLoading = MutableStateFlow(false)

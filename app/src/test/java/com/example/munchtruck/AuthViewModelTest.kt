@@ -1,7 +1,7 @@
 package com.example.munchtruck
 
 
-import com.example.munchtruck.data.repository.AuthRepository
+import com.example.munchtruck.data.firebase.FirebaseAuthRepository
 import com.example.munchtruck.viewmodels.AuthViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -23,7 +23,7 @@ import org.junit.runner.RunWith
 class AuthViewModelTest {
 
 
-    private lateinit var mockRepo: AuthRepository
+    private lateinit var mockRepo: FirebaseAuthRepository
     private lateinit var viewModel: AuthViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
 
@@ -41,7 +41,7 @@ class AuthViewModelTest {
         }
 
 
-        mockRepo = mock(AuthRepository::class.java)
+        mockRepo = mock(FirebaseAuthRepository::class.java)
         viewModel = AuthViewModel(mockRepo)
     }
 

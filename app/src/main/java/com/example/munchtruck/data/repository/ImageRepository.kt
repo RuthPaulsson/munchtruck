@@ -8,6 +8,5 @@ interface ImageRepository {
 
     suspend fun uploadMenuImage (itemId: String, imageUri: Uri) : String
 
-
     suspend fun getProfileImageUri(): String?
 }
