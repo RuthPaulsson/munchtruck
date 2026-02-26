@@ -1,5 +1,6 @@
 package com.example.munchtruck.data.firebase
 
+import com.example.munchtruck.data.FirestoreFields
 import com.example.munchtruck.data.model.*
 import com.example.munchtruck.data.repository.ProfileRepository
 import com.google.firebase.auth.FirebaseAuth
@@ -8,20 +9,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.tasks.await
 
-object FirestoreFields {
-    const val COLLECTION_TRUCKS = "foodTrucks"
-    const val NAME = "name"
-    const val DESCRIPTION = "description"
-    const val FOOD_TYPE = "foodType"
-    const val IMAGE_URL = "imageUrl"
-    const val IS_ACTIVE = "isActive"
 
-    const val LOCATION = "location"
-    const val HOURS = "hours"
-    const val WEEKLY = "weekly"
-    const val TEMP_CLOSED = "tempClosed"
-    const val TIME_ZONE = "timeZone"
-}
 
 class FirebaseProfileRepository(
     private val firestore: FirebaseFirestore,
