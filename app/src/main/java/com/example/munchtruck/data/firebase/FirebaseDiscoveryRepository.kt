@@ -13,12 +13,13 @@ class FirebaseDiscoveryRepository(
     private val firestore: FirebaseFirestore,
 ) : DiscoveryRepository {
 
-    override fun observeOpenTrucks(): Flow<List<FoodTruck>> = callbackFlow {
+    override fun observeOpenTrucks(): Flow<Result<List<FoodTruck>>> = callbackFlow {
 
         val listener = firestore.collection(FirestoreFields.COLLECTION_TRUCKS)
             .addSnapshotListener { snapshots, e ->
+
                 if (e != null) {
-                    close(e)
+                    trySend(Result.failure(e))
                     return@addSnapshotListener
                 }
 
@@ -26,7 +27,7 @@ class FirebaseDiscoveryRepository(
                     doc.toFoodTruck()
                 } ?: emptyList()
 
-                trySend(trucks)
+                trySend(Result.success(trucks))
             }
 
         awaitClose { listener.remove() }
