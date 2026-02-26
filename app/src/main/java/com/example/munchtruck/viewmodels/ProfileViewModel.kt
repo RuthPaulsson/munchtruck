@@ -4,6 +4,7 @@ package com.example.munchtruck.viewmodels
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.munchtruck.data.model.OpeningHours
 import com.example.munchtruck.data.repository.ImageRepository
 import com.example.munchtruck.data.repository.ProfileRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +27,9 @@ data class ProfileUiState(
     val name: String = "",
     val description: String = "",
     val foodType: String = "",
-    val imageUrl: String = ""
+    val imageUrl: String = "",
+    val openingHours: OpeningHours? = null,
+    val isOpenNow: Boolean = false
 )
 
 class ProfileViewModel(
