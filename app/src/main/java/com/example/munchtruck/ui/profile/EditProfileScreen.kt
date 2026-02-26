@@ -19,8 +19,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.munchtruck.R
+import com.example.munchtruck.ui.components.toMessage
+import com.example.munchtruck.util.MenuItemValidationError
 import com.example.munchtruck.viewmodels.LocationViewModel
 import com.example.munchtruck.viewmodels.MenuViewModel
+import com.example.munchtruck.viewmodels.ProfileError
 import com.example.munchtruck.viewmodels.ProfileViewModel
 import kotlinx.coroutines.launch
 
@@ -36,6 +39,9 @@ fun EditProfileScreen(
     val uiState by profileViewModel.uiState.collectAsStateWithLifecycle()
     val locationState by locationViewModel.uiState.collectAsStateWithLifecycle()
     val menuUiState by menuViewModel.uiState.collectAsStateWithLifecycle()
+
+    val profileErrorMessage = (uiState.error as? ProfileError)?.toMessage()
+    val menuErrorMessage = (menuUiState.error as? MenuItemValidationError)?.toMessage()
 
     LaunchedEffect(Unit) {
         menuViewModel.observeMenu()
@@ -76,9 +82,16 @@ fun EditProfileScreen(
 
     // ====== Handle Error ===============================
     LaunchedEffect(uiState.error) {
-        uiState.error?.let { message ->
+        profileErrorMessage?.let { message ->
             snackbarHostState.showSnackbar(message)
             profileViewModel.clearError()
+        }
+    }
+
+    LaunchedEffect(menuUiState.error) {
+        menuErrorMessage?.let { message ->
+            snackbarHostState.showSnackbar(message)
+            menuViewModel.clearError()
         }
     }
 
@@ -99,6 +112,8 @@ fun EditProfileScreen(
         selectedImageUri = selectedImageUri,
         locationState = locationState,
         menuItems = menuUiState.menuItems,
+        isLoading = uiState.isLoading,
+        errorMessage = profileErrorMessage,
         onNameChange = { name = it },
         onDescriptionChange = { description = it },
         onFoodTypeChange = { foodType = it },

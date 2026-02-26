@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.munchtruck.R
+import com.example.munchtruck.ui.components.InlineError
 import com.example.munchtruck.ui.components.InputField
 import com.example.munchtruck.ui.theme.AppColors.DarkOverlay
 import com.example.munchtruck.ui.theme.AppColors.LinkColor
@@ -140,14 +141,10 @@ fun LoginContent(
 
             // ====== Error Message ===============================
 
-            if (error.isNotEmpty()) {
-                Text(
-                    text = error,
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(bottom = SpaceS)
-                )
-            }
+            InlineError(
+                message = error,
+                modifier = Modifier.padding(bottom = SpaceS)
+            )
 
             // ====== Login Button ===============================
 

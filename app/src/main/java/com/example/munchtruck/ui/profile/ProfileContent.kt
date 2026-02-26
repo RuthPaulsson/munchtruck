@@ -64,87 +64,103 @@ fun ProfileContent (
     openingHours: String?,
     imageUrl: String?,
     menuItems: List<MenuItem>,
+    isLoading: Boolean = false,
+    errorMessage: String? = null,
     onLogoutClick: () -> Unit,
     onEditClick: () -> Unit
 ) {
     // ====== Root Container ===============================
-
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-    ) {
-
-        // ====== Hero Section ===============================
-
-        ProfileHeroSection(
-            isOwner = isOwner,
-            truckName = truckName,
-            imageUrl = imageUrl,
-            onEditClick = onEditClick,
-            onLogoutClick = onLogoutClick
-        )
-
-        Spacer(modifier = Modifier.height(SpaceL))
-
-        // ====== Info Section ===============================
-
-        if (
-            !rating.isNullOrBlank() ||
-            !location.isNullOrBlank() ||
-            !openingHours.isNullOrBlank()
+    ){
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
         ) {
-            ProfileInfoRow(
-                rating = rating,
-                location = location,
-                openingHours = openingHours
+
+            // ====== Hero Section ===============================
+
+            ProfileHeroSection(
+                isOwner = isOwner,
+                truckName = truckName,
+                imageUrl = imageUrl,
+                onEditClick = onEditClick,
+                onLogoutClick = onLogoutClick
             )
 
-            Spacer(modifier = Modifier.height(SpaceL))
-        }
-
-        // ====== About Section ===============================
-
-        if(!description.isNullOrBlank()) {
-            Text(
-                text = stringResource(R.string.profile_about),
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(horizontal = SpaceM)
-            )
-        }
-
-        Spacer(modifier = Modifier.height(SpaceS))
-
-        Text(
-            text = description,
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(horizontal = SpaceM)
-        )
-
-        Spacer(modifier = Modifier.height(SpaceL))
-
-        // ====== Menu Section ===============================
-
-        if (menuItems.isNotEmpty()) {
+            errorMessage?.let {
+                com.example.munchtruck.ui.components.InlineError(
+                    message = it,
+                    modifier = Modifier.padding(SpaceM)
+                )
+            }
 
             Spacer(modifier = Modifier.height(SpaceL))
 
-            Text(
-                text = stringResource(R.string.profile_menu),
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(horizontal = SpaceM)
-            )
+            // ====== Info Section ===============================
+
+            if (
+                !rating.isNullOrBlank() ||
+                !location.isNullOrBlank() ||
+                !openingHours.isNullOrBlank()
+            ) {
+                ProfileInfoRow(
+                    rating = rating,
+                    location = location,
+                    openingHours = openingHours
+                )
+
+                Spacer(modifier = Modifier.height(SpaceL))
+            }
+
+            // ====== About Section ===============================
+
+            if(!description.isNullOrBlank()) {
+                Text(
+                    text = stringResource(R.string.profile_about),
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(horizontal = SpaceM)
+                )
+            }
 
             Spacer(modifier = Modifier.height(SpaceS))
 
-           Column(modifier = Modifier.padding(horizontal = SpaceM)) {
-               menuItems.forEach { item ->
-                   ProfileMenuItemCard(item)
-                   Spacer(modifier = Modifier.height(SpaceS))
-               }
-           }
+            Text(
+                text = description,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(horizontal = SpaceM)
+            )
+
+            Spacer(modifier = Modifier.height(SpaceL))
+
+            // ====== Menu Section ===============================
+
+            if (menuItems.isNotEmpty()) {
+
+                Spacer(modifier = Modifier.height(SpaceL))
+
+                Text(
+                    text = stringResource(R.string.profile_menu),
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(horizontal = SpaceM)
+                )
+
+                Spacer(modifier = Modifier.height(SpaceS))
+
+                Column(modifier = Modifier.padding(horizontal = SpaceM)) {
+                    menuItems.forEach { item ->
+                        ProfileMenuItemCard(item)
+                        Spacer(modifier = Modifier.height(SpaceS))
+                    }
+                }
+            }
         }
 
+        if (isLoading) {
+            com.example.munchtruck.ui.components.CenteredLoading()
+        }
     }
 }
 

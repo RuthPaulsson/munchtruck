@@ -16,6 +16,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.munchtruck.R
+import com.example.munchtruck.ui.components.toMessage
+import com.example.munchtruck.util.MenuItemValidationError
 import com.example.munchtruck.viewmodels.MenuViewModel
 import kotlinx.coroutines.launch
 
@@ -27,6 +29,9 @@ fun EditMenuScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isEditing = itemId != null
+    val errorString = (uiState.error as? MenuItemValidationError)?.toMessage()
+        ?: uiState.error?.toString()
+
     var hasLoadedItem by remember { mutableStateOf(false) }
 
     var name by remember { mutableStateOf("") }
@@ -39,9 +44,10 @@ fun EditMenuScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
-    val message = stringResource(R.string.menu_item_saved)
-    val invalidNameMessage = stringResource(R.string.invalid_dish_name)
-    val invalidPriceMessage = stringResource(R.string.invalid_price)
+
+    val nameEmptyError = MenuItemValidationError.NameEmpty.toMessage()
+    val priceInvalidError = MenuItemValidationError.PriceInvalidFormat.toMessage()
+
 
 
     LaunchedEffect(Unit) {
@@ -61,17 +67,18 @@ fun EditMenuScreen(
     }
 
 
+    val successMessage = stringResource(R.string.menu_item_saved)
     LaunchedEffect(uiState.saveSuccess) {
         if (uiState.saveSuccess) {
-            snackbarHostState.showSnackbar(message)
+            snackbarHostState.showSnackbar(successMessage)
             navController.popBackStack()
             viewModel.resetSaveState()
         }
     }
 
     LaunchedEffect(uiState.error) {
-        uiState.error?.let {
-            snackbarHostState.showSnackbar(it)
+        if (uiState.error != null && errorString != null) {
+            snackbarHostState.showSnackbar(errorString)
             viewModel.clearError()
         }
     }
@@ -111,7 +118,7 @@ fun EditMenuScreen(
 
             if (name.isBlank()) {
                 coroutineScope.launch {
-                    snackbarHostState.showSnackbar(invalidNameMessage)
+                    snackbarHostState.showSnackbar(nameEmptyError)
                 }
                 return@EditMenuContent
             }
@@ -120,7 +127,7 @@ fun EditMenuScreen(
             val parsed = normalized.toBigDecimalOrNull()
 
             if (parsed == null || parsed <= java.math.BigDecimal.ZERO) {
-                priceError = invalidPriceMessage
+                priceError = priceInvalidError
                 return@EditMenuContent
             }
 

@@ -46,6 +46,8 @@ import coil.compose.AsyncImage
 import com.example.munchtruck.R
 import com.example.munchtruck.data.model.FoodTruck
 import com.example.munchtruck.data.model.TruckLocation
+import com.example.munchtruck.ui.components.CenteredLoading
+import com.example.munchtruck.ui.components.CenteredMessage
 import com.example.munchtruck.ui.components.InputField
 import com.example.munchtruck.ui.theme.AppPreviewWrapper
 import com.example.munchtruck.ui.theme.Dimens.CardRadiusLarge
@@ -75,25 +77,19 @@ import com.example.munchtruck.viewmodels.DiscoveryUiState
 @Composable
 fun DiscoveryContent(
     uiState: DiscoveryUiState,
+    errorMessage: String?,
     searchQuery: String,
     onSearchChange: (String) -> Unit,
     onRefresh: () -> Unit,
     onTruckClick: (String) -> Unit
 ) {
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-
+    Box(modifier = Modifier.fillMaxSize()) {
         PullToRefreshBox(
             isRefreshing = uiState.isLoading,
             onRefresh = onRefresh,
             modifier = Modifier.fillMaxSize()
         ) {
-
-            LazyColumn(
-                modifier = Modifier.fillMaxSize()
-            ) {
-
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
                 item {
                     HeroSection(
                         searchQuery = searchQuery,
@@ -101,35 +97,25 @@ fun DiscoveryContent(
                     )
                 }
 
-                // Error state
-                if (uiState.error != null) {
+                // Felhantering med din Retry-komponent
+                if (errorMessage != null) {
                     item {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(SpaceXL),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(uiState.error)
-                        }
+                        CenteredMessageWithRetry(
+                            message = errorMessage,
+                            onRetry = onRefresh
+                        )
                     }
                 }
 
-                // Empty state
-                if (uiState.isListEmpty) {
+                // Tom lista
+                if (uiState.isListEmpty && errorMessage == null) {
                     item {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(SpaceXL),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(stringResource(R.string.discovery_empty_nearby))
-                        }
+                        CenteredMessage(
+                            message = stringResource(R.string.discovery_empty_nearby)
+                        )
                     }
                 }
 
-                // List
                 items(uiState.trucks) { truck ->
                     TruckItem(
                         truck = truck,
@@ -140,13 +126,16 @@ fun DiscoveryContent(
             }
         }
 
-        // Center spinner ONLY on first load
+        // Använd din CenteredLoading istället för manuell spinner
         if (uiState.isLoading && uiState.trucks.isEmpty()) {
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center)
-            )
+            CenteredLoading()
         }
     }
+}
+
+@Composable
+fun CenteredMessageWithRetry(message: String, onRetry: () -> Unit) {
+    TODO("Not yet implemented")
 }
 
 @Composable
@@ -405,6 +394,7 @@ fun DiscoveryContentPreview() {
                 error = null,
                 isListEmpty = false
             ),
+            errorMessage = "",
             searchQuery= searchQuery.value,
             onSearchChange = { searchQuery.value = it },
             onRefresh = {},
