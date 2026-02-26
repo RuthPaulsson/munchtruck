@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.munchtruck.data.model.OpeningHours
 import com.example.munchtruck.data.model.isCurrentlyOpen
+import com.example.munchtruck.data.model.isValidInterval
 import com.example.munchtruck.data.repository.ImageRepository
 import com.example.munchtruck.data.repository.ProfileRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,6 +20,7 @@ sealed class ProfileError {
     data object UpdateFailed : ProfileError()
     data object SignOutFailed : ProfileError()
     data object EmptyName : ProfileError()
+    data object InvalidTimeInterval : ProfileError()
 }
 data class ProfileUiState(
     val isLoading: Boolean = false,
@@ -45,12 +47,25 @@ class ProfileViewModel(
         name: String,
         description: String,
         foodType: String,
-        imageUri: Uri?
+        imageUri: Uri?,
+        openingHours: OpeningHours?
     ) {
 
         if (name.isBlank()) {
             _uiState.update { it.copy(error = ProfileError.EmptyName) }
             return
+        }
+
+        if (openingHours != null) {
+            val schedule = openingHours.weekly
+            val activeDays = listOfNotNull(
+                schedule.mon, schedule.tue, schedule.wed,
+                schedule.thu, schedule.fri, schedule.sat, schedule.sun
+            )
+            if (activeDays.any { !isValidInterval(it.start, it.end) }) {
+                _uiState.update { it.copy(error = ProfileError.InvalidTimeInterval) }
+                return
+            }
         }
 
         viewModelScope.launch {
@@ -61,7 +76,13 @@ class ProfileViewModel(
                     imageRepository.uploadProfileImage(imageUri)
                 } else ""
 
-                repository.saveMyTruckProfile(name, description, foodType, imageUrl)
+                repository.saveMyTruckProfile(
+                    name,
+                    description,
+                    foodType,
+                    imageUrl,
+                    openingHours = openingHours
+                    )
 
                 _uiState.update {
                     it.copy(isSaving = false, saveSuccess = true)

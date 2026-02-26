@@ -37,6 +37,16 @@ fun OpeningHours.isCurrentlyOpen(): Boolean {
     }
 }
 
+fun isValidInterval(start: String, end: String): Boolean {
+    return try {
+        val startTime = LocalTime.parse(start)
+        val endTime = LocalTime.parse(end)
+        startTime.isBefore(endTime)
+    } catch (e: Exception) {
+        false
+    }
+}
+
 data class WeeklyOpeningHours(
     val mon: OpeningInterval? = null,
     val tue: OpeningInterval? = null,
