@@ -8,11 +8,41 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import com.example.munchtruck.ui.theme.Dimens.SpaceSM
+
+@Composable
+fun InlineError(
+    message: String,
+    modifier: Modifier = Modifier
+) {
+    if (message.isNotEmpty()) {
+        Text(
+            text = message,
+            color = MaterialTheme.colorScheme.error,
+            style = MaterialTheme.typography.bodySmall,
+            modifier = modifier
+        )
+    }
+}
+@Composable
+fun FeedbackSnackbar(
+    message: String?,
+    snackbarHostState: SnackbarHostState,
+    onConsumed: () -> Unit
+) {
+    LaunchedEffect(message) {
+        message?.let {
+            snackbarHostState.showSnackbar(it)
+            onConsumed()
+        }
+    }
+}
 
 @Composable
 fun CenteredLoading(
@@ -54,7 +84,7 @@ fun CenteredMessageWithRetry(
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(message)
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(SpaceSM))
             Button(onClick = onRetry) {
                 Text("Retry")
             }

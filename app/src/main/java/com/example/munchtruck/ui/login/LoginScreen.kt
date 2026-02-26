@@ -9,6 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
+import com.example.munchtruck.ui.components.toMessage
 import com.example.munchtruck.viewmodels.AuthViewModel
 
 // ====== Login Screen ===============================
@@ -22,10 +23,11 @@ fun LoginScreen(
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    val error by authViewModel.error.collectAsState()
+    val errorState by authViewModel.error.collectAsState()
     val isLoading by authViewModel.isLoading.collectAsState()
     val isLoggedIn by authViewModel.isLoggedIn.collectAsState()
 
+    val errorMessage = errorState?.toMessage() ?: ""
     // ====== Navigation Effects ===============================
 
     LaunchedEffect(isLoggedIn) {
@@ -41,7 +43,7 @@ fun LoginScreen(
     LoginContent(
         email = email,
         password = password,
-        error = error,
+        error = errorMessage,
         isLoading = isLoading,
         onEmailChange = { email = it },
         onPasswordChange = { password = it },

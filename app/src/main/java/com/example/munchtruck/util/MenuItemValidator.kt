@@ -1,24 +1,25 @@
 package com.example.munchtruck.util
 
+sealed class MenuItemValidationError {
+    data object NameEmpty : MenuItemValidationError()
+    data object NameTooShort : MenuItemValidationError()
+    data object NameTooLong : MenuItemValidationError()
+    data object NameOnlyNumbers : MenuItemValidationError()
+    data object NameInvalidCharacters : MenuItemValidationError()
+
+    data object DescriptionTooLong : MenuItemValidationError()
+
+    data object PriceEmpty : MenuItemValidationError()
+    data object PriceInvalidFormat : MenuItemValidationError()
+    data object PriceMustBeGreaterThanZero : MenuItemValidationError()
+    data object PriceTooHigh : MenuItemValidationError()
+    data object PriceTooManyDecimals : MenuItemValidationError()
+
+    data object ImageUrlInvalid : MenuItemValidationError()
+}
 object MenuItemValidator {
 
-    sealed class MenuItemValidationError {
-        data object NameEmpty : MenuItemValidationError()
-        data object NameTooShort : MenuItemValidationError()
-        data object NameTooLong : MenuItemValidationError()
-        data object NameOnlyNumbers : MenuItemValidationError()
-        data object NameInvalidCharacters : MenuItemValidationError()
 
-        data object DescriptionTooLong : MenuItemValidationError()
-
-        data object PriceEmpty : MenuItemValidationError()
-        data object PriceInvalidFormat : MenuItemValidationError()
-        data object PriceMustBeGreaterThanZero : MenuItemValidationError()
-        data object PriceTooHigh : MenuItemValidationError()
-        data object PriceTooManyDecimals : MenuItemValidationError()
-
-        data object ImageUrlInvalid : MenuItemValidationError()
-    }
 
     fun validateName(name: String): MenuItemValidationError? {
         val trimmedName = name.trim()
