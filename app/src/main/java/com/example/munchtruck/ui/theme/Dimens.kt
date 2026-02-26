@@ -63,6 +63,7 @@ object Dimens {
     val ChipSpacing = 6.dp
 
     val TruckImageSize = 64.dp
+    val BottomNavHeight = 80.dp
 
     // ====== Profile ===============================
 
