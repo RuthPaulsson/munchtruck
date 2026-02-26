@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import android.location.Location
 import com.example.munchtruck.data.location.DeviceLocationProvider
 import com.example.munchtruck.data.model.MenuItem
+import com.example.munchtruck.data.model.isCurrentlyOpen
 import com.example.munchtruck.data.repository.DiscoveryRepository
 import com.example.munchtruck.data.repository.MenuRepository
 import com.example.munchtruck.data.repository.ProfileRepository
@@ -98,6 +99,14 @@ class DiscoveryViewModel(
             try {
                 discoveryRepository.observeOpenTrucks()
                     .collect { trucks ->
+                        val processedTrucks = trucks.map { truck ->
+                            val isActuallyOpen = if (!truck.isActive) {
+                                false
+                            } else {
+                                truck.openingHours?.isCurrentlyOpen() ?: false
+                            }
+                            truck.copy(isOpen = isActuallyOpen)
+                        }
                         _uiState.update { currentState ->
                             currentState.copy(
                                 trucks = trucks,
