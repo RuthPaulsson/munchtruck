@@ -48,6 +48,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.rememberAsyncImagePainter
 import com.example.munchtruck.R
 import com.example.munchtruck.data.model.MenuItem
+import com.example.munchtruck.ui.components.InlineError
 import com.example.munchtruck.ui.components.InputField
 import com.example.munchtruck.ui.theme.AppPreviewWrapper
 import com.example.munchtruck.ui.theme.Dimens.LocationMapHeight
@@ -71,6 +72,8 @@ fun EditProfileContent(
     name: String,
     description: String,
     foodType: String,
+    errorMessage: String? = null,
+    isLoading: Boolean = false,
     locationState: LocationUiState,
     menuItems: List<MenuItem>,
     onEditMenuClick: (String) -> Unit,
@@ -87,15 +90,12 @@ fun EditProfileContent(
     onImageClick: () -> Unit,
     onMenuClick: () -> Unit,
     snackbarHost: @Composable () -> Unit
+
 ) {
     var isLocationExpanded by remember { mutableStateOf(false) }
     var isMenuExpanded by remember { mutableStateOf(false) }
 
-    val hasLocation =
-        locationState.selectedLat != null &&
-                locationState.selectedLng != null
-
-
+    val hasLocation = locationState.selectedLat != null && locationState.selectedLng != null
 
     Scaffold(
         snackbarHost = { snackbarHost() },
@@ -123,250 +123,260 @@ fun EditProfileContent(
             )
         }
     ) { innerPadding ->
-
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .animateContentSize()
-                .padding(innerPadding)
-                .padding(ScreenPadding)
         ) {
-
-            // ===== Profile Image =====
-
-            Box(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(ProfileImageHeight)
-                    .clip(RoundedCornerShape(ProfileImageRadius))
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .animateContentSize()
+                    .padding(innerPadding)
+                    .padding(ScreenPadding)
             ) {
-                if (selectedImageUri != null) {
-                    Image(
-                        painter = rememberAsyncImagePainter(selectedImageUri),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                } else {
-                    Image(
-                        painter = painterResource(R.drawable.ic_launcher_background),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
+
+                errorMessage?.let {
+                    InlineError(
+                        message = it,
+                        modifier = Modifier.padding(bottom = SpaceM)
                     )
                 }
 
-                Button(
-                    onClick = onImageClick,
+                // ===== Profile Image =====
+
+                Box(
                     modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(bottom = SpaceM),
-                    shape = RoundedCornerShape(ProfileImageButtonRadius)
+                        .fillMaxWidth()
+                        .height(ProfileImageHeight)
+                        .clip(RoundedCornerShape(ProfileImageRadius))
                 ) {
-                    Text(stringResource(R.string.profile_load_image))
-                }
-            }
-
-            Spacer(modifier = Modifier.height(SpaceL))
-
-            // ===== Inputs =====
-
-            InputField(
-                value = name,
-                onChange = onNameChange,
-                placeholder = stringResource(R.string.profile_name_hint)
-            )
-
-            Spacer(modifier = Modifier.height(SpaceL))
-
-            InputField(
-                value = description,
-                onChange = onDescriptionChange,
-                placeholder = stringResource(R.string.profile_description_hint),
-                singleLine = false,
-                minLines = 3
-            )
-
-            Spacer(modifier = Modifier.height(SpaceL))
-
-            InputField(
-                value = foodType,
-                onChange = onFoodTypeChange,
-                placeholder = stringResource(R.string.profile_food_type_hint)
-            )
-
-            Spacer(modifier = Modifier.height(SpaceL))
-
-            // ===== Location Row =====
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { isLocationExpanded = !isLocationExpanded }
-                    .padding(vertical = SpaceM),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
-                )
-
-                Spacer(modifier = Modifier.width(SpaceS))
-
-                Text(
-                    text = if (hasLocation)
-                        locationState.address
-                    else
-                        stringResource(R.string.profile_add_location),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = if (hasLocation)
-                        MaterialTheme.colorScheme.onSurface
-                    else
-                        MaterialTheme.colorScheme.onSurfaceVariant
-                )
-
-                Spacer(modifier = Modifier.weight(1f))
-            }
-
-            if (isLocationExpanded) {
-
-                Spacer(modifier = Modifier.height(SpaceS))
-
-                LocationMap(
-                    lat = locationState.selectedLat,
-                    lng = locationState.selectedLng,
-                    onMapClick = onMapPicked
-                )
-
-                Spacer(modifier = Modifier.height(SpaceS))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(SpaceM)
-                ) {
-
-                    TextButton(onClick = onUseCurrentLocation) {
-                        Text(stringResource(R.string.profile_use_current_location))
+                    val painter = if (selectedImageUri != null) {
+                        rememberAsyncImagePainter(selectedImageUri)
+                    } else {
+                        painterResource(R.drawable.ic_launcher_background)
                     }
 
-                    TextButton(onClick = onSaveLocation) {
-                        Text(stringResource(R.string.profile_save_location))
+                    Image(
+                        painter = painter,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+
+                    Button(
+                        onClick = onImageClick,
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .padding(bottom = SpaceM),
+                        shape = RoundedCornerShape(ProfileImageButtonRadius)
+                    ) {
+                        Text(stringResource(R.string.profile_load_image))
                     }
                 }
 
                 Spacer(modifier = Modifier.height(SpaceL))
-            }
 
-            // ===== Menu Row =====
+                // ===== Inputs =====
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable{ isMenuExpanded = !isMenuExpanded }
-                    .padding(vertical = SpaceM),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
+                InputField(
+                    value = name,
+                    onChange = onNameChange,
+                    placeholder = stringResource(R.string.profile_name_hint)
                 )
 
-                Spacer(modifier = Modifier.width(SpaceS))
+                Spacer(modifier = Modifier.height(SpaceL))
 
-                Text(
-                    text = stringResource(R.string.profile_menu),
-                    style = MaterialTheme.typography.bodyLarge
+                InputField(
+                    value = description,
+                    onChange = onDescriptionChange,
+                    placeholder = stringResource(R.string.profile_description_hint),
+                    singleLine = false,
+                    minLines = 3
                 )
-                Spacer(modifier = Modifier.weight(1f))
-            }
 
-            if (isMenuExpanded) {
+                Spacer(modifier = Modifier.height(SpaceL))
 
-                Spacer(modifier = Modifier.height(SpaceS))
+                InputField(
+                    value = foodType,
+                    onChange = onFoodTypeChange,
+                    placeholder = stringResource(R.string.profile_food_type_hint)
+                )
 
-                if (menuItems.isEmpty()) {
+                Spacer(modifier = Modifier.height(SpaceL))
+
+                // ===== Location Row =====
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { isLocationExpanded = !isLocationExpanded }
+                        .padding(vertical = SpaceM),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+
+                    Spacer(modifier = Modifier.width(SpaceS))
 
                     Text(
-                        text = stringResource(R.string.menu_empty),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        text = if (hasLocation)
+                            locationState.address
+                        else
+                            stringResource(R.string.profile_add_location),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = if (hasLocation)
+                            MaterialTheme.colorScheme.onSurface
+                        else
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+
+                if (isLocationExpanded) {
+
+                    Spacer(modifier = Modifier.height(SpaceS))
+
+                    LocationMap(
+                        lat = locationState.selectedLat,
+                        lng = locationState.selectedLng,
+                        onMapClick = onMapPicked
                     )
 
                     Spacer(modifier = Modifier.height(SpaceS))
 
-                    TextButton(
-                        onClick = { onMenuClick() }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(SpaceM)
                     ) {
-                        Text(stringResource(R.string.menu_add_dish))
-                    }
 
-                } else {
+                        TextButton(onClick = onUseCurrentLocation) {
+                            Text(stringResource(R.string.profile_use_current_location))
+                        }
 
-                    menuItems.forEach { item ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = SpaceS),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-
-                            Icon(
-                                imageVector = Icons.Default.RestaurantMenu,
-                                contentDescription = null
-                            )
-
-                            Spacer(modifier = Modifier.width(SpaceS))
-
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(item.name)
-
-                                Text(
-                                    text = stringResource(
-                                        R.string.menu_price_format,
-                                        item.price / 100,
-                                        stringResource(R.string.currency_sek)
-                                    ),
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-
-                            IconButton(
-                                onClick = { onEditMenuClick(item.id) }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Edit,
-                                    contentDescription = stringResource(R.string.menu_edit),
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
-                            }
-
-                            IconButton(
-                                onClick = { onDeleteMenuClick(item.id) }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Delete,
-                                    contentDescription = stringResource(R.string.menu_delete_icon),
-                                    tint = MaterialTheme.colorScheme.error
-                                )
-                            }
+                        TextButton(onClick = onSaveLocation) {
+                            Text(stringResource(R.string.profile_save_location))
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(SpaceS))
-
-                    TextButton(
-                        onClick = { onMenuClick() }
-                    ) {
-                        Text(stringResource(R.string.menu_add_dish))
-                    }
+                    Spacer(modifier = Modifier.height(SpaceL))
                 }
 
-                Spacer(modifier = Modifier.height(SpaceL))
-            }
+                // ===== Menu Row =====
 
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable{ isMenuExpanded = !isMenuExpanded }
+                        .padding(vertical = SpaceM),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+
+                    Spacer(modifier = Modifier.width(SpaceS))
+
+                    Text(
+                        text = stringResource(R.string.profile_menu),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+
+                if (isMenuExpanded) {
+
+                    Spacer(modifier = Modifier.height(SpaceS))
+
+                    if (menuItems.isEmpty()) {
+
+                        Text(
+                            text = stringResource(R.string.menu_empty),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+
+                        Spacer(modifier = Modifier.height(SpaceS))
+
+                        TextButton(
+                            onClick = { onMenuClick() }
+                        ) {
+                            Text(stringResource(R.string.menu_add_dish))
+                        }
+
+                    } else {
+
+                        menuItems.forEach { item ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = SpaceS),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+
+                                Icon(
+                                    imageVector = Icons.Default.RestaurantMenu,
+                                    contentDescription = null
+                                )
+
+                                Spacer(modifier = Modifier.width(SpaceS))
+
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(item.name)
+
+                                    Text(
+                                        text = stringResource(
+                                            R.string.menu_price_format,
+                                            item.price / 100,
+                                            stringResource(R.string.currency_sek)
+                                        ),
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+
+                                IconButton(
+                                    onClick = { onEditMenuClick(item.id) }
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Edit,
+                                        contentDescription = stringResource(R.string.menu_edit),
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                }
+
+                                IconButton(
+                                    onClick = { onDeleteMenuClick(item.id) }
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Delete,
+                                        contentDescription = stringResource(R.string.menu_delete_icon),
+                                        tint = MaterialTheme.colorScheme.error
+                                    )
+                                }
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(SpaceS))
+
+                        TextButton(
+                            onClick = { onMenuClick() }
+                        ) {
+                            Text(stringResource(R.string.menu_add_dish))
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(SpaceL))
+                }
+            }
+            if (isLoading) {
+                com.example.munchtruck.ui.components.CenteredLoading()
+            }
         }
     }
 }

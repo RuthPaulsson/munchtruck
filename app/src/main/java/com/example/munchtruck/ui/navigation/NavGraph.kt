@@ -124,7 +124,8 @@ fun NavGraph() {
                     return DiscoveryViewModel(
                         discoveryRepository = discoveryRepository,
                         locationProvider = locationProvider,
-                        menuRepository = menuRepository
+                        menuRepository = menuRepository,
+                        profileRepository = profileRepository
                     ) as T
                 }
                 throw IllegalArgumentException("Unknown ViewModel class")
