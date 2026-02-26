@@ -10,6 +10,7 @@ interface ProfileRepository {
         description: String,
         foodType: String,
         imageUrl: String,
+        openingHours: OpeningHours?
 //        isOpen: Boolean
     )
 
