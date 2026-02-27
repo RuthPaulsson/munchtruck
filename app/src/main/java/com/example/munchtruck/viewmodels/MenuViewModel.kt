@@ -6,6 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.munchtruck.data.model.MenuItem
 import com.example.munchtruck.data.repository.ImageRepository
 import com.example.munchtruck.data.repository.MenuRepository
+import com.example.munchtruck.util.MenuItemValidationError
+import com.example.munchtruck.util.MenuItemValidator
+import com.example.munchtruck.util.PriceFormatter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,6 +21,10 @@ sealed class MenuError {
     data object DeleteItemFailed : MenuError()
 }
 data class MenuUiState(
+    val itemName: String = "",
+    val itemPrice: String = "",
+    val itemDescription: String = "",
+    val priceError: MenuItemValidationError? = null,
     val menuItems: List<MenuItem> = emptyList(),
     val isLoading: Boolean = false,
     val error: MenuError? = null,
@@ -30,6 +37,59 @@ class MenuViewModel(
     private val _uiState = MutableStateFlow(MenuUiState())
     val uiState: StateFlow<MenuUiState> = _uiState.asStateFlow()
     private var isObserving = false
+
+
+
+    fun onNameChanged(newName: String) {
+        _uiState.update { it.copy(itemName = newName) }
+    }
+
+    fun onDescriptionChanged(newDesc: String) {
+        _uiState.update { it.copy(itemDescription = newDesc) }
+    }
+
+    fun onPriceChanged(newPrice: String) {
+        val filtered = newPrice.filter { it.isDigit() || it == ',' || it == '.' }
+        if (filtered.count { it == ',' || it == '.' } > 1) return
+
+
+        _uiState.update { it.copy(itemPrice = filtered, priceError = null) }
+    }
+
+
+    fun saveItem(itemId: String?, imageUri: Uri?) {
+        val currentState = _uiState.value
+
+
+        val nameError = MenuItemValidator.validateName(currentState.itemName)
+        val priceError = MenuItemValidator.validatePrice(currentState.itemPrice)
+
+        if (nameError != null || priceError != null) {
+
+            _uiState.update { it.copy(priceError = priceError) }
+            return
+        }
+
+        val priceInOre = PriceFormatter.parseToOre(currentState.itemPrice) ?: return
+
+
+        if (itemId == null) {
+            addMenuItem(
+                name = currentState.itemName,
+                price = priceInOre,
+                description = currentState.itemDescription,
+                imageUri = imageUri
+            )
+        } else {
+            updateMenuItem(
+                itemId = itemId,
+                name = currentState.itemName,
+                price = priceInOre,
+                description = currentState.itemDescription,
+                imageUri = imageUri
+            )
+        }
+    }
 
     fun observeMenu() {
         if (isObserving) return
