@@ -19,5 +19,4 @@ interface ProfileRepository {
     suspend fun updateMyTruckLocation(location: TruckLocation)
 
     suspend fun updateMyTruckOpeningHours(hours: OpeningHours)
-    suspend fun updateActiveStatus(isActive: Boolean)
 }

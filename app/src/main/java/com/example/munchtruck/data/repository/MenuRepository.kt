@@ -4,9 +4,9 @@ import com.example.munchtruck.data.model.MenuItem
 import kotlinx.coroutines.flow.Flow
 
 interface MenuRepository {
-    fun observeMyMenu(): Flow<List<MenuItem>> // FoodTruck owner
+    fun observeMyMenu(): Flow<Result<List<MenuItem>>> // FoodTruck owner
 
-    fun observeTruckMenu(truckId: String): Flow<List<MenuItem>> // FoodLover guest
+    fun observeTruckMenu(truckId: String): Flow<Result<List<MenuItem>>> // FoodLover guest
 
     suspend fun addMenuItem(
         name: String,

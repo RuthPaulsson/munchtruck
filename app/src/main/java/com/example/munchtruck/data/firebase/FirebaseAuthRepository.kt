@@ -1,14 +1,17 @@
 package com.example.munchtruck.data.firebase
 
+import com.example.munchtruck.data.FirestoreFields
 import com.example.munchtruck.data.repository.AuthRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
 
-class FirebaseAuthRepository: AuthRepository {
-    private val firebaseAuth = FirebaseAuth.getInstance()
-    private val firestore = FirebaseFirestore.getInstance()
+class FirebaseAuthRepository(
+    private val firebaseAuth: FirebaseAuth,
+    private val firestore: FirebaseFirestore
+): AuthRepository {
+
 
 
     override suspend fun login(email: String, password: String) {
@@ -27,13 +30,13 @@ class FirebaseAuthRepository: AuthRepository {
             "role" to "owner"
         )
 
-        val truck = mutableMapOf<String, Any>(
-            "name" to "",
-            "description" to "",
-            "location" to "",
-            "imageUrl" to "",
-            "foodType" to "",
-            "openingHours" to ""
+        val truck = mutableMapOf<String, Any?>(
+            FirestoreFields.NAME to "",
+            FirestoreFields.DESCRIPTION to "",
+            FirestoreFields.LOCATION to null,
+            FirestoreFields.IMAGE_URL to "",
+            FirestoreFields.FOOD_TYPE to "",
+            FirestoreFields.HOURS to null
         )
 
         firestore.runBatch { batch ->

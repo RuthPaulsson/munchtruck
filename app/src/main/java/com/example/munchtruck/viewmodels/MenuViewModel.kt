@@ -31,14 +31,18 @@ class MenuViewModel(
     val uiState: StateFlow<MenuUiState> = _uiState.asStateFlow()
     private var isObserving = false
 
- fun observeMenu(){
-     if (isObserving) return
-     isObserving = true
+    fun observeMenu() {
+        if (isObserving) return
+        isObserving = true
 
-     viewModelScope.launch {
-            repository.observeMyMenu().collect { items ->
-                _uiState.update {
-                    it.copy(menuItems = items)
+        viewModelScope.launch {
+            repository.observeMyMenu().collect { result ->
+                result.onSuccess { items ->
+                    _uiState.update {
+                        it.copy(menuItems = items)
+                    }
+                }.onFailure { error ->
+                    isObserving = false
                 }
             }
         }

@@ -1,7 +1,9 @@
 package com.example.munchtruck.data.firebase
 
+import com.example.munchtruck.data.FirestoreFields
 import com.example.munchtruck.data.model.MenuItem
 import com.example.munchtruck.data.repository.MenuRepository
+import com.example.munchtruck.data.toMenuItem
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -16,78 +18,49 @@ class FirebaseMenuRepository (
     private val auth: FirebaseAuth
 ) : MenuRepository {
 
+    // ============ ID ==============================================
+
     private fun truckId(): String =
         auth.currentUser?.uid ?: throw IllegalStateException("Not logged in")
 
+    // ============ COLLECTION ==============================================
 
-    // ============ COLLECTION PATHS ====================================
-
-    // OWNER path
     private fun myMenuCollection() =
-        firestore.collection("foodTrucks")
-        .document(truckId())
-        .collection("menu")
+        firestore.collection(FirestoreFields.COLLECTION_TRUCKS)
+        .document(truckId()).collection("menu")
 
-    // FoodTruck GUEST path (selected truck)
-    private fun truckMenuCollection(truckId: String) =
-        firestore.collection("foodTrucks")
-            .document(truckId)
-            .collection("menu")
 
 
     // ============ OBSERVE ==============================================
 
 
-    override fun observeMyMenu(): Flow<List<MenuItem>> = callbackFlow {
+    override fun observeMyMenu(): Flow<Result<List<MenuItem>>> = callbackFlow {
         val listener = myMenuCollection().addSnapshotListener { snapshot, e ->
             if (e != null) {
-                close(e)
+                trySend(Result.failure(e))
                 return@addSnapshotListener
             }
 
+            val items = snapshot?.documents.orEmpty().map { it.toMenuItem() }
 
-            val menuItems = snapshot?.documents.orEmpty().map { doc ->
-                MenuItem(
-                    id = doc.id,
-                    name = doc.getString("name").orEmpty(),
-                    price = doc.getLong("price") ?: 0L,
-                    description = doc.getString("description").orEmpty(),
-                    imageUrl = doc.getString("imageUrl").orEmpty(),
-                    createdAt = doc.getTimestamp("createdAt"),
-                    updatedAt = doc.getTimestamp("updatedAt")
-
-                )
-            }
-            trySend(menuItems)
-
+            trySend(Result.success(items))
         }
         awaitClose { listener.remove() }
     }
 
-    override fun observeTruckMenu(truckId: String): Flow<List<MenuItem>> = callbackFlow {
-        val listener = firestore.collection("foodTrucks")
+    override fun observeTruckMenu(truckId: String): Flow<Result<List<MenuItem>>> = callbackFlow {
+        val listener = firestore.collection(FirestoreFields.COLLECTION_TRUCKS)
             .document(truckId)
             .collection("menu")
             .addSnapshotListener { snapshot, e ->
-            if (e != null) {
-                close(e)
-                return@addSnapshotListener
-            }
+                if (e != null) {
+                    trySend(Result.failure(e))
+                    return@addSnapshotListener
+                }
 
-            val menuItems = snapshot?.documents.orEmpty().map { doc ->
-                MenuItem(
-                    id = doc.id,
-                    name = doc.getString("name").orEmpty(),
-                    price = doc.getLong("price") ?: 0L,
-                    description = doc.getString("description").orEmpty(),
-                    imageUrl = doc.getString("imageUrl").orEmpty(),
-                    createdAt = doc.getTimestamp("createdAt"),
-                    updatedAt = doc.getTimestamp("updatedAt")
-                )
+                val items = snapshot?.documents.orEmpty().map { it.toMenuItem() }
+                trySend(Result.success(items))
             }
-            trySend(menuItems)
-        }
-
         awaitClose { listener.remove() }
     }
 
@@ -111,7 +84,7 @@ class FirebaseMenuRepository (
         )
         if (imageUrl.trim().isNotBlank()) itemData ["imageUrl"] = imageUrl.trim()
 
-        itemRef.set(itemData).await()
+        itemRef.set(itemData, SetOptions.merge()).await()
         return itemRef.id
     }
 
