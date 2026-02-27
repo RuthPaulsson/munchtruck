@@ -29,24 +29,9 @@ fun EditMenuScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isEditing = itemId != null
-    val errorString = (uiState.error as? MenuItemValidationError)?.toMessage()
-        ?: uiState.error?.toString()
-
-    var hasLoadedItem by remember { mutableStateOf(false) }
-
-    var name by remember { mutableStateOf("") }
-    var price by remember { mutableStateOf("") }
-    var priceError by remember { mutableStateOf<String?>(null) }
-
-    var description by remember { mutableStateOf("") }
-    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
-
     val snackbarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
-
-
-    val nameEmptyError = MenuItemValidationError.NameEmpty.toMessage()
-    val priceInvalidError = MenuItemValidationError.PriceInvalidFormat.toMessage()
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    var hasLoadedItem by remember { mutableStateOf(false) }
 
 
 
@@ -58,9 +43,9 @@ fun EditMenuScreen(
         if (!hasLoadedItem && isEditing && itemId != null) {
             val item = uiState.menuItems.find { it.id == itemId }
             item?.let {
-                name = it.name
-                price = (it.price / 100.0).toString()
-                description = it.description
+                viewModel.onNameChanged(it.name)
+                viewModel.onDescriptionChanged(it.description)
+                viewModel.onPriceChanged((it.price / 100.0).toString())
                 hasLoadedItem = true
             }
         }
@@ -77,8 +62,8 @@ fun EditMenuScreen(
     }
 
     LaunchedEffect(uiState.error) {
-        if (uiState.error != null && errorString != null) {
-            snackbarHostState.showSnackbar(errorString)
+        uiState.error?.let {
+            snackbarHostState.showSnackbar(it.toString())
             viewModel.clearError()
         }
     }
@@ -90,74 +75,18 @@ fun EditMenuScreen(
     }
 
     EditMenuContent(
-        name = name,
-        price = price,
-        description = description,
+        name = uiState.itemName,
+        price = uiState.itemPrice,
+        description = uiState.itemDescription,
         selectedImageUri = selectedImageUri,
-        isEditing = isEditing,
         isLoading = uiState.isLoading,
-        priceError = priceError,
-        onNameChange = { name = it },
-        onPriceChange = {
-            val filtered = it.filter { char ->
-                char.isDigit() || char == ',' || char == '.'
-            }
-
-            val separatorCount =
-                filtered.count { c -> c == ',' || c == '.' }
-
-            if (separatorCount <= 1) {
-                price = filtered
-            }
-
-            priceError = null
-        },
-        onDescriptionChange = { description = it },
+        priceError = uiState.priceError?.toMessage(),
+        onNameChange = { viewModel.onNameChanged(it) },
+        onPriceChange = {viewModel.onPriceChanged(it) },
+        onDescriptionChange = { viewModel.onDescriptionChanged(it) },
         onBackClick = { navController.popBackStack() },
-        onSaveClick = {
-
-            if (name.isBlank()) {
-                coroutineScope.launch {
-                    snackbarHostState.showSnackbar(nameEmptyError)
-                }
-                return@EditMenuContent
-            }
-
-            val normalized = price.replace(",", ".")
-            val parsed = normalized.toBigDecimalOrNull()
-
-            if (parsed == null || parsed <= java.math.BigDecimal.ZERO) {
-                priceError = priceInvalidError
-                return@EditMenuContent
-            }
-
-            val priceLong = parsed
-                .setScale(2, java.math.RoundingMode.HALF_UP)
-                .multiply(100.toBigDecimal())
-                .toLong()
-
-            if (isEditing && itemId != null) {
-                viewModel.updateMenuItem(
-                    itemId = itemId,
-                    name = name,
-                    price = priceLong,
-                    description = description,
-                    imageUri = selectedImageUri
-                )
-            } else {
-                viewModel.addMenuItem(
-                    name = name,
-                    price = priceLong,
-                    description = description,
-                    imageUri = selectedImageUri
-                )
-            }
-        },
-        onImageClick = {
-            imageLauncher.launch("image/*")
-        },
-        snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
-        }
+        onSaveClick = { viewModel.saveItem(itemId, selectedImageUri) },
+        onImageClick = { imageLauncher.launch("image/*") },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     )
 }

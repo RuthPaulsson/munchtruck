@@ -40,10 +40,12 @@ fun EditProfileScreen(
     val locationState by locationViewModel.uiState.collectAsStateWithLifecycle()
     val menuUiState by menuViewModel.uiState.collectAsStateWithLifecycle()
 
+
     val profileErrorMessage = (uiState.error as? ProfileError)?.toMessage()
     val menuErrorMessage = (menuUiState.error as? MenuItemValidationError)?.toMessage()
 
     LaunchedEffect(Unit) {
+        profileViewModel.loadProfile()
         menuViewModel.observeMenu()
     }
 
@@ -61,6 +63,7 @@ fun EditProfileScreen(
 
     var foodType by remember { mutableStateOf("") }
 
+    var openingHours by remember(uiState.openingHours) { mutableStateOf(uiState.openingHours) }
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -134,7 +137,8 @@ fun EditProfileScreen(
                 name = name,
                 description = description,
                 foodType = foodType,
-                imageUri = selectedImageUri
+                imageUri = selectedImageUri,
+                openingHours = openingHours
             )
         },
         onImageClick = {
