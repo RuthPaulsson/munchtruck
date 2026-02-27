@@ -167,6 +167,8 @@
     <string name="error_menu_price_max_two_decimals">Maximum 2 decimal places allowed.</string>
     <string name="error_menu_image_invalid_url">Invalid URL. Must start with http:// or https://</string>
 
+    <!-- Time -->
+    <string name="error_profile_invalid_time_interval">The closing time must be after the opening time.</string>
 
     <!-- Discovery -->
     <string name="error_menu_load_failed">Could not load menu</string>
