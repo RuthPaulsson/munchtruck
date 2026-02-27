@@ -3,7 +3,6 @@ package com.example.munchtruck.ui.components
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.example.munchtruck.R
-import com.example.munchtruck.util.LoginValidationError
 import com.example.munchtruck.util.MenuItemValidationError
 import com.example.munchtruck.viewmodels.AuthError
 import com.example.munchtruck.viewmodels.DiscoveryError
@@ -26,6 +25,8 @@ fun ProfileError.toMessage(): String = when (this) {
     ProfileError.UpdateFailed -> stringResource(R.string.error_profile_update_failed)
     ProfileError.EmptyName -> stringResource(R.string.error_profile_name_empty)
     ProfileError.SignOutFailed -> stringResource(R.string.error_logout_failed)
+    ProfileError.InvalidTimeInterval -> stringResource(R.string.error_profile_invalid_time_interval)
+
 }
 
 @Composable
