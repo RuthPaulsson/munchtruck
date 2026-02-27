@@ -55,22 +55,21 @@ class DiscoveryViewModel(
 
     fun selectedTruckAndLoadMenu(truckId: String) {
         menuJob?.cancel()
-
         _uiState.update { it.copy(isMenuLoading = true) }
 
         menuJob = viewModelScope.launch {
-            try {
-                menuRepository.observeTruckMenu(truckId).collect { items ->
+            menuRepository.observeTruckMenu(truckId).collect { result ->
+                result.onSuccess { items ->
                     _uiState.update { it.copy(
                         selectedTruckMenu = items,
                         isMenuLoading = false
                     ) }
+                }.onFailure {
+                    _uiState.update { it.copy(
+                        isMenuLoading = false,
+                        error = DiscoveryError.LoadMenuFailed
+                    ) }
                 }
-            } catch (e: Exception) {
-                _uiState.update { it.copy(
-                    isMenuLoading = false,
-                    error = DiscoveryError.LoadMenuFailed
-                ) }
             }
         }
     }
@@ -91,36 +90,34 @@ class DiscoveryViewModel(
         }
         _uiState.update { it.copy(mapMarkers = markers) }
     }
+
     fun observeTrucks() {
         _uiState.update { it.copy(isLoading = true) }
 
         viewModelScope.launch {
-            try {
-                discoveryRepository.observeOpenTrucks()
-                    .collect { trucks ->
-                        _uiState.update { currentState ->
-                            currentState.copy(
-                                trucks = trucks,
-                                isLoading = false,
-                                isListEmpty = trucks.isEmpty(),
-                                error = null,
-                                mapMarkers = trucks.map { truck ->
+            discoveryRepository.observeOpenTrucks().collect { result ->
+                result.onSuccess { trucks ->
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            trucks = trucks,
+                            isLoading = false,
+                            isListEmpty = trucks.isEmpty(),
+                            error = null,
+                            mapMarkers = trucks.map { truck ->
                                 MapMarker(
                                     id = truck.id,
                                     title = truck.name,
                                     latitude = truck.location?.latitude ?: 0.0,
                                     longitude = truck.location?.longitude ?: 0.0
                                 )
-                                }
-                            )
-                        }
+                            }
+                        )
                     }
-            } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(
+                }.onFailure {
+                    _uiState.update { it.copy(
                         isLoading = false,
                         error = DiscoveryError.LoadTrucksFailed
-                    )
+                    ) }
                 }
             }
         }
