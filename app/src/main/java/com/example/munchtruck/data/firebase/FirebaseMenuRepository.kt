@@ -82,7 +82,7 @@ class FirebaseMenuRepository (
             "createdAt" to FieldValue.serverTimestamp(),
             "updatedAt" to FieldValue.serverTimestamp()
         )
-        if (imageUrl.trim().isNotBlank()) itemData ["imageUrl"] = imageUrl.trim()
+
 
         itemRef.set(itemData, SetOptions.merge()).await()
         return itemRef.id
@@ -105,7 +105,7 @@ class FirebaseMenuRepository (
             "description" to description.trim(),
             "updatedAt" to FieldValue.serverTimestamp()
         )
-        if (imageUrl.isNotBlank()) updatedMenuItem["imageUrl"] = imageUrl.trim()
+
 
         myMenuCollection().document(itemId).set(updatedMenuItem, SetOptions.merge())
             .await()

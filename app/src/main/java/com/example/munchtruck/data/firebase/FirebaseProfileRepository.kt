@@ -38,7 +38,6 @@ class FirebaseProfileRepository(
             FirestoreFields.FOOD_TYPE to foodType.trim()
         )
 
-        if (imageUrl.isNotBlank()) updates[FirestoreFields.IMAGE_URL] = imageUrl.trim()
 
         openingHours?.let { hours ->
             val weeklyMap = mapOf(
