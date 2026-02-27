@@ -1,6 +1,5 @@
 package com.example.munchtruck.ui.navigation
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -24,7 +23,6 @@ import com.example.munchtruck.viewmodels.MenuViewModel
 import com.example.munchtruck.viewmodels.ProfileViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-
 import androidx.lifecycle.ViewModelProvider
 import com.example.munchtruck.data.firebase.FirebaseAuthRepository
 import com.example.munchtruck.data.firebase.FirebaseDiscoveryRepository
@@ -186,9 +184,24 @@ fun NavGraph() {
         composable("discovery") {
 
             DiscoveryScreen(
+                navController = navController,
                 viewModel = discoveryViewModel,
                 onTruckClick = { truckId ->
                     navController.navigate("public_profile/$truckId")
+                }
+            )
+        }
+
+        composable("map_view") {
+            com.example.munchtruck.ui.map.MapScreen(
+                viewModel = discoveryViewModel,
+                onTruckClick = { truckId ->
+                    navController.navigate("public_profile/$truckId")
+                },
+                onNavigateToHome = {
+                    navController.navigate("discovery") {
+                        popUpTo("discovery") { inclusive = true }
+                    }
                 }
             )
         }

@@ -119,6 +119,8 @@
     <string name="discovery_hero_title_line1">Discover burgers</string>
     <string name="discovery_hero_title_line2">near you</string>
     <string name="discovery_hero_subtitle">Tasty burgers delivered quickly</string>
+    <string name="discovery_nav_home">Home</string>
+    <string name="discovery_nav_map">Map</string>
 
     <!-- ===== Location strings ====================================== -->
 

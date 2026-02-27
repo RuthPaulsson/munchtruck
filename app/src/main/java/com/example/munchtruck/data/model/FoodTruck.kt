@@ -8,5 +8,6 @@ data class FoodTruck (
     val location: TruckLocation? = null,
     val imageUrl: String = "",
     val openingHours: OpeningHours? = null,
-    val isOpen: Boolean = false
+    val isOpen: Boolean = false,
+    val isActive: Boolean = true
 )

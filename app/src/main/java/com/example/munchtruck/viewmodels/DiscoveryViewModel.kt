@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import android.location.Location
 import com.example.munchtruck.data.location.DeviceLocationProvider
 import com.example.munchtruck.data.model.MenuItem
+import com.example.munchtruck.data.model.isCurrentlyOpen
 import com.example.munchtruck.data.repository.DiscoveryRepository
 import com.example.munchtruck.data.repository.MenuRepository
 import com.example.munchtruck.data.repository.ProfileRepository
