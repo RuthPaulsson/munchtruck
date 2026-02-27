@@ -74,7 +74,9 @@ class ProfileViewModel(
             try {
                 val imageUrl: String = if (imageUri != null) {
                     imageRepository.uploadProfileImage(imageUri)
-                } else ""
+                } else {
+                    _uiState.value.imageUrl
+                }
 
                 repository.saveMyTruckProfile(
                     name,

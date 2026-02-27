@@ -152,11 +152,12 @@ class MenuViewModel(
             try {
                 _uiState.update { it.copy(isLoading = true, saveSuccess = false) }
 
+                val existingItem = _uiState.value.menuItems.find { it.id == itemId }
 
                 val imageUrl = if (imageUri != null) {
                     imageRepository.uploadMenuImage(itemId, imageUri)
                 } else {
-                    ""
+                    existingItem?.imageUrl ?: ""
                 }
 
                 repository.updateMenuItem(itemId, name, price, description, imageUrl)
