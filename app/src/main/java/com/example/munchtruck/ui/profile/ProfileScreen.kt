@@ -59,8 +59,6 @@ fun ProfileScreen(
 
     )
 
-
-
     // ====== Logout Dialog ===============================
 
     if (showDialog) {
