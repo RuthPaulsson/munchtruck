@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.munchtruck.data.model.TruckLocation
 import com.example.munchtruck.data.repository.ProfileRepository  // Rätt!
 import com.example.munchtruck.data.location.DeviceLocationProvider
-import com.example.munchtruck.data.location.LocationError
 import com.example.munchtruck.util.LocationConstants
 import com.example.munchtruck.util.LocationValidator
 import kotlinx.coroutines.TimeoutCancellationException
@@ -17,7 +16,15 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 
-
+sealed class LocationError {
+    object NoPermission : LocationError()
+    object NoLocation : LocationError()
+    object InvalidCoordinates : LocationError()
+    object GpsTimeout : LocationError()
+    object AddressTooShort : LocationError()
+    object SaveFailed : LocationError()
+    data class Unknown(val message: String) : LocationError()
+}
 data class LocationUiState(
     val isLoading: Boolean = false,
     val selectedLat: Double? = null,
@@ -167,14 +174,12 @@ class LocationViewModel(
     fun saveLocation() {
 
         val state = _uiState.value
-        val coordError = validator.validateCoordinates(state.selectedLat, state.selectedLng)
-        val addressError = validator.validateAddress(state.address)
+        val validationError: LocationError? = validator.validateCoordinates(state.selectedLat, state.selectedLng)
+            ?: validator.validateAddress(state.address)
 
-        val firstError = coordError ?: addressError
-        if (firstError != null) {
-            _uiState.update { currentState ->
-                currentState.copy(error = firstError)
-            }
+
+        if (validationError != null) {
+            _uiState.update { it.copy(error = validationError) }
             return
         }
 
