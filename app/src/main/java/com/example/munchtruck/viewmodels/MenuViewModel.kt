@@ -63,10 +63,13 @@ class MenuViewModel(
 
         val nameError = MenuItemValidator.validateName(currentState.itemName)
         val priceError = MenuItemValidator.validatePrice(currentState.itemPrice)
+        val descError = MenuItemValidator.validateDescription(currentState.itemDescription)
 
-        if (nameError != null || priceError != null) {
 
-            _uiState.update { it.copy(priceError = priceError) }
+        val firstError = nameError ?: priceError ?: descError
+
+        if (firstError != null) {
+            _uiState.update { it.copy(priceError = firstError) }
             return
         }
 
