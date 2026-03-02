@@ -19,7 +19,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.munchtruck.R
+import com.example.munchtruck.data.model.OpeningHours
 import com.example.munchtruck.ui.components.toMessage
+import com.example.munchtruck.ui.components.updateOpeningHoursState
 import com.example.munchtruck.util.MenuItemValidationError
 import com.example.munchtruck.viewmodels.LocationViewModel
 import com.example.munchtruck.viewmodels.MenuViewModel
@@ -63,7 +65,9 @@ fun EditProfileScreen(
 
     var foodType by remember { mutableStateOf("") }
 
-    var openingHours by remember(uiState.openingHours) { mutableStateOf(uiState.openingHours) }
+    var openingHours by remember(uiState.openingHours) {
+        mutableStateOf(uiState.openingHours ?: OpeningHours())
+    }
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -80,6 +84,12 @@ fun EditProfileScreen(
         if (uiState.saveSuccess) {
             navController.popBackStack()
             profileViewModel.resetSaveStatus()
+        }
+    }
+
+    LaunchedEffect(uiState.openingHours) {
+        uiState.openingHours?.let { savedHours ->
+            openingHours = savedHours
         }
     }
 
@@ -118,6 +128,10 @@ fun EditProfileScreen(
         isLoading = uiState.isLoading,
         errorMessage = profileErrorMessage,
         onNameChange = { name = it },
+        openingHours = openingHours, // Skicka ner tiderna
+        onOpeningHoursChange = { day, interval ->
+            openingHours = updateOpeningHoursState(openingHours, day, interval)
+        },
         onDescriptionChange = { description = it },
         onFoodTypeChange = { foodType = it },
         onMapPicked = { lat, lng ->
