@@ -7,8 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.munchtruck.data.model.OpeningHours
 import com.example.munchtruck.data.model.isCurrentlyOpen
 import com.example.munchtruck.data.model.isValidInterval
+import com.example.munchtruck.data.repository.AuthRepository
 import com.example.munchtruck.data.repository.ImageRepository
 import com.example.munchtruck.data.repository.ProfileRepository
+import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,10 +23,15 @@ sealed class ProfileError {
     data object SignOutFailed : ProfileError()
     data object EmptyName : ProfileError()
     data object InvalidTimeInterval : ProfileError()
+    data object DeleteFailed : ProfileError()
+    data object RecentLoginRequired : ProfileError()
 }
 data class ProfileUiState(
     val isLoading: Boolean = false,
     val isSaving: Boolean = false,
+    val isDeleting: Boolean = false,
+    val showDeleteConfirmation: Boolean = false,
+    val isAccountDeleted: Boolean = false,
     val error: ProfileError? = null,
     val saveSuccess: Boolean = false,
     val name: String = "",
@@ -36,8 +43,9 @@ data class ProfileUiState(
 )
 
 class ProfileViewModel(
-    private val repository: ProfileRepository,
-    private val imageRepository: ImageRepository
+    private val profileRepository: ProfileRepository,
+    private val imageRepository: ImageRepository,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -78,7 +86,7 @@ class ProfileViewModel(
                     _uiState.value.imageUrl
                 }
 
-                repository.saveMyTruckProfile(
+                profileRepository.saveMyTruckProfile(
                     name,
                     description,
                     foodType,
@@ -105,7 +113,7 @@ class ProfileViewModel(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
-                val truck = repository.getTruckProfile()
+                val truck = profileRepository.getTruckProfile()
                 val openStatus = truck.openingHours?.isCurrentlyOpen() ?: false
                 _uiState.update {
                     it.copy(
@@ -125,6 +133,30 @@ class ProfileViewModel(
                         error = ProfileError.LoadProfileFailed
                     )
                 }
+            }
+        }
+    }
+
+    fun onDeleteAccountClicked() {
+        _uiState.update { it.copy(showDeleteConfirmation = true) }
+    }
+    fun onDeleteDismissed() {
+        _uiState.update { it.copy(showDeleteConfirmation = false) }
+    }
+    fun onDeleteConfirmed() {
+        _uiState.update { it.copy(showDeleteConfirmation = false, isDeleting = true, error = null) }
+
+        viewModelScope.launch {
+            try {
+                profileRepository.deleteAllTruckData()
+                authRepository.deleteUserDocument()
+                authRepository.deleteAuthAccount()
+                _uiState.update { it.copy(isDeleting = false, isAccountDeleted = true) }
+            } catch (e: FirebaseAuthRecentLoginRequiredException) {
+                _uiState.update { it.copy(
+                    isDeleting = false,
+                    error = ProfileError.RecentLoginRequired
+                ) }
             }
         }
     }
