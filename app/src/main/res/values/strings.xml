@@ -57,12 +57,15 @@
 
     <string name="public_profile_truck_not_found">Truck not found</string>
     <string name="public_profile_menu_empty">This truck has no menu items yet</string>
-    <string name="status_open">Open Now</string>
-    <string name="status_closed">Closed</string>
+
     <string name="status_offline">Offline</string>
-    <string name="status_hours_missing">Hours not available</string>
+
     <string name="profile_active_switch_label">Go Online</string>
     <string name="profile_active_switch_subtitle">Make your truck visible to customers</string>
+
+
+    <!-- ===== Opening hours ====================================== -->
+
     <string name="opening_hours_title">Opening Hours</string>
     <string name="day_mon">Monday</string>
     <string name="day_tue">Tuesday</string>
@@ -71,6 +74,17 @@
     <string name="day_fri">Friday</string>
     <string name="day_sat">Saturday</string>
     <string name="day_sun">Sunday</string>
+
+    <string name="status_open">Open Now</string>
+    <string name="status_closed">Closed</string>
+    <string name="opening_hours_from">From</string>
+    <string name="opening_hours_to">To</string>
+
+    <string name="time_placeholder_start">09:00</string>
+    <string name="time_placeholder_end">17:00</string>
+
+    <string name="status_hours_missing">Hours not available</string>
+
 
     <!-- ===== Formatting / Currency ====================================== -->
 
@@ -135,6 +149,7 @@
     <string name="location_longitude">Longitude</string>
     <string name="location_formatted">Formatted</string>
 
+
     <!-- ===== Error Messages ====================================== -->
 
     <!-- Profile -->
@@ -168,7 +183,7 @@
     <string name="error_menu_image_invalid_url">Invalid URL. Must start with http:// or https://</string>
 
     <!-- Time -->
-    <string name="error_profile_invalid_time_interval">The closing time must be after the opening time.</string>
+    <string name="error_invalid_time_interval">Closing time must be after opening time (format HH:mm).</string>
 
     <!-- Discovery -->
     <string name="error_menu_load_failed">Could not load menu</string>

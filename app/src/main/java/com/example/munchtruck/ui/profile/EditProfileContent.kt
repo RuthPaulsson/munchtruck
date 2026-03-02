@@ -48,9 +48,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.rememberAsyncImagePainter
 import com.example.munchtruck.R
 import com.example.munchtruck.data.model.MenuItem
+import com.example.munchtruck.data.model.OpeningHours
+import com.example.munchtruck.data.model.OpeningInterval
 import com.example.munchtruck.ui.components.InlineError
 import com.example.munchtruck.ui.components.InputField
+import com.example.munchtruck.ui.components.OpeningHoursSection
 import com.example.munchtruck.ui.theme.AppPreviewWrapper
+import com.example.munchtruck.ui.theme.Dimens
+import com.example.munchtruck.ui.theme.Dimens.ButtonRadius
 import com.example.munchtruck.ui.theme.Dimens.LocationMapHeight
 import com.example.munchtruck.ui.theme.Dimens.ProfileImageButtonRadius
 import com.example.munchtruck.ui.theme.Dimens.ProfileImageHeight
@@ -59,6 +64,7 @@ import com.example.munchtruck.ui.theme.Dimens.ScreenPadding
 import com.example.munchtruck.ui.theme.Dimens.SpaceL
 import com.example.munchtruck.ui.theme.Dimens.SpaceM
 import com.example.munchtruck.ui.theme.Dimens.SpaceS
+import com.example.munchtruck.ui.theme.Dimens.SpaceXL
 import com.example.munchtruck.viewmodels.LocationUiState
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -85,6 +91,8 @@ fun EditProfileContent(
     onNameChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
     onFoodTypeChange: (String) -> Unit,
+    openingHours: OpeningHours,
+    onOpeningHoursChange: (String, OpeningInterval?) -> Unit,
     onBackClick: () -> Unit,
     onSaveClick: () -> Unit,
     onImageClick: () -> Unit,
@@ -94,7 +102,7 @@ fun EditProfileContent(
 ) {
     var isLocationExpanded by remember { mutableStateOf(false) }
     var isMenuExpanded by remember { mutableStateOf(false) }
-
+    var isOpeningHoursExpanded by remember { mutableStateOf(false) }
     val hasLocation = locationState.selectedLat != null && locationState.selectedLng != null
 
     Scaffold(
@@ -205,6 +213,41 @@ fun EditProfileContent(
 
                 Spacer(modifier = Modifier.height(SpaceL))
 
+                // ===== Opening Hours =====
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { isOpeningHoursExpanded = !isOpeningHoursExpanded }
+                        .padding(vertical = SpaceM),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+
+                    Spacer(modifier = Modifier.width(SpaceS))
+
+                    Text(
+                        text = stringResource(R.string.opening_hours_title),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    // Valfritt: Lägg till en pil som indikerar öppen/stängd
+                }
+
+                if (isOpeningHoursExpanded) {
+                    Spacer(modifier = Modifier.height(SpaceS))
+                    OpeningHoursSection(
+                        openingHours = openingHours,
+                        onOpeningHoursChange = onOpeningHoursChange
+                    )
+                    Spacer(modifier = Modifier.height(SpaceL))
+                }
+
                 // ===== Location Row =====
 
                 Row(
@@ -224,7 +267,7 @@ fun EditProfileContent(
 
                     Text(
                         text = if (hasLocation)
-                            locationState.address
+                            stringResource(R.string.profile_add_location)
                         else
                             stringResource(R.string.profile_add_location),
                         style = MaterialTheme.typography.bodyLarge,
@@ -423,6 +466,8 @@ fun EditProfileContentPreview() {
             onUseCurrentLocation = {},
             onSaveLocation = {},
             onBackClick = {},
+            openingHours = OpeningHours(),
+            onOpeningHoursChange = { _, _ -> },
             onSaveClick = {},
             onImageClick = {},
             onNameChange = {},
@@ -435,7 +480,8 @@ fun EditProfileContentPreview() {
             ),
             onEditMenuClick = {},
             onDeleteMenuClick = {},
-            snackbarHost = {}
+            snackbarHost = {},
+
         )
     }
 }
