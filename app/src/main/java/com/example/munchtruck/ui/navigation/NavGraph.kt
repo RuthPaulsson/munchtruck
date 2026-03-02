@@ -54,7 +54,8 @@ fun NavGraph() {
     val profileRepository = remember {
         FirebaseProfileRepository(
             FirebaseFirestore.getInstance(),
-            FirebaseAuth.getInstance()
+            FirebaseAuth.getInstance(),
+            storage = FirebaseStorage.getInstance()
         )
     }
 

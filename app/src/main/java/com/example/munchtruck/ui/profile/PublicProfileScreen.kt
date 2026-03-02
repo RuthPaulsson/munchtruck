@@ -13,6 +13,7 @@ import com.example.munchtruck.R
 import com.example.munchtruck.ui.components.CenteredLoading
 import com.example.munchtruck.ui.components.CenteredMessage
 import com.example.munchtruck.ui.components.CenteredMessageWithRetry
+import com.example.munchtruck.ui.components.toDisplayString
 import com.example.munchtruck.ui.components.toMessage
 import com.example.munchtruck.viewmodels.DiscoveryError
 import com.example.munchtruck.viewmodels.DiscoveryViewModel
@@ -67,7 +68,7 @@ fun PublicProfileScreen(
                     description = truck.description,
                     rating = null,
                     location = truck.location?.address,
-                    openingHours = null,
+                    openingHours = truck.openingHours?.toDisplayString(),
                     imageUrl = truck.imageUrl,
                     menuItems = uiState.selectedTruckMenu,
                     isLoading = uiState.isMenuLoading,

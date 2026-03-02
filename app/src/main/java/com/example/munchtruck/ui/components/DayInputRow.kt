@@ -26,7 +26,8 @@ import com.example.munchtruck.ui.theme.Dimens.SpaceXS
 @Composable
 fun OpeningHoursSection(
     openingHours: OpeningHours,
-    onOpeningHoursChange: (String, OpeningInterval?) -> Unit
+    onOpeningHoursChange: ((String, OpeningInterval?) -> Unit)? = null,
+    isReadOnly: Boolean = false
 ) {
     val days = listOf(
         Triple("mon", R.string.day_mon, openingHours.weekly.mon),
@@ -45,14 +46,28 @@ fun OpeningHoursSection(
             DayInputRow(
                 dayName = stringResource(lableRes),
                 interval = interval,
+                isReadOnly = isReadOnly,
                 onIntervalChange = { newInterval ->
-                    onOpeningHoursChange(key, newInterval)
+                    onOpeningHoursChange?.invoke(key, newInterval)
                 }
             )
         }
     }
 }
 
+
+// I OpeningHoursSection.kt
+
+@Composable
+fun OpeningHours.toDisplayString(): String {
+    // Om trucken är tillfälligt stängd
+    if (this.tempClosed) return stringResource(R.string.status_closed)
+
+    // Vi mappar ut måndagens tider som en sammanfattning för profilen
+    return this.weekly.mon?.let {
+        "Mon–Fri ${it.start}–${it.end}"
+    } ?: stringResource(R.string.status_closed)
+}
 
 fun updateOpeningHoursState(
     current: OpeningHours,
@@ -76,7 +91,8 @@ fun updateOpeningHoursState(
 fun DayInputRow(
     dayName: String,
     interval: OpeningInterval?,
-    onIntervalChange: (OpeningInterval?) -> Unit
+    onIntervalChange: ((OpeningInterval?) -> Unit)? = null,
+    isReadOnly: Boolean = false
 ) {
     val startPlaceholder = stringResource(R.string.time_placeholder_start)
     val endPlaceholder = stringResource(R.string.time_placeholder_end)
@@ -88,56 +104,71 @@ fun DayInputRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
+        // 1. Dagens namn (Samma för alla)
         Text(
             text = dayName,
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.width(80.dp)
         )
 
-        TextButton(
-            onClick = {
-                if (interval == null) {
-                    onIntervalChange(OpeningInterval(startPlaceholder, endPlaceholder))
-                } else {
-                    onIntervalChange(null)
-                }
-            },
-
-            modifier = Modifier.width(90.dp)
-        ) {
+        if (isReadOnly) {
+            // === KUNDENS VY (US 11) ===
             Text(
                 text = if (interval == null) stringResource(R.string.status_closed)
-                else stringResource(R.string.status_open),
+                else "${interval.start} - ${interval.end}",
+                style = MaterialTheme.typography.bodyMedium,
                 color = if (interval == null) MaterialTheme.colorScheme.outline
-                else MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.labelSmall
+                else MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.padding(start = 12.dp)
             )
-        }
-
-        Spacer(modifier = Modifier.width(SpaceS))
-
-        if (interval != null) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(SpaceXS)
+        } else {
+            // === ÄGARENS VY (Editering) ===
+            TextButton(
+                onClick = {
+                    if (interval == null) {
+                        // Här använder vi dina placeholders!
+                        onIntervalChange?.invoke(OpeningInterval(startPlaceholder, endPlaceholder))
+                    } else {
+                        onIntervalChange?.invoke(null)
+                    }
+                },
+                modifier = Modifier.width(90.dp)
             ) {
-                InputField(
-                    value = interval.start,
-                    onChange = { onIntervalChange(interval.copy(start = it)) },
-                    placeholder = startPlaceholder,
-                    modifier = Modifier.width(68.dp),
-                    textStyle = MaterialTheme.typography.bodyMedium.copy(fontSize = 12.sp)
-                )
                 Text(
-                    text = "-",
-                    style = MaterialTheme.typography.bodySmall
+                    text = if (interval == null) stringResource(R.string.status_closed)
+                    else stringResource(R.string.status_open),
+                    color = if (interval == null) MaterialTheme.colorScheme.outline
+                    else MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.labelSmall
                 )
-                InputField(
-                    value = interval.end,
-                    onChange = { onIntervalChange(interval.copy(end = it)) },
-                    placeholder = endPlaceholder,
-                    modifier = Modifier.width(70.dp)
-                )
+            }
+
+            Spacer(modifier = Modifier.width(SpaceS))
+
+            if (interval != null) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(SpaceXS)
+                ) {
+                    InputField(
+                        value = interval.start,
+                        onChange = { onIntervalChange?.invoke(interval.copy(start = it)) },
+                        placeholder = startPlaceholder,
+                        modifier = Modifier.width(68.dp),
+                        textStyle = MaterialTheme.typography.bodyMedium.copy(fontSize = 12.sp)
+                    )
+                    Text(
+                        text = "-",
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                    InputField(
+                        value = interval.end,
+                        onChange = { onIntervalChange?.invoke(interval.copy(end = it)) },
+                        placeholder = endPlaceholder,
+                        modifier = Modifier.width(70.dp),
+                        textStyle = MaterialTheme.typography.bodyMedium.copy(fontSize = 12.sp)
+                    )
+                }
             }
         }
     }
