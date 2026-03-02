@@ -21,6 +21,7 @@ import com.example.munchtruck.ui.theme.AppColors.White
 import com.example.munchtruck.ui.theme.Dimens.InputRadius
 import com.example.munchtruck.ui.theme.Dimens.SpaceXS
 import androidx.compose.material3.TextFieldColors
+import androidx.compose.ui.text.TextStyle
 
 // ====== Input Field Component ===============================
 
@@ -28,6 +29,8 @@ import androidx.compose.material3.TextFieldColors
 fun InputField(
     value: String,
     onChange: (String) -> Unit,
+    modifier: Modifier = Modifier.fillMaxWidth(),
+    textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
     lable: String? = null,
     placeholder: String,
     isPassword: Boolean = false,
@@ -50,7 +53,7 @@ fun InputField(
     )
 
 ){
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = modifier) {
 
         // ====== Label ===============================
 
@@ -71,9 +74,11 @@ fun InputField(
             placeholder = {
                 Text(
                     text = placeholder,
-                    color = TextMuted
+                    color = TextMuted,
+                    style = textStyle
                 )
             },
+            textStyle = textStyle,
 
             modifier = Modifier.fillMaxWidth(),
             shape = shape,
