@@ -5,16 +5,19 @@ import com.example.munchtruck.data.model.*
 import com.example.munchtruck.data.repository.ProfileRepository
 import com.example.munchtruck.data.toFirestoreMap
 import com.example.munchtruck.data.toFoodTruck
+import com.example.munchtruck.data.toMenuItem
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
 
 
 class FirebaseProfileRepository(
     private val firestore: FirebaseFirestore,
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    private val storage: FirebaseStorage
 ) : ProfileRepository {
 
     private fun truckId(): String =
@@ -91,6 +94,48 @@ class FirebaseProfileRepository(
             name = "Namn saknas",
             location = TruckLocation(0.0, 0.0, "Ingen adress")
         )
+    }
+
+    override suspend fun deleteAllTruckData() {
+        val uid = truckId()
+        val truckDoc = myTruckDoc().get().await()
+        val foodTruck = truckDoc.toFoodTruck()
+
+        val menuSnapshot = myTruckDoc().collection(FirestoreFields.COLLECTION_MENU).get().await()
+        val menuItems = menuSnapshot.documents.map { it.toMenuItem() }
+
+
+        foodTruck?.imageUrl?.let { url ->
+            deleteImageFile(url)
+        }
+
+        menuItems.forEach { item ->
+            if (item.imageUrl.isNotBlank()) {
+                deleteImageFile(item.imageUrl)
+            }
+        }
+
+        firestore.runBatch { batch ->
+            menuSnapshot.documents.forEach { doc ->
+                batch.delete(doc.reference)
+            }
+            batch.delete(myTruckDoc())
+        }.await()
+
+
+    }
+
+    private suspend fun deleteImageFile(url: String) {
+        if (url.isBlank()) return
+        try {
+            storage.getReferenceFromUrl(url).delete().await()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            if (e.message?.contains("Object does not exist") == false) {
+                throw e
+            }
+        }
+
     }
 
 }
