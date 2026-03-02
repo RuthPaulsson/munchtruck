@@ -5,6 +5,7 @@ import com.example.munchtruck.data.model.*
 import com.example.munchtruck.data.repository.ProfileRepository
 import com.example.munchtruck.data.toFirestoreMap
 import com.example.munchtruck.data.toFoodTruck
+import com.example.munchtruck.data.toMenuItem
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -96,6 +97,19 @@ class FirebaseProfileRepository(
     }
 
     override suspend fun deleteAllTruckData() {
+
+    }
+
+    private suspend fun deleteImageFile(url: String) {
+        if (url.isBlank()) return
+        try {
+            storage.getReferenceFromUrl(url).delete().await()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            if (e.message?.contains("Object does not exist") == false) {
+                throw e
+            }
+        }
 
     }
 
