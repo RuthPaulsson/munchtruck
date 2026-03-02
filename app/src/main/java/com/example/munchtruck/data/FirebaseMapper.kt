@@ -4,6 +4,7 @@ import com.example.munchtruck.data.model.*
 import com.google.firebase.firestore.DocumentSnapshot
 object FirestoreFields {
     const val COLLECTION_TRUCKS = "foodTrucks"
+    const val COLLECTION_MENU = "menu"
     const val NAME = "name"
     const val DESCRIPTION = "description"
     const val FOOD_TYPE = "foodType"

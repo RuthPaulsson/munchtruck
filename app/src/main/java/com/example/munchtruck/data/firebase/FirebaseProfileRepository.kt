@@ -97,6 +97,31 @@ class FirebaseProfileRepository(
     }
 
     override suspend fun deleteAllTruckData() {
+        val uid = truckId()
+        val truckDoc = myTruckDoc().get().await()
+        val foodTruck = truckDoc.toFoodTruck()
+
+        val menuSnapshot = myTruckDoc().collection(FirestoreFields.COLLECTION_MENU).get().await()
+        val menuItems = menuSnapshot.documents.map { it.toMenuItem() }
+
+
+        foodTruck?.imageUrl?.let { url ->
+            deleteImageFile(url)
+        }
+
+        menuItems.forEach { item ->
+            if (item.imageUrl.isNotBlank()) {
+                deleteImageFile(item.imageUrl)
+            }
+        }
+
+        firestore.runBatch { batch ->
+            menuSnapshot.documents.forEach { doc ->
+                batch.delete(doc.reference)
+            }
+            batch.delete(myTruckDoc())
+        }.await()
+
 
     }
 
