@@ -9,12 +9,14 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
 
 
 class FirebaseProfileRepository(
     private val firestore: FirebaseFirestore,
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    private val storage: FirebaseStorage
 ) : ProfileRepository {
 
     private fun truckId(): String =
@@ -91,6 +93,10 @@ class FirebaseProfileRepository(
             name = "Namn saknas",
             location = TruckLocation(0.0, 0.0, "Ingen adress")
         )
+    }
+
+    override suspend fun deleteAllTruckData() {
+
     }
 
 }

@@ -18,9 +18,7 @@ sealed class MenuItemValidationError {
     data object ImageUrlInvalid : MenuItemValidationError()
 }
 object MenuItemValidator {
-
-
-
+    
     fun validateName(name: String): MenuItemValidationError? {
         val trimmedName = name.trim()
 
@@ -59,17 +57,6 @@ object MenuItemValidator {
             else -> null
 
 
-        }
-    }
-
-    fun validateImageUrl(imageUrl: String): MenuItemValidationError? {
-        val trimmedImageUrl = imageUrl.trim()
-        
-        return if (trimmedImageUrl.isBlank() &&
-            !trimmedImageUrl.matches(Regex("^(http|https)://.*$"))) {
-            MenuItemValidationError.ImageUrlInvalid
-        } else {
-            null
         }
     }
 
