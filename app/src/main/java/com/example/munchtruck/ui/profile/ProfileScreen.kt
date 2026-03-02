@@ -14,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.munchtruck.R
+import com.example.munchtruck.ui.components.toDisplayString
 import com.example.munchtruck.ui.components.toMessage
 import com.example.munchtruck.viewmodels.AuthViewModel
 import com.example.munchtruck.viewmodels.MenuViewModel
@@ -55,7 +56,7 @@ fun ProfileScreen(
         onLogoutClick  = { showDialog = true },
         rating = null,
         location = null,
-        openingHours = null,
+        openingHours = uiState.openingHours?.toDisplayString()
 
     )
 

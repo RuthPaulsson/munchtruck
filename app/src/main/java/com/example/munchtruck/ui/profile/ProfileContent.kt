@@ -46,6 +46,8 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.munchtruck.data.model.MenuItem
 import com.example.munchtruck.ui.theme.Dimens.SpaceXS
 import com.example.munchtruck.R
+import com.example.munchtruck.data.model.OpeningHours
+import com.example.munchtruck.ui.components.CenteredLoading
 import com.example.munchtruck.ui.theme.Dimens
 import com.example.munchtruck.ui.theme.Dimens.HeroHeight
 import com.example.munchtruck.ui.theme.Dimens.MenuItemImageIconSize
@@ -61,7 +63,7 @@ fun ProfileContent (
     description: String,
     rating: String?,
     location: String?,
-    openingHours: String?,
+    openingHours: String? = null,
     imageUrl: String?,
     menuItems: List<MenuItem>,
     isLoading: Boolean = false,
@@ -159,7 +161,7 @@ fun ProfileContent (
         }
 
         if (isLoading) {
-            com.example.munchtruck.ui.components.CenteredLoading()
+            CenteredLoading()
         }
     }
 }
