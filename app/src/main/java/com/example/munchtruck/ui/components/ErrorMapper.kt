@@ -26,6 +26,8 @@ fun ProfileError.toMessage(): String = when (this) {
     ProfileError.EmptyName -> stringResource(R.string.error_profile_name_empty)
     ProfileError.SignOutFailed -> stringResource(R.string.error_logout_failed)
     ProfileError.InvalidTimeInterval -> stringResource(R.string.error_invalid_time_interval)
+    ProfileError.DeleteFailed -> stringResource(R.string.error_delete_failed)
+    ProfileError.RecentLoginRequired -> stringResource(R.string.error_delete_recent_login_required)
 
 }
 
