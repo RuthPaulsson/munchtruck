@@ -65,6 +65,7 @@ fun PublicProfileScreen(
                 ProfileContent(
                     isOwner = false,
                     truckName = truck.name,
+                    foodType = truck.foodType,
                     description = truck.description,
                     rating = null,
                     location = truck.location?.address,
