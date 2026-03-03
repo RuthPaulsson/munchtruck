@@ -100,6 +100,7 @@ fun EditProfileScreen(
         if (uiState.isAccountDeleted) {
             navController.navigate("start") {
                 popUpTo(0) { inclusive = true }
+
             }
         }
     }
