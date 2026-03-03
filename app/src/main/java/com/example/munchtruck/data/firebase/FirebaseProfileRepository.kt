@@ -86,18 +86,18 @@ class FirebaseProfileRepository(
 
     override suspend fun getTruckProfile(): FoodTruck {
         val doc = myTruckDoc().get().await()
-        if (!doc.exists()) throw IllegalArgumentException("Profil saknas i databasen")
+        if (!doc.exists()) throw IllegalArgumentException("Profile is missing in database")
 
 
         return doc.toFoodTruck() ?: FoodTruck(
             id = doc.id,
-            name = "Namn saknas",
-            location = TruckLocation(0.0, 0.0, "Ingen adress")
+            name = "",
+            location = TruckLocation(0.0, 0.0, "")
         )
     }
 
     override suspend fun deleteAllTruckData() {
-        val uid = truckId()
+        val uid = truckId() // it works but look into if this needs to be here
         val truckDoc = myTruckDoc().get().await()
         val foodTruck = truckDoc.toFoodTruck()
 

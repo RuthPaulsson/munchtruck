@@ -111,128 +111,135 @@ class LocationViewModel(
                 error = error
             )
         }
-    }
+        if (error == null) {
+            viewModelScope.launch {
+                val addressString = locationProvider.getAddressFromCords(lat, lng)
+                _uiState.update { it.copy(address = addressString) }
+            }
+        }
+        }
 
-    // ====== GPS ===============================
+        // ====== GPS ===============================
 
-    fun useCurrentLocation() {
+        fun useCurrentLocation() {
 
-        if (!_uiState.value.hasPermission) {
+            if (!_uiState.value.hasPermission) {
+                _uiState.update { currentState ->
+                    currentState.copy(error = LocationError.NoPermission)
+                }
+                return
+            }
+
             _uiState.update { currentState ->
-                currentState.copy(error = LocationError.NoPermission)
+                currentState.copy(isLoading = true, error = null, saveSuccess = false)
             }
-            return
-        }
 
-        _uiState.update { currentState ->
-            currentState.copy(isLoading = true, error = null, saveSuccess = false)
-        }
-
-        viewModelScope.launch {
-            try {
-                val point = withTimeout(LocationConstants.GPS_TIMEOUT_MS) {
-                    locationProvider.getCurrentLatLng()
-                }
-                val error = validator.validateCoordinates(point.first, point.second)
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        isLoading = false,
-                        selectedLat = point.first,
-                        selectedLng = point.second,
-                        error = error
-                    )
-                }
-            } catch (e: TimeoutCancellationException) {
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        isLoading = false,
-                        error = LocationError.GpsTimeout
-                    )
-                }
-            } catch (e: SecurityException) {
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        isLoading = false,
-                        hasPermission = false,
-                        error = LocationError.NoPermission
-                    )
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "Error getting current location", e)
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        isLoading = false,
-                        error = LocationError.Unknown(e.message ?: "Unknown error")
-                    )
+            viewModelScope.launch {
+                try {
+                    val point = withTimeout(LocationConstants.GPS_TIMEOUT_MS) {
+                        locationProvider.getCurrentLatLng()
+                    }
+                    val error = validator.validateCoordinates(point.first, point.second)
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            isLoading = false,
+                            selectedLat = point.first,
+                            selectedLng = point.second,
+                            error = error
+                        )
+                    }
+                } catch (e: TimeoutCancellationException) {
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            isLoading = false,
+                            error = LocationError.GpsTimeout
+                        )
+                    }
+                } catch (e: SecurityException) {
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            isLoading = false,
+                            hasPermission = false,
+                            error = LocationError.NoPermission
+                        )
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error getting current location", e)
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            isLoading = false,
+                            error = LocationError.Unknown(e.message ?: "Unknown error")
+                        )
+                    }
                 }
             }
         }
-    }
 
-    // ====== Save ===============================
+        // ====== Save ===============================
 
-    fun saveLocation() {
+        fun saveLocation() {
 
-        val state = _uiState.value
-        val validationError: LocationError? = validator.validateCoordinates(state.selectedLat, state.selectedLng)
-            ?: validator.validateAddress(state.address)
+            val state = _uiState.value
+            val validationError: LocationError? =
+                validator.validateCoordinates(state.selectedLat, state.selectedLng)
+                    ?: validator.validateAddress(state.address)
 
 
-        if (validationError != null) {
-            _uiState.update { it.copy(error = validationError) }
-            return
-        }
+            if (validationError != null) {
+                _uiState.update { it.copy(error = validationError) }
+                return
+            }
 
-        _uiState.update { currentState ->
-            currentState.copy(isLoading = true, error = null, saveSuccess = false)
-        }
+            _uiState.update { currentState ->
+                currentState.copy(isLoading = true, error = null, saveSuccess = false)
+            }
 
-        viewModelScope.launch {
-            try {
-                val location = TruckLocation(
-                    latitude = state.selectedLat!!,
-                    longitude = state.selectedLng!!,
-                    address = state.address,
-                    updatedAt = System.currentTimeMillis()
-                )
-                profileRepository.updateMyTruckLocation(location)
-
-                _uiState.update { currentState ->
-                    currentState.copy(isLoading = false, saveSuccess = true)
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed to save location with exception:", e)
-                val errorMessage = e.message ?: "Ett okänt fel inträffade vid sparande."
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        isLoading = false,
-                        error = LocationError.Unknown(errorMessage)
+            viewModelScope.launch {
+                try {
+                    val location = TruckLocation(
+                        latitude = state.selectedLat!!,
+                        longitude = state.selectedLng!!,
+                        address = state.address,
+                        updatedAt = System.currentTimeMillis()
                     )
+                    profileRepository.updateMyTruckLocation(location)
+
+                    _uiState.update { currentState ->
+                        currentState.copy(isLoading = false, saveSuccess = true)
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Failed to save location with exception:", e)
+                    val errorMessage = e.message ?: "Ett okänt fel inträffade vid sparande."
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            isLoading = false,
+                            error = LocationError.Unknown(errorMessage)
+                        )
+                    }
                 }
             }
         }
-    }
 
 
-    // ====== Public helpers ===============================
+        // ====== Public helpers ===============================
 
-    fun clearError() {
-        _uiState.update { currentState ->
-            currentState.copy(error = null)
+        fun clearError() {
+            _uiState.update { currentState ->
+                currentState.copy(error = null)
+            }
+        }
+
+        fun clearSaveSuccess() {
+            _uiState.update { currentState ->
+                currentState.copy(saveSuccess = false)
+            }
+        }
+
+        fun resetLocationForm() {
+            _uiState.update { LocationUiState() }
+        }
+
+        fun hasSelectedLocation(): Boolean {
+            return _uiState.value.selectedLat != null && _uiState.value.selectedLng != null
         }
     }
-
-    fun clearSaveSuccess() {
-        _uiState.update { currentState ->
-            currentState.copy(saveSuccess = false)
-        }
-    }
-
-    fun resetLocationForm() {
-        _uiState.update { LocationUiState() }
-    }
-
-    fun hasSelectedLocation(): Boolean {
-        return _uiState.value.selectedLat != null && _uiState.value.selectedLng != null
-    }
-}
