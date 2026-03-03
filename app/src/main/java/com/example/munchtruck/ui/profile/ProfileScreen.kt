@@ -56,7 +56,7 @@ fun ProfileScreen(
         onLogoutClick  = { showDialog = true },
         rating = null,
         location = null,
-        openingHours = uiState.openingHours?.toDisplayString()
+        openingHours = uiState.openingHours
 
     )
 

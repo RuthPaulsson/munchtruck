@@ -68,7 +68,7 @@ fun PublicProfileScreen(
                     description = truck.description,
                     rating = null,
                     location = truck.location?.address,
-                    openingHours = truck.openingHours?.toDisplayString(),
+                    openingHours = truck.openingHours,
                     imageUrl = truck.imageUrl,
                     menuItems = uiState.selectedTruckMenu,
                     isLoading = uiState.isMenuLoading,
