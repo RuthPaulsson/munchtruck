@@ -2,6 +2,7 @@ package com.example.munchtruck.util
 
 import com.example.munchtruck.viewmodels.LocationError
 
+// ====== Location Validator Logic ===============================
 
 class LocationValidator {
 

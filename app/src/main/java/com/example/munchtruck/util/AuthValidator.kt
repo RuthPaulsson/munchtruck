@@ -1,19 +1,30 @@
 package com.example.munchtruck.util
 
+// ====== Auth Validation Errors ===============================
+
 sealed class LoginValidationError {
     data object EmptyFields : LoginValidationError()
     data object InvalidEmail : LoginValidationError()
     data object PasswordTooShort : LoginValidationError()
     data object PasswordsDoNotMatch : LoginValidationError()
 }
+
+// ====== Validation Result Wrapper ===============================
+
 sealed class ValidationResult {
     data object Valid : ValidationResult()
     data class Invalid(val error: LoginValidationError) : ValidationResult()
 }
 
+// ====== Authentication Validators ===============================
+
 object Validators {
 
+    // ====== Configuration ===============================
+
     private val EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\$".toRegex()
+
+    // ====== Validation Logic ===============================
 
     fun validateLogin (email: String, password: String): ValidationResult {
         val trimmedEmail = email.trim()
