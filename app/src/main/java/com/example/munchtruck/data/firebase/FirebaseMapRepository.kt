@@ -1,5 +1,6 @@
 package com.example.munchtruck.data.firebase
 
+import com.example.munchtruck.data.FirestoreCollections
 import com.example.munchtruck.data.model.MapTruck
 import com.example.munchtruck.data.repository.MapRepository
 import com.example.munchtruck.data.toFoodTruck
@@ -15,7 +16,8 @@ class FirebaseMapRepository(
 
     override fun observeActiveTrucksForMap(): Flow<Result<List<MapTruck>>> = callbackFlow {
 
-        val listener = firestore.collection("mapTrucks")
+        val listener = with(FirestoreCollections) {
+        firestore.collection(MAP_TRUCKS)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
                     trySend(Result.failure(error))
@@ -39,7 +41,7 @@ class FirebaseMapRepository(
 
                 trySend(Result.success(trucks))
             }
-
+        }
         awaitClose { listener.remove() }
     }
 }

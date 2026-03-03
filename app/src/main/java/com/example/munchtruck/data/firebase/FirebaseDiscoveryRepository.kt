@@ -1,5 +1,6 @@
 package com.example.munchtruck.data.firebase
 
+import com.example.munchtruck.data.FirestoreCollections
 import com.example.munchtruck.data.FirestoreFields
 import com.example.munchtruck.data.model.FoodTruck
 import com.example.munchtruck.data.repository.DiscoveryRepository
@@ -15,7 +16,8 @@ class FirebaseDiscoveryRepository(
 
     override fun observeOpenTrucks(): Flow<Result<List<FoodTruck>>> = callbackFlow {
 
-        val listener = firestore.collection(FirestoreFields.COLLECTION_TRUCKS)
+        val listener = with(FirestoreCollections) {
+            firestore.collection(TRUCKS)
             .addSnapshotListener { snapshots, e ->
 
                 if (e != null) {
@@ -29,6 +31,7 @@ class FirebaseDiscoveryRepository(
 
                 trySend(Result.success(trucks))
             }
+        }
 
         awaitClose { listener.remove() }
     }

@@ -1,5 +1,6 @@
 package com.example.munchtruck.data.firebase
 
+import com.example.munchtruck.data.FirestoreCollections
 import com.example.munchtruck.data.FirestoreFields
 import com.example.munchtruck.data.model.MenuItem
 import com.example.munchtruck.data.repository.MenuRepository
@@ -25,9 +26,10 @@ class FirebaseMenuRepository (
 
     // ============ COLLECTION ==============================================
 
-    private fun myMenuCollection() =
-        firestore.collection(FirestoreFields.COLLECTION_TRUCKS)
-        .document(truckId()).collection("menu")
+    private fun myMenuCollection() = with(FirestoreCollections) {
+        firestore.collection(TRUCKS)
+            .document(truckId()).collection(MENU)
+    }
 
 
 
@@ -49,9 +51,10 @@ class FirebaseMenuRepository (
     }
 
     override fun observeTruckMenu(truckId: String): Flow<Result<List<MenuItem>>> = callbackFlow {
-        val listener = firestore.collection(FirestoreFields.COLLECTION_TRUCKS)
+        val listener = with(FirestoreCollections) {
+            firestore.collection(TRUCKS)
             .document(truckId)
-            .collection("menu")
+            .collection(MENU)
             .addSnapshotListener { snapshot, e ->
                 if (e != null) {
                     trySend(Result.failure(e))
@@ -60,6 +63,8 @@ class FirebaseMenuRepository (
 
                 val items = snapshot?.documents.orEmpty().map { it.toMenuItem() }
                 trySend(Result.success(items))
+            }
+
             }
         awaitClose { listener.remove() }
     }
@@ -75,15 +80,17 @@ class FirebaseMenuRepository (
     ) : String {
 
         val itemRef = myMenuCollection().document()
-        val itemData = mutableMapOf(
-            "name" to name.trim(),
-            "price" to price,
-            "description" to description.trim(),
-            "imageUrl" to imageUrl,
-            "createdAt" to FieldValue.serverTimestamp(),
-            "updatedAt" to FieldValue.serverTimestamp()
-        )
 
+        val itemData = with(FirestoreFields) {
+            mutableMapOf(
+                NAME to name.trim(),
+                PRICE to price,
+                DESCRIPTION to description.trim(),
+                IMAGE_URL to imageUrl,
+                CREATED_AT to FieldValue.serverTimestamp(),
+                UPDATED_AT to FieldValue.serverTimestamp()
+            )
+        }
 
         itemRef.set(itemData, SetOptions.merge()).await()
         return itemRef.id
@@ -100,14 +107,15 @@ class FirebaseMenuRepository (
         imageUrl: String
     ) {
 
-        val updatedMenuItem = mutableMapOf(
-            "name" to name.trim(),
-            "price" to price,
-            "description" to description.trim(),
-            "imageUrl" to imageUrl,
-            "updatedAt" to FieldValue.serverTimestamp()
+        val updatedMenuItem  = with(FirestoreFields) {
+            mutableMapOf(
+            NAME to name.trim(),
+            PRICE to price,
+            DESCRIPTION to description.trim(),
+            IMAGE_URL to imageUrl,
+            UPDATED_AT to FieldValue.serverTimestamp()
         )
-
+        }
 
         myMenuCollection().document(itemId).set(updatedMenuItem, SetOptions.merge())
             .await()

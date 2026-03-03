@@ -1,5 +1,6 @@
 package com.example.munchtruck.data.firebase
 
+import com.example.munchtruck.data.FirestoreCollections
 import com.example.munchtruck.data.FirestoreFields
 import com.example.munchtruck.data.repository.AuthRepository
 import com.google.firebase.auth.EmailAuthProvider
@@ -21,13 +22,15 @@ class FirebaseAuthRepository(
         val authResult = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
         val uid = authResult.user?.uid ?: throw Exception("User not found")
 
-        val user = hashMapOf(
-            "id" to uid,
-            "email" to email,
-            "companyName" to "",
-            "role" to "owner"
-        )
-
+        val user = with(FirestoreFields)
+        {
+            hashMapOf(
+                ID to uid,
+                EMAIL to email,
+                COMPANY_NAME to "",
+                ROLE to "owner"
+            )
+        }
         val truck = mutableMapOf<String, Any?>(
             FirestoreFields.NAME to "",
             FirestoreFields.DESCRIPTION to "",
@@ -38,8 +41,8 @@ class FirebaseAuthRepository(
         )
 
         firestore.runBatch { batch ->
-            val userRef = firestore.collection("users").document(uid)
-            val truckRef = firestore.collection("foodTrucks").document(uid)
+            val userRef = firestore.collection(FirestoreCollections.USERS).document(uid)
+            val truckRef = firestore.collection(FirestoreCollections.TRUCKS).document(uid)
 
             batch.set(userRef, user)
             batch.set(truckRef, truck)

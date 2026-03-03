@@ -3,52 +3,38 @@ package com.example.munchtruck.data
 import com.example.munchtruck.data.model.*
 import com.google.firebase.firestore.DocumentSnapshot
 
-object FirestoreFields {
-    const val COLLECTION_TRUCKS = "foodTrucks"
-    const val COLLECTION_MENU = "menu"
-    const val NAME = "name"
-    const val DESCRIPTION = "description"
-    const val FOOD_TYPE = "foodType"
-    const val IMAGE_URL = "imageUrl"
-    const val LOCATION = "location"
-    const val HOURS = "hours"
-    const val WEEKLY = "weekly"
-    const val TEMP_CLOSED = "tempClosed"
-    const val TIME_ZONE = "timeZone"
-}
-
-fun DocumentSnapshot.toFoodTruck(): FoodTruck? {
-    val name = getString(FirestoreFields.NAME) ?: return null
+fun DocumentSnapshot.toFoodTruck(): FoodTruck? = with(FirestoreFields) {
+    val name = getString(NAME) ?: return null
 
 
-    val locMap = get(FirestoreFields.LOCATION) as? Map<*, *>
+    val locMap = get(LOCATION) as? Map<*, *>
     val truckLocation = if (locMap != null) {
         TruckLocation(
-            latitude = (locMap["latitude"] as? Number)?.toDouble() ?: 0.0,
-            longitude = (locMap["longitude"] as? Number)?.toDouble() ?: 0.0,
-            address = (locMap["address"] as? String).orEmpty(),
-            updatedAt = (locMap["updatedAt"] as? Number)?.toLong() ?: 0L
+            latitude = (locMap[KEY_LATITUDE] as? Number)?.toDouble() ?: 0.0,
+            longitude = (locMap[KEY_LONGITUDE] as? Number)?.toDouble() ?: 0.0,
+            address = (locMap[KEY_ADDRESS] as? String).orEmpty(),
+            updatedAt = (locMap[UPDATED_AT] as? Number)?.toLong() ?: 0L
         )
     } else {
-        TruckLocation(0.0, 0.0, "Ingen adress angiven")
+        TruckLocation(0.0, 0.0, "")
     }
 
 
-    val hoursMap = get(FirestoreFields.HOURS) as? Map<*, *>
-    val weeklyMap = hoursMap?.get(FirestoreFields.WEEKLY) as? Map<*, *>
+    val hoursMap = get(HOURS) as? Map<*, *>
+    val weeklyMap = hoursMap?.get(WEEKLY) as? Map<*, *>
 
     val openingHours = if (hoursMap != null) {
         OpeningHours(
-            timeZone = hoursMap[FirestoreFields.TIME_ZONE] as? String ?: "Europe/Stockholm",
-            tempClosed = hoursMap[FirestoreFields.TEMP_CLOSED] as? Boolean ?: false,
+            timeZone = hoursMap[TIME_ZONE] as? String ?: DEFAULT_TIMEZONE,
+            tempClosed = hoursMap[TEMP_CLOSED] as? Boolean ?: false,
             weekly = WeeklyOpeningHours(
-                mon = (weeklyMap?.get("mon") as? Map<*, *>)?.toInterval(),
-                tue = (weeklyMap?.get("tue") as? Map<*, *>)?.toInterval(),
-                wed = (weeklyMap?.get("wed") as? Map<*, *>)?.toInterval(),
-                thu = (weeklyMap?.get("thu") as? Map<*, *>)?.toInterval(),
-                fri = (weeklyMap?.get("fri") as? Map<*, *>)?.toInterval(),
-                sat = (weeklyMap?.get("sat") as? Map<*, *>)?.toInterval(),
-                sun = (weeklyMap?.get("sun") as? Map<*, *>)?.toInterval()
+                mon = (weeklyMap?.get(DAY_MON) as? Map<*, *>)?.toInterval(),
+                tue = (weeklyMap?.get(DAY_TUE) as? Map<*, *>)?.toInterval(),
+                wed = (weeklyMap?.get(DAY_WED) as? Map<*, *>)?.toInterval(),
+                thu = (weeklyMap?.get(DAY_THU) as? Map<*, *>)?.toInterval(),
+                fri = (weeklyMap?.get(DAY_FRI) as? Map<*, *>)?.toInterval(),
+                sat = (weeklyMap?.get(DAY_SAT) as? Map<*, *>)?.toInterval(),
+                sun = (weeklyMap?.get(DAY_SUN) as? Map<*, *>)?.toInterval()
             )
         )
     } else null
@@ -56,29 +42,36 @@ fun DocumentSnapshot.toFoodTruck(): FoodTruck? {
     return FoodTruck(
         id = id,
         name = name,
-        description = getString(FirestoreFields.DESCRIPTION).orEmpty(),
-        foodType = getString(FirestoreFields.FOOD_TYPE).orEmpty(),
-        imageUrl = getString(FirestoreFields.IMAGE_URL).orEmpty(),
+        description = getString(DESCRIPTION).orEmpty(),
+        foodType = getString(FOOD_TYPE).orEmpty(),
+        imageUrl = getString(IMAGE_URL).orEmpty(),
         location = truckLocation,
         openingHours = openingHours
     )
 }
 
-fun OpeningInterval.toFirestoreMap() = mapOf("start" to start, "end" to end)
-
-fun Map<*, *>.toInterval(): OpeningInterval? {
-    val s = this["start"] as? String ?: return null
-    val e = this["end"] as? String ?: return null
+fun OpeningInterval.toFirestoreMap() = with(FirestoreFields) {
+    mapOf(
+        KEY_START to start,
+        KEY_END to end
+    )
+}
+fun Map<*, *>.toInterval(): OpeningInterval? = with(FirestoreFields) {
+    val s = this@toInterval[KEY_START] as? String ?: return null
+    val e = this@toInterval[KEY_END] as? String ?: return null
     if (s.isBlank() || e.isBlank()) return null
-    return OpeningInterval(s, e)
+
+    OpeningInterval(s, e)
 }
 
-fun DocumentSnapshot.toMenuItem() = MenuItem(
+fun DocumentSnapshot.toMenuItem() = with(FirestoreFields) {
+     MenuItem(
     id = id,
-    name = getString("name").orEmpty(),
-    price = getLong("price") ?: 0L,
-    description = getString("description").orEmpty(),
-    imageUrl = getString("imageUrl").orEmpty(),
-    createdAt = getTimestamp("createdAt"),
-    updatedAt = getTimestamp("updatedAt")
+    name = getString(NAME).orEmpty(),
+    price = getLong(PRICE) ?: 0L,
+    description = getString(DESCRIPTION).orEmpty(),
+    imageUrl = getString(IMAGE_URL).orEmpty(),
+    createdAt = getTimestamp(CREATED_AT),
+    updatedAt = getTimestamp(UPDATED_AT)
 )
+     }
