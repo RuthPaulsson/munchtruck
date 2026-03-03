@@ -94,6 +94,7 @@ fun EditProfileContent(
     onUseCurrentLocation: () -> Unit,
     onSaveLocation: () -> Unit,
     selectedImageUri: Uri?,
+    existingImageUrl: String? = null,
     onNameChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
     onFoodTypeChange: (String) -> Unit,
@@ -167,10 +168,10 @@ fun EditProfileContent(
                         .height(ProfileImageHeight)
                         .clip(RoundedCornerShape(ProfileImageRadius))
                 ) {
-                    val painter = if (selectedImageUri != null) {
-                        rememberAsyncImagePainter(selectedImageUri)
-                    } else {
-                        painterResource(R.drawable.ic_launcher_background)
+                    val painter = when {
+                        selectedImageUri != null -> rememberAsyncImagePainter(selectedImageUri)
+                        !existingImageUrl.isNullOrBlank() -> rememberAsyncImagePainter(existingImageUrl)
+                        else -> painterResource(R.drawable.ic_launcher_background)
                     }
 
                     Image(
