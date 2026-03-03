@@ -178,7 +178,7 @@ fun NavGraph() {
             } else {
                 LaunchedEffect(Unit) {
                     navController.navigate("login"){
-                        popUpTo(0)
+                        popUpTo(0) { inclusive = true}
                     }
                 }
             }
