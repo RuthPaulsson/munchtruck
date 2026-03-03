@@ -30,6 +30,8 @@ fun EditMenuScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isEditing = itemId != null
     val snackbarHostState = remember { SnackbarHostState() }
+    val item = uiState.menuItems.find { it.id == itemId }
+    val existingImageUrl = item?.imageUrl
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     var hasLoadedItem by remember { mutableStateOf(false) }
 
@@ -79,6 +81,7 @@ fun EditMenuScreen(
         price = uiState.itemPrice,
         description = uiState.itemDescription,
         selectedImageUri = selectedImageUri,
+        existingImageUrl = existingImageUrl,
         isLoading = uiState.isLoading,
         priceError = uiState.priceError?.toMessage(),
         onNameChange = { viewModel.onNameChanged(it) },

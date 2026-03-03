@@ -56,6 +56,10 @@ fun EditProfileScreen(
 
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
 
+    var existingImageUrl by remember(uiState.imageUrl) {
+        mutableStateOf(uiState.imageUrl)
+    }
+
     var name by remember(uiState.name) {
         mutableStateOf(uiState.name)
     }
@@ -137,6 +141,7 @@ fun EditProfileScreen(
         description = description,
         foodType = foodType,
         selectedImageUri = selectedImageUri,
+        existingImageUrl = existingImageUrl,
         locationState = locationState,
         menuItems = menuUiState.menuItems,
         isLoading = uiState.isLoading,

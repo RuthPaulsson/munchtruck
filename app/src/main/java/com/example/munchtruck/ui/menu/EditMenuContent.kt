@@ -56,6 +56,7 @@ fun EditMenuContent(
     price: String,
     description: String,
     selectedImageUri: Uri?,
+    existingImageUrl: String? = null,
     isLoading: Boolean,
     priceError: String?,
     onNameChange: (String) -> Unit,
@@ -119,15 +120,23 @@ fun EditMenuContent(
                     .height(MenuImageHeight)
                     .clip(RoundedCornerShape(MenuImageRadius))
             ) {
+                // Vi skapar en painter som kollar båda källorna
+                val painter = when {
+                    selectedImageUri != null -> rememberAsyncImagePainter(selectedImageUri)
+                    !existingImageUrl.isNullOrBlank() -> rememberAsyncImagePainter(existingImageUrl)
+                    else -> null
+                }
 
-                if (selectedImageUri != null) {
+                if (painter != null) {
+                    // Om vi har antingen en ny bild eller en sparad bild, rita den!
                     Image(
-                        painter = rememberAsyncImagePainter(selectedImageUri),
+                        painter = painter,
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize()
                     )
                 } else {
+                    // Om BÅDA är null, visa din placeholder-text
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
