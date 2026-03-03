@@ -56,17 +56,12 @@ fun OpeningHoursSection(
 }
 
 
-// I OpeningHoursSection.kt
 
 @Composable
 fun OpeningHours.toDisplayString(): String {
-    // Om trucken är tillfälligt stängd
     if (this.tempClosed) return stringResource(R.string.status_closed)
 
-    // Vi mappar ut måndagens tider som en sammanfattning för profilen
-    return this.weekly.mon?.let {
-        "Mon–Fri ${it.start}–${it.end}"
-    } ?: stringResource(R.string.status_closed)
+    return stringResource(R.string.opening_hours_title)
 }
 
 fun updateOpeningHoursState(
@@ -112,17 +107,15 @@ fun DayInputRow(
         )
 
         if (isReadOnly) {
-            // === KUNDENS VY (US 11) ===
             Text(
                 text = if (interval == null) stringResource(R.string.status_closed)
                 else "${interval.start} - ${interval.end}",
                 style = MaterialTheme.typography.bodyMedium,
-                color = if (interval == null) MaterialTheme.colorScheme.outline
+                color = if (interval == null) MaterialTheme.colorScheme.error
                 else MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(start = 12.dp)
             )
         } else {
-            // === ÄGARENS VY (Editering) ===
             TextButton(
                 onClick = {
                     if (interval == null) {
