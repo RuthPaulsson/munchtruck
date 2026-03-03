@@ -35,10 +35,12 @@ class FirebaseProfileRepository(
         imageUrl: String,
         openingHours: OpeningHours?
     ) {
+
         val updates = mutableMapOf<String, Any>(
             FirestoreFields.NAME to name.trim(),
             FirestoreFields.DESCRIPTION to description.trim(),
-            FirestoreFields.FOOD_TYPE to foodType.trim()
+            FirestoreFields.FOOD_TYPE to foodType.trim(),
+            FirestoreFields.IMAGE_URL to imageUrl
         )
 
 

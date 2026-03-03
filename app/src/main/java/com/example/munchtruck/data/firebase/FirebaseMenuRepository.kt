@@ -79,6 +79,7 @@ class FirebaseMenuRepository (
             "name" to name.trim(),
             "price" to price,
             "description" to description.trim(),
+            "imageUrl" to imageUrl,
             "createdAt" to FieldValue.serverTimestamp(),
             "updatedAt" to FieldValue.serverTimestamp()
         )
@@ -103,6 +104,7 @@ class FirebaseMenuRepository (
             "name" to name.trim(),
             "price" to price,
             "description" to description.trim(),
+            "imageUrl" to imageUrl,
             "updatedAt" to FieldValue.serverTimestamp()
         )
 
