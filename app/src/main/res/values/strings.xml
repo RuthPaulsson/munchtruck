@@ -111,6 +111,10 @@
     <string name="delete_account_message">This will permanently remove your truck, menu, and account data. This action cannot be undone.</string>
     <string name="delete_account_confirm">Delete Account</string>
     <string name="delete_account_cancel">Cancel</string>
+    <string name="food_type_burger">Burger</string>
+    <string name="food_type_tacos">Tacos</string>
+    <string name="food_type_pizza">Pizza</string>
+    <string name="profile_food_type_placeholder">Select food type</string>
 
     <!-- ===== Edit Menu screen ====================================== -->
 
