@@ -4,11 +4,15 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
+import java.util.Locale
 
 class FusedDeviceLocationProvider(
     private val context: Context
@@ -49,5 +53,28 @@ class FusedDeviceLocationProvider(
         ) == PackageManager.PERMISSION_GRANTED
 
         return fineLocation || coarseLocation
+    }
+
+
+   override suspend fun getAddressFromCords(lat: Double, lng: Double): String {
+        return withContext(Dispatchers.IO) {
+            try {
+                val geocoder = Geocoder(context, Locale.getDefault())
+                val addresses = geocoder.getFromLocation(lat, lng, 1) // see why .getFromLocation is deprecated
+
+                if (!addresses.isNullOrEmpty()) {
+                    val address = addresses[0]
+
+                    val street = address.thoroughfare ?: ""
+                    val number = address.subThoroughfare ?: ""
+
+                    if (street.isNotEmpty()) "$street $number".trim() else "Unknown Street"
+                } else {
+                    "Adress Missing"
+                }
+            } catch (e: Exception) {
+                "Couldn't fetch the adress"
+            }
+        }
     }
 }
