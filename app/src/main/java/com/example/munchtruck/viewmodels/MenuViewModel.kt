@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+// ====== Menu State Definitions ===============================
+
 sealed class MenuError {
     data object LoadMenuFailed : MenuError()
     data object SaveItemFailed : MenuError()
@@ -30,15 +32,21 @@ data class MenuUiState(
     val error: MenuError? = null,
     val saveSuccess: Boolean = false
 )
+
+// ====== Menu ViewModel ===============================
+
 class MenuViewModel(
     private val repository: MenuRepository,
     private val imageRepository: ImageRepository
 ) : ViewModel() {
+
+    // ====== State & Initialization ===============================
+
     private val _uiState = MutableStateFlow(MenuUiState())
     val uiState: StateFlow<MenuUiState> = _uiState.asStateFlow()
     private var isObserving = false
 
-
+// ====== Input Validation & Changes ===============================
 
     fun onNameChanged(newName: String) {
         _uiState.update { it.copy(itemName = newName) }
@@ -56,6 +64,7 @@ class MenuViewModel(
         _uiState.update { it.copy(itemPrice = filtered, priceError = null) }
     }
 
+    // ====== Menu Data Actions ===============================
 
     fun saveItem(itemId: String?, imageUri: Uri?) {
         val currentState = _uiState.value
@@ -182,6 +191,8 @@ class MenuViewModel(
             }
         }
     }
+
+    // ====== UI State Helpers ===============================
 
     fun resetState() {
         _uiState.value = MenuUiState()

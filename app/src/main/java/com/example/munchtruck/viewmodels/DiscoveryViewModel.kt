@@ -1,22 +1,23 @@
 package com.example.munchtruck.viewmodels
 
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import android.location.Location
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.munchtruck.data.model.FoodTruck
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import android.location.Location
 import com.example.munchtruck.data.location.DeviceLocationProvider
+import com.example.munchtruck.data.model.FoodTruck
 import com.example.munchtruck.data.model.MenuItem
-import com.example.munchtruck.data.model.isCurrentlyOpen
 import com.example.munchtruck.data.repository.DiscoveryRepository
 import com.example.munchtruck.data.repository.MenuRepository
 import com.example.munchtruck.data.repository.ProfileRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+
+// ====== Discovery State Definitions ===============================
 
 sealed class DiscoveryError {
     data object LocationPermissionDenied : DiscoveryError()
@@ -44,15 +45,27 @@ data class MapMarker(
     val longitude: Double
 )
 
+// ====== Discovery ViewModel ===============================
+
 class DiscoveryViewModel(
     private val discoveryRepository: DiscoveryRepository,
     private val locationProvider: DeviceLocationProvider,
     private val menuRepository: MenuRepository,
     profileRepository: ProfileRepository
 ) : ViewModel() {
+
+    // ====== State & Initialization ===============================
+
     private val _uiState = MutableStateFlow(DiscoveryUiState())
     val uiState: StateFlow<DiscoveryUiState> = _uiState.asStateFlow()
     private var menuJob: Job? = null
+
+    init {
+        observeTrucks()
+        startLocationUpdates()
+    }
+
+    // ====== Truck Observation & Menu Actions =======================
 
     fun selectedTruckAndLoadMenu(truckId: String) {
         menuJob?.cancel()
@@ -73,23 +86,6 @@ class DiscoveryViewModel(
                 }
             }
         }
-    }
-
-    init {
-        observeTrucks()
-        startLocationUpdates()
-    }
-
-    private fun updateMapMarkers(trucks: List<FoodTruck>) {
-        val markers = trucks.map { truck ->
-            MapMarker(
-                id = truck.id,
-                title = truck.name,
-                latitude = truck.location?.latitude ?: 0.0,
-                longitude = truck.location?.longitude ?: 0.0
-            )
-        }
-        _uiState.update { it.copy(mapMarkers = markers) }
     }
 
     fun observeTrucks() {
@@ -123,6 +119,8 @@ class DiscoveryViewModel(
             }
         }
     }
+
+    // ====== Location & Sorting Logic ===============================
 
     fun startLocationUpdates() {
         viewModelScope.launch {
@@ -175,5 +173,19 @@ class DiscoveryViewModel(
 
                 location.distanceTo(truckLoc).toDouble()
             }
+    }
+
+    // ====== UI Helper Methods ===============================
+
+    private fun updateMapMarkers(trucks: List<FoodTruck>) {
+        val markers = trucks.map { truck ->
+            MapMarker(
+                id = truck.id,
+                title = truck.name,
+                latitude = truck.location?.latitude ?: 0.0,
+                longitude = truck.location?.longitude ?: 0.0
+            )
+        }
+        _uiState.update { it.copy(mapMarkers = markers) }
     }
 }
