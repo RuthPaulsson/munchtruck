@@ -105,6 +105,12 @@
     <string name="profile_map_placeholder">Map preview</string>
     <string name="menu_empty">No dishes added yet. Tap “Manage Menu” to add one.</string>
     <string name="menu_add_dish">+ Add dish</string>
+    <string name="profile_danger_zone">Danger Zone</string>
+    <string name="profile_delete_account">Delete Account</string>
+    <string name="delete_account_title">Delete Account Permanent?</string>
+    <string name="delete_account_message">This will permanently remove your truck, menu, and account data. This action cannot be undone.</string>
+    <string name="delete_account_confirm">Delete Account</string>
+    <string name="delete_account_cancel">Cancel</string>
 
     <!-- ===== Edit Menu screen ====================================== -->
 
@@ -198,5 +204,8 @@
     <string name="error_password_too_short">Password must be at least 6 characters long</string>
     <string name="error_confirm_password_empty">Confirm password cannot be empty</string>
     <string name="error_passwords_not_matching">Passwords do not match</string>
+
+    <string name="error_delete_recent_login_required">For security reasons, you need to log in again before deleting your account.</string>
+    <string name="error_delete_failed">Could not delete account. Please try again later.</string>
 
 </resources>

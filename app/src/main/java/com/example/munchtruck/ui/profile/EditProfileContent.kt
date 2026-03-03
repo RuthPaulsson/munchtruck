@@ -2,6 +2,7 @@ package com.example.munchtruck.ui.profile
 
 import android.net.Uri
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,6 +28,7 @@ import androidx.compose.material.icons.filled.RestaurantMenu
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -45,16 +47,19 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.example.munchtruck.R
 import com.example.munchtruck.data.model.MenuItem
 import com.example.munchtruck.data.model.OpeningHours
 import com.example.munchtruck.data.model.OpeningInterval
+import com.example.munchtruck.ui.components.CenteredLoading
 import com.example.munchtruck.ui.components.InlineError
 import com.example.munchtruck.ui.components.InputField
 import com.example.munchtruck.ui.components.OpeningHoursSection
 import com.example.munchtruck.ui.theme.AppPreviewWrapper
 import com.example.munchtruck.ui.theme.Dimens
+import com.example.munchtruck.ui.theme.Dimens.BorderThin
 import com.example.munchtruck.ui.theme.Dimens.ButtonRadius
 import com.example.munchtruck.ui.theme.Dimens.LocationMapHeight
 import com.example.munchtruck.ui.theme.Dimens.ProfileImageButtonRadius
@@ -97,6 +102,8 @@ fun EditProfileContent(
     onSaveClick: () -> Unit,
     onImageClick: () -> Unit,
     onMenuClick: () -> Unit,
+    onDeleteAccountClick: () -> Unit,
+    isDeleting: Boolean = false,
     snackbarHost: @Composable () -> Unit
 
 ) {
@@ -236,7 +243,6 @@ fun EditProfileContent(
 
                     Spacer(modifier = Modifier.weight(1f))
 
-                    // Valfritt: Lägg till en pil som indikerar öppen/stängd
                 }
 
                 if (isOpeningHoursExpanded) {
@@ -414,11 +420,40 @@ fun EditProfileContent(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(SpaceL))
+                    Spacer(modifier = Modifier.height(SpaceXL))
                 }
+
+                // ===== Danger Zone =====
+
+                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+
+                Spacer(modifier = Modifier.height(SpaceM))
+
+                Text(
+                    text = stringResource(R.string.profile_danger_zone),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.error
+                )
+
+                Spacer(modifier = Modifier.height(SpaceS))
+
+                androidx.compose.material3.OutlinedButton(
+                    onClick = onDeleteAccountClick,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(
+                        contentColor = MaterialTheme.colorScheme.error
+                    ),
+                    border = BorderStroke(BorderThin, MaterialTheme.colorScheme.error)
+                ) {
+                    Text(stringResource(R.string.profile_delete_account))
+                }
+
+                Spacer(modifier = Modifier.height(SpaceXL))
+
+
             }
-            if (isLoading) {
-                com.example.munchtruck.ui.components.CenteredLoading()
+            if (isLoading || isDeleting) {
+                CenteredLoading()
             }
         }
     }
@@ -480,6 +515,8 @@ fun EditProfileContentPreview() {
             ),
             onEditMenuClick = {},
             onDeleteMenuClick = {},
+            onDeleteAccountClick = {},
+            isDeleting = false,
             snackbarHost = {},
 
         )

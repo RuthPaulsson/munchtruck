@@ -97,7 +97,7 @@ fun NavGraph() {
         factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 @Suppress("UNCHECKED_CAST")
-                return ProfileViewModel(profileRepository, imageRepository) as T
+                return ProfileViewModel(profileRepository, imageRepository, authRepository) as T
             }
         }
     )

@@ -20,6 +20,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.munchtruck.R
 import com.example.munchtruck.data.model.OpeningHours
+import com.example.munchtruck.ui.components.ConfirmationDialog
 import com.example.munchtruck.ui.components.toMessage
 import com.example.munchtruck.ui.components.updateOpeningHoursState
 import com.example.munchtruck.util.MenuItemValidationError
@@ -90,6 +91,16 @@ fun EditProfileScreen(
     LaunchedEffect(uiState.openingHours) {
         uiState.openingHours?.let { savedHours ->
             openingHours = savedHours
+        }
+    }
+
+    // ====== Delete account ===============================
+
+    LaunchedEffect(uiState.isAccountDeleted) {
+        if (uiState.isAccountDeleted) {
+            navController.navigate("start") {
+                popUpTo(0) { inclusive = true }
+            }
         }
     }
 
@@ -170,41 +181,40 @@ fun EditProfileScreen(
             showDeleteDialog = true
         },
 
+        onDeleteAccountClick = { profileViewModel.onDeleteAccountClicked() },
+        isDeleting = uiState.isDeleting,
+
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
 
     )
 
+    // ====== Alert Dialog ===============================
 
-    if (showDeleteDialog) {
-        AlertDialog(
-            onDismissRequest = { showDeleteDialog = false },
-            title = { Text(stringResource(R.string.delete_title)) },
-            text = { Text(stringResource(R.string.delete_message)) },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        showDeleteDialog = false
-
-                        menuItemToDelete?.let { id ->
-                            menuViewModel.deleteMenuItem(id)
-
-                            coroutineScope.launch {
-                                snackbarHostState.showSnackbar(deletedMessage)
-                            }
-                        }
-                        menuItemToDelete = null
-                    }
-                ) {
-                    Text(stringResource(R.string.delete_confirm))
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = { showDeleteDialog = false }
-                ) {
-                    Text(stringResource(R.string.profile_logout_cancel))
-                }
+    ConfirmationDialog(
+        show = showDeleteDialog,
+        onDismiss = { showDeleteDialog = false },
+        onConfirm = {
+            showDeleteDialog = false
+            menuItemToDelete?.let { id ->
+                menuViewModel.deleteMenuItem(id)
+                coroutineScope.launch { snackbarHostState.showSnackbar(deletedMessage) }
             }
-        )
-    }
+            menuItemToDelete = null
+        },
+        title = stringResource(R.string.delete_title),
+        message = stringResource(R.string.delete_message),
+        isDangerous = true
+    )
+
+    ConfirmationDialog(
+        show = uiState.showDeleteConfirmation,
+        onDismiss = { profileViewModel.onDeleteDismissed() },
+        onConfirm = { profileViewModel.onDeleteConfirmed() },
+        title = stringResource(R.string.delete_account_title),
+        message = stringResource(R.string.delete_account_message),
+        confirmText = stringResource(R.string.delete_account_confirm),
+        isDangerous = true
+    )
+
+
 }

@@ -78,4 +78,6 @@ object Dimens {
 
     val MenuImageHeight = 180.dp
     val MenuImageButtonBottomPadding = 12.dp
+
+    val BorderThin = 1.dp
 }
