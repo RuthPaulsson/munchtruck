@@ -1,5 +1,6 @@
 package com.example.munchtruck.data.firebase
 
+import com.example.munchtruck.data.FirestoreCollections
 import com.example.munchtruck.data.FirestoreFields
 import com.example.munchtruck.data.model.*
 import com.example.munchtruck.data.repository.ProfileRepository
@@ -24,7 +25,7 @@ class FirebaseProfileRepository(
         auth.currentUser?.uid ?: throw IllegalStateException("User not logged in")
 
     private fun myTruckDoc() =
-        firestore.collection(FirestoreFields.COLLECTION_TRUCKS).document(truckId())
+        firestore.collection(FirestoreCollections.TRUCKS).document(truckId())
 
     // ============ STATUS & PROFILE ========================================
 
@@ -36,31 +37,34 @@ class FirebaseProfileRepository(
         openingHours: OpeningHours?
     ) {
 
-        val updates = mutableMapOf<String, Any>(
-            FirestoreFields.NAME to name.trim(),
-            FirestoreFields.DESCRIPTION to description.trim(),
-            FirestoreFields.FOOD_TYPE to foodType.trim(),
-            FirestoreFields.IMAGE_URL to imageUrl
+        val updates = with(FirestoreFields) { mutableMapOf<String, Any>(
+            NAME to name.trim(),
+            DESCRIPTION to description.trim(),
+            FOOD_TYPE to foodType.trim(),
+            IMAGE_URL to imageUrl
         )
 
+        }
 
         openingHours?.let { hours ->
-            val weeklyMap = mapOf(
-                "mon" to hours.weekly.mon?.toFirestoreMap(),
-                "tue" to hours.weekly.tue?.toFirestoreMap(),
-                "wed" to hours.weekly.wed?.toFirestoreMap(),
-                "thu" to hours.weekly.thu?.toFirestoreMap(),
-                "fri" to hours.weekly.fri?.toFirestoreMap(),
-                "sat" to hours.weekly.sat?.toFirestoreMap(),
-                "sun" to hours.weekly.sun?.toFirestoreMap()
-            )
+            with(FirestoreFields) {
+                val weeklyMap = mapOf(
+                    DAY_MON to hours.weekly.mon?.toFirestoreMap(),
+                    DAY_TUE to hours.weekly.tue?.toFirestoreMap(),
+                    DAY_WED to hours.weekly.wed?.toFirestoreMap(),
+                    DAY_THU to hours.weekly.thu?.toFirestoreMap(),
+                    DAY_FRI to hours.weekly.fri?.toFirestoreMap(),
+                    DAY_SAT to hours.weekly.sat?.toFirestoreMap(),
+                    DAY_SUN to hours.weekly.sun?.toFirestoreMap()
+                )
 
-            updates[FirestoreFields.HOURS] = mapOf(
-                FirestoreFields.TIME_ZONE to hours.timeZone.ifBlank { "Europe/Stockholm" },
-                FirestoreFields.WEEKLY to weeklyMap,
-                FirestoreFields.TEMP_CLOSED to hours.tempClosed,
-                "updatedAt" to FieldValue.serverTimestamp()
-            )
+                updates[FirestoreFields.HOURS] = mapOf(
+                    TIME_ZONE to hours.timeZone.ifBlank { DEFAULT_TIMEZONE },
+                    WEEKLY to weeklyMap,
+                    TEMP_CLOSED to hours.tempClosed,
+                    UPDATED_AT to FieldValue.serverTimestamp()
+                )
+            }
         }
 
         myTruckDoc().set(updates, SetOptions.merge()).await()
@@ -69,14 +73,16 @@ class FirebaseProfileRepository(
     // ============ LOCATION & HOURS ========================================
 
     override suspend fun updateMyTruckLocation(location: TruckLocation) {
-        val updatedLocation = mapOf(
-            FirestoreFields.LOCATION to mapOf(
-                "latitude" to location.latitude,
-                "longitude" to location.longitude,
-                "address" to location.address.trim(),
-                "updatedAt" to location.updatedAt
+        val updatedLocation = with(FirestoreFields) {
+            mapOf(
+                FirestoreFields.LOCATION to mapOf(
+                    KEY_LATITUDE to location.latitude,
+                    KEY_LONGITUDE to location.longitude,
+                    KEY_ADDRESS to location.address.trim(),
+                    UPDATED_AT to location.updatedAt
+                )
             )
-        )
+        }
         myTruckDoc().set(updatedLocation, SetOptions.merge()).await()
     }
 
@@ -103,7 +109,10 @@ class FirebaseProfileRepository(
         val truckDoc = myTruckDoc().get().await()
         val foodTruck = truckDoc.toFoodTruck()
 
-        val menuSnapshot = myTruckDoc().collection(FirestoreFields.COLLECTION_MENU).get().await()
+        val menuSnapshot = with(FirestoreCollections) {
+            myTruckDoc()
+            .collection(TRUCKS).get().await() }
+
         val menuItems = menuSnapshot.documents.map { it.toMenuItem() }
 
 

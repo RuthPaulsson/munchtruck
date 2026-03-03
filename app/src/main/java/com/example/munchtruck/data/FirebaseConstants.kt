@@ -1,9 +1,21 @@
 package com.example.munchtruck.data
 
 
+object FirestoreCollections {
+    const val TRUCKS = "foodTrucks"
+    const val USERS = "users"
+    const val MAP_TRUCKS = "mapTrucks"
+    const val MENU = "menu"
+}
+
 object FirestoreFields {
 
     //======= REGULAR FIELDS ==================================
+
+    const val ID = "id"
+    const val EMAIL = "email"
+    const val COMPANY_NAME = "companyName"
+    const val ROLE = "role"
     const val NAME = "name"
     const val DESCRIPTION = "description"
     const val FOOD_TYPE = "foodType"
