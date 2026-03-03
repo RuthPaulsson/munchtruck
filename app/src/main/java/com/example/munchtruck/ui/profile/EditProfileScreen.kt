@@ -64,7 +64,9 @@ fun EditProfileScreen(
         mutableStateOf(uiState.description)
     }
 
-    var foodType by remember { mutableStateOf("") }
+    var foodType by remember(uiState.foodType) {
+        mutableStateOf(uiState.foodType ?: "")
+    }
 
     var openingHours by remember(uiState.openingHours) {
         mutableStateOf(uiState.openingHours ?: OpeningHours())

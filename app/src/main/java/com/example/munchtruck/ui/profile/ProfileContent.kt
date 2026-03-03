@@ -55,6 +55,7 @@ import com.example.munchtruck.ui.theme.Dimens.SpaceXS
 import com.example.munchtruck.R
 import com.example.munchtruck.data.model.OpeningHours
 import com.example.munchtruck.ui.components.CenteredLoading
+import com.example.munchtruck.ui.components.FoodTypeSection
 import com.example.munchtruck.ui.components.OpeningHoursSection
 import com.example.munchtruck.ui.theme.Dimens
 import com.example.munchtruck.ui.theme.Dimens.HeroHeight
@@ -68,6 +69,7 @@ import com.example.munchtruck.ui.theme.Dimens.SpaceM
 fun ProfileContent (
     isOwner: Boolean,
     truckName: String,
+    foodType: String?,
     description: String,
     rating: String?,
     location: String?,
@@ -119,6 +121,7 @@ fun ProfileContent (
                 ProfileInfoRow(
                     rating = rating,
                     location = location,
+                    foodType = foodType,
                     openingHours = openingHours
                 )
 
@@ -283,6 +286,7 @@ fun ProfileHeroSection(
 fun ProfileInfoRow(
     rating: String?,
     location: String?,
+    foodType: String?,
     openingHours: OpeningHours?
 ) {
     var isExpanded by remember { mutableStateOf(false) }
@@ -344,7 +348,23 @@ fun ProfileInfoRow(
                 )
             }
 
+            // ====== Divider 2 & FoodType ======
+
+            if (!foodType.isNullOrBlank() && (!rating.isNullOrBlank() || !location.isNullOrBlank())) {
+                Spacer(modifier = Modifier.width(SpaceS))
+                Text(text = "•", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Spacer(modifier = Modifier.width(SpaceS))
+            }
+
+            if (!foodType.isNullOrBlank()) {
+              FoodTypeSection(
+                    foodType = foodType,
+                    isReadOnly = true
+                )
+            }
+
             Spacer(modifier = Modifier.weight(1f))
+
 
             // ====== Opening Hours ===============================
 
@@ -490,6 +510,7 @@ fun ProfileContentPreview() {
     AppPreviewWrapper() {
         ProfileContent(
             isOwner = true,
+            foodType = "",
             truckName = "Crazy Burgers",
             description = "Best smash burgers in town.",
             rating = "4.7",

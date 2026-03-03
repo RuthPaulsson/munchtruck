@@ -54,6 +54,7 @@ import com.example.munchtruck.data.model.MenuItem
 import com.example.munchtruck.data.model.OpeningHours
 import com.example.munchtruck.data.model.OpeningInterval
 import com.example.munchtruck.ui.components.CenteredLoading
+import com.example.munchtruck.ui.components.FoodTypeSection
 import com.example.munchtruck.ui.components.InlineError
 import com.example.munchtruck.ui.components.InputField
 import com.example.munchtruck.ui.components.OpeningHoursSection
@@ -212,10 +213,10 @@ fun EditProfileContent(
 
                 Spacer(modifier = Modifier.height(SpaceL))
 
-                InputField(
-                    value = foodType,
-                    onChange = onFoodTypeChange,
-                    placeholder = stringResource(R.string.profile_food_type_hint)
+                FoodTypeSection(
+                    foodType = foodType,
+                    onFoodTypeChange = onFoodTypeChange,
+                    isReadOnly = false
                 )
 
                 Spacer(modifier = Modifier.height(SpaceL))

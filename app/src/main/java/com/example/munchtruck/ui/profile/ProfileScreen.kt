@@ -47,6 +47,7 @@ fun ProfileScreen(
     ProfileContent(
         isOwner = true,
         truckName = uiState.name,
+        foodType = uiState.foodType,
         description = uiState.description,
         imageUrl = uiState.imageUrl,
         menuItems = menuUiState.menuItems,
