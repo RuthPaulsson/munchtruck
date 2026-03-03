@@ -1,7 +1,12 @@
 package com.example.munchtruck.ui.profile
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +22,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.RestaurantMenu
@@ -48,6 +55,7 @@ import com.example.munchtruck.ui.theme.Dimens.SpaceXS
 import com.example.munchtruck.R
 import com.example.munchtruck.data.model.OpeningHours
 import com.example.munchtruck.ui.components.CenteredLoading
+import com.example.munchtruck.ui.components.OpeningHoursSection
 import com.example.munchtruck.ui.theme.Dimens
 import com.example.munchtruck.ui.theme.Dimens.HeroHeight
 import com.example.munchtruck.ui.theme.Dimens.MenuItemImageIconSize
@@ -63,7 +71,7 @@ fun ProfileContent (
     description: String,
     rating: String?,
     location: String?,
-    openingHours: String? = null,
+    openingHours: OpeningHours? = null,
     imageUrl: String?,
     menuItems: List<MenuItem>,
     isLoading: Boolean = false,
@@ -106,7 +114,7 @@ fun ProfileContent (
             if (
                 !rating.isNullOrBlank() ||
                 !location.isNullOrBlank() ||
-                !openingHours.isNullOrBlank()
+                openingHours != null
             ) {
                 ProfileInfoRow(
                     rating = rating,
@@ -165,6 +173,8 @@ fun ProfileContent (
         }
     }
 }
+
+
 
 // ====== Hero Section ===============================
 
@@ -273,84 +283,134 @@ fun ProfileHeroSection(
 fun ProfileInfoRow(
     rating: String?,
     location: String?,
-    openingHours: String?
+    openingHours: OpeningHours?
 ) {
+    var isExpanded by remember { mutableStateOf(false) }
+
     // ====== Row Container ===============================
+    Column(modifier = Modifier.fillMaxWidth()){
+        val hours = openingHours
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = SpaceM),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // ====== Rating ===============================
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = SpaceM),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        // ====== Rating ===============================
+            if (!rating.isNullOrBlank()) {
+                Icon(
+                    imageVector = Icons.Default.Star,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
 
-        if (!rating.isNullOrBlank()) {
-            Icon(
-                imageVector = Icons.Default.Star,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary
-            )
+                Spacer(modifier = Modifier.width(SpaceXS))
 
-            Spacer(modifier = Modifier.width(SpaceXS))
+                Text(
+                    text = rating,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
 
-            Text(
-                text = rating,
-                style = MaterialTheme.typography.bodyMedium
-            )
+            // ====== Divider ===============================
+
+            if (!rating.isNullOrBlank() && !location.isNullOrBlank()) {
+                Spacer(modifier = Modifier.width(SpaceS))
+
+                Text(
+                    text = "•",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                Spacer(modifier = Modifier.width(SpaceS))
+            }
+
+            // ====== Location ===============================
+
+            if (!location.isNullOrBlank()) {
+                Icon(
+                    imageVector = Icons.Default.LocationOn,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                Spacer(modifier = Modifier.width(SpaceXS))
+
+                Text(
+                    text = location,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            // ====== Opening Hours ===============================
+
+            if (hours != null) {
+
+                Row(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(SpaceS))
+                        .clickable { isExpanded = !isExpanded }
+                        .padding(SpaceXS),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.AccessTime,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.width(SpaceXS))
+
+                    Text(
+                        text = stringResource(R.string.opening_hours_title), // Använd din strängresurs
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.width(SpaceXS))
+                    Icon(
+                        imageVector = if (isExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                }
+            }
         }
+        if (hours != null) {
+            AnimatedVisibility(
+                visible = isExpanded,
+                enter = expandVertically(),
+                exit = shrinkVertically()
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = SpaceM, vertical = SpaceS)
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                            RoundedCornerShape(MenuItemImageRadius)
+                        )
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                            shape = RoundedCornerShape(MenuItemImageRadius)
+                        )
+                        .padding(SpaceM)
 
-        // ====== Divider ===============================
-
-        if (!rating.isNullOrBlank() && !location.isNullOrBlank()) {
-            Spacer(modifier = Modifier.width(SpaceS))
-
-            Text(
-                text = "•",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
-            Spacer(modifier = Modifier.width(SpaceS))
-        }
-
-        // ====== Location ===============================
-
-        if (!location.isNullOrBlank()) {
-            Icon(
-                imageVector = Icons.Default.LocationOn,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
-            Spacer(modifier = Modifier.width(SpaceXS))
-
-            Text(
-                text = location,
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        // ====== Opening Hours ===============================
-
-        if (!openingHours.isNullOrBlank()) {
-            Icon(
-                imageVector = Icons.Default.AccessTime,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
-            Spacer(modifier = Modifier.width(SpaceXS))
-
-            Text(
-                text = openingHours,
-                style = MaterialTheme.typography.bodyMedium
-            )
+                ) {
+                    OpeningHoursSection(
+                        openingHours = hours,
+                        isReadOnly = true
+                    )
+                }
+            }
         }
     }
 }
+
 
 // ====== Menu Item Card ===============================
 
@@ -434,7 +494,7 @@ fun ProfileContentPreview() {
             description = "Best smash burgers in town.",
             rating = "4.7",
             location = "Stockholm",
-            openingHours = "Mon–Fri 11:00–20:00",
+            openingHours = OpeningHours(),
             imageUrl = null,
             menuItems = listOf(
                 MenuItem("1", "Classic Burger", 9500, "Best burger"),
