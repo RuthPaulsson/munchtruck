@@ -45,11 +45,12 @@ fun InputField(
     colors: TextFieldColors = OutlinedTextFieldDefaults.colors(
         focusedContainerColor = White,
         unfocusedContainerColor = White,
-        focusedBorderColor = InputBorder,
+        focusedBorderColor = MaterialTheme.colorScheme.primary,
         unfocusedBorderColor = InputBorder,
         focusedTextColor = PrimaryText,
         unfocusedTextColor = PrimaryText,
-        cursorColor = PrimaryText
+        cursorColor = MaterialTheme.colorScheme.primary,
+        focusedLabelColor = MaterialTheme.colorScheme.primary
     )
 
 ){
