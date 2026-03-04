@@ -172,7 +172,8 @@ fun NavGraph() {
                     navController = navController,
                     authViewModel= authViewModel,
                     profileViewModel = profileViewModel,
-                    menuViewModel = menuViewModel
+                    menuViewModel = menuViewModel,
+                    locationViewModel = locationViewModel
                 )
 
             } else {
