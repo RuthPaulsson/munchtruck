@@ -17,15 +17,16 @@ fun DiscoveryScreen(
     onTruckClick: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    var searchQuery by remember { mutableStateOf("") }
 
     val errorMessage = uiState.error?.toMessage()
 
     DiscoveryContent(
         uiState = uiState,
         errorMessage = errorMessage,
-        searchQuery = searchQuery,
-        onSearchChange = { searchQuery = it },
+        selectedCategory = uiState.selectedCategory,
+        onCategoryChange = { category ->
+            viewModel.onCategorySelected(category)
+        },
         onRefresh = { viewModel.observeTrucks() },
         onTruckClick = onTruckClick,
         onMapClick = { navController.navigate("map_view") },

@@ -20,9 +20,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -48,15 +50,18 @@ import com.example.munchtruck.data.model.TruckLocation
 import com.example.munchtruck.ui.components.CenteredLoading
 import com.example.munchtruck.ui.components.CenteredMessage
 import com.example.munchtruck.ui.components.DiscoveryBottom
+import com.example.munchtruck.ui.components.FoodTypeFilterBar
 import com.example.munchtruck.ui.components.InputField
+import com.example.munchtruck.ui.components.ItemCard
 import com.example.munchtruck.ui.theme.AppColors.PrimaryBackground
+import com.example.munchtruck.ui.theme.AppColors.White
 import com.example.munchtruck.ui.theme.AppPreviewWrapper
 import com.example.munchtruck.ui.theme.Dimens.BottomNavHeight
-import com.example.munchtruck.ui.theme.Dimens.CardRadiusLarge
 import com.example.munchtruck.ui.theme.Dimens.ChipHorizontalPadding
 import com.example.munchtruck.ui.theme.Dimens.ChipRadius
 import com.example.munchtruck.ui.theme.Dimens.ChipSpacing
 import com.example.munchtruck.ui.theme.Dimens.ChipVerticalPadding
+import com.example.munchtruck.ui.theme.Dimens.DiscoveryCardRadius
 import com.example.munchtruck.ui.theme.Dimens.DiscoveryHeroHeight
 import com.example.munchtruck.ui.theme.Dimens.HeroLogoTopPadding
 import com.example.munchtruck.ui.theme.Dimens.HeroLogoWidth
@@ -67,8 +72,6 @@ import com.example.munchtruck.ui.theme.Dimens.SpaceS
 import com.example.munchtruck.ui.theme.Dimens.SpaceSM
 import com.example.munchtruck.ui.theme.Dimens.SpaceXXL
 import com.example.munchtruck.ui.theme.Dimens.SpaceXXXL
-import com.example.munchtruck.ui.theme.Dimens.TruckImageRadius
-import com.example.munchtruck.ui.theme.Dimens.TruckImageSize
 import com.example.munchtruck.util.DistanceUtils.formatDistance
 import com.example.munchtruck.viewmodels.DiscoveryUiState
 
@@ -77,8 +80,8 @@ import com.example.munchtruck.viewmodels.DiscoveryUiState
 fun DiscoveryContent(
     uiState: DiscoveryUiState,
     errorMessage: String?,
-    searchQuery: String,
-    onSearchChange: (String) -> Unit,
+    selectedCategory: String,
+    onCategoryChange: (String) -> Unit,
     onRefresh: () -> Unit,
     onTruckClick: (String) -> Unit,
     onMapClick: () -> Unit,
@@ -97,8 +100,8 @@ fun DiscoveryContent(
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 item {
                     HeroSection(
-                        searchQuery = searchQuery,
-                        onSearchChange = onSearchChange
+                        selectedCategory = selectedCategory,
+                        onCategoryChange = onCategoryChange
                     )
                 }
 
@@ -120,10 +123,31 @@ fun DiscoveryContent(
                 }
 
                 items(uiState.trucks) { truck ->
-                    TruckItem(
-                        truck = truck,
-                        userLocation = uiState.userLocation,
-                        onClick = { onTruckClick(truck.id) }
+
+                    val statusText = if (truck.isOpen) {
+                        stringResource(R.string.status_open)
+                    } else {
+                        stringResource(R.string.status_closed)
+                    }
+
+                    val distanceText = uiState.userLocation?.let { userLoc ->
+                        truck.location?.let { loc ->
+                            val truckLoc = Location("").apply {
+                                latitude = loc.latitude
+                                longitude = loc.longitude
+                            }
+                            " • ${formatDistance(userLoc.distanceTo(truckLoc))}"
+                        }
+                    } ?: ""
+
+                    ItemCard(
+                        title = truck.name,
+                        description = "$statusText$distanceText",
+                        imageUrl = truck.imageUrl,
+                        priceOrInfo = truck.foodType ?: "",
+                        modifier = Modifier
+                            .padding(horizontal = SpaceM, vertical = SpaceS)
+                            .clickable { onTruckClick(truck.id) }
                     )
                 }
 
@@ -154,8 +178,8 @@ fun CenteredMessageWithRetry(message: String, onRetry: () -> Unit) {
 
 @Composable
 fun HeroSection(
-    searchQuery: String,
-    onSearchChange: (String) -> Unit
+    selectedCategory: String,
+    onCategoryChange: (String) -> Unit
 ){
     Box(
         modifier = Modifier
@@ -183,7 +207,6 @@ fun HeroSection(
                 )
         )
 
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -201,42 +224,19 @@ fun HeroSection(
 
             Spacer(modifier = Modifier.height(SpaceXXL))
 
-            InputField(
-                value = searchQuery,
-                onChange = onSearchChange,
-                placeholder = stringResource(R.string.discovery_search_placeholder),
-                singleLine = true,
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = null
-                    )
-                },
-                trailingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Mic,
-                        contentDescription = null
-                    )
-                },
-                shape = RoundedCornerShape(SearchFieldRadius),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.surface,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                    focusedBorderColor = Color.Transparent,
-                    unfocusedBorderColor = Color.Transparent
-                )
-
+            Text(
+                text = stringResource(R.string.discovery_search_placeholder),
+                style = MaterialTheme.typography.titleMedium,
+                color = White
             )
 
-            Spacer(modifier = Modifier.height(SpaceSM))
+            Spacer(modifier = Modifier.height(SpaceM))
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(SpaceSM)
-            ) {
-                CategoryChip(stringResource(R.string.discovery_category_burger), "🍔")
-                CategoryChip(stringResource(R.string.discovery_category_tacos), "🌮")
-                CategoryChip(stringResource(R.string.discovery_category_pizza), "🍕")
-            }
+            FoodTypeFilterBar(
+                selectedCategory = selectedCategory,
+                onCategoryClick = onCategoryChange
+            )
+
             Spacer(modifier = Modifier.height(SpaceXXXL))
 
             Column(
@@ -245,17 +245,16 @@ fun HeroSection(
                     .padding(bottom = SpaceXXL),
                 horizontalAlignment = Alignment.Start
             ) {
-
                 Text(
                     text = stringResource(R.string.discovery_hero_title_line1),
                     style = MaterialTheme.typography.headlineSmall,
-                    color = Color.White
+                    color = White
                 )
 
                 Text(
                     text = stringResource(R.string.discovery_hero_title_line2),
                     style = MaterialTheme.typography.headlineSmall,
-                    color = Color.White
+                    color = White
                 )
 
                 Spacer(modifier = Modifier.height(SpaceS))
@@ -263,122 +262,12 @@ fun HeroSection(
                 Text(
                     text = stringResource(R.string.discovery_hero_subtitle),
                     style = MaterialTheme.typography.bodySmall,
-                    color = Color.White
+                    color = White
                 )
             }
-
-        }
-
-    }
-}
-
-@Composable
-fun CategoryChip(text: String, emoji: String) {
-    Card(
-        shape = RoundedCornerShape(ChipRadius),
-        modifier = Modifier.clickable { }
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(horizontal = ChipHorizontalPadding, vertical = ChipVerticalPadding)
-        ) {
-            Text(
-                text = emoji,
-                style = MaterialTheme.typography.bodyMedium
-            )
-
-            Spacer(modifier = Modifier.width(ChipSpacing))
-
-            Text(
-                text = text,
-                style = MaterialTheme.typography.bodySmall
-            )
         }
     }
 }
-
-
-@Composable
-fun TruckItem(
-    truck: FoodTruck,
-    userLocation: Location?,
-    onClick: () -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(SpaceM, vertical = SpaceS)
-            .clickable{ onClick() },
-        shape = RoundedCornerShape(CardRadiusLarge)
-
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(SpaceM),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            AsyncImage(
-                model = truck.imageUrl,
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(TruckImageSize)
-                    .clip(
-                        RoundedCornerShape(
-                            topStart = TruckImageRadius,
-                            bottomStart = TruckImageRadius,
-                            topEnd = 0.dp,
-                            bottomEnd = 0.dp
-                        )
-                    )
-            )
-            Spacer(modifier = Modifier.width(SpaceM))
-
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = truck.name,
-                    style = MaterialTheme.typography.titleMedium
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                truck.location?.let { location ->
-                    userLocation?.let { userLoc ->
-                        val truckLoc = Location("").apply {
-                            latitude = location.latitude
-                            longitude = location.longitude
-                        }
-                        val distance = userLoc.distanceTo(truckLoc)
-                        Text(
-                            text = formatDistance(distance),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-            }
-            Spacer(modifier = Modifier.width(SpaceM))
-            AsyncImage(
-                model = truck.imageUrl,
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(TruckImageSize)
-                    .clip(
-                        RoundedCornerShape(
-                            topStart = TruckImageRadius,
-                            bottomStart = TruckImageRadius,
-                            topEnd = 0.dp,
-                            bottomEnd = 0.dp
-                        )
-                    )
-            )
-        }
-
-
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 fun DiscoveryContentPreview() {
@@ -389,7 +278,7 @@ fun DiscoveryContentPreview() {
                 id = "1",
                 name = "Burger Truck",
                 description = "Best burgers",
-                foodType = "Burgers",
+                foodType = "Burger",
                 imageUrl = "",
                 isOpen = true,
                 location = TruckLocation(
@@ -400,7 +289,7 @@ fun DiscoveryContentPreview() {
                 )
             )
         )
-        var searchQuery = remember { mutableStateOf("") }
+
         DiscoveryContent(
             uiState = DiscoveryUiState(
                 trucks = mockTrucks,
@@ -409,8 +298,8 @@ fun DiscoveryContentPreview() {
                 isListEmpty = false
             ),
             errorMessage = "",
-            searchQuery= searchQuery.value,
-            onSearchChange = { searchQuery.value = it },
+            selectedCategory = "",
+            onCategoryChange = {},
             onRefresh = {},
             onTruckClick = {},
             onMapClick = {},
