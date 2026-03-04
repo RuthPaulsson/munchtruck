@@ -3,7 +3,11 @@ package com.example.munchtruck.util
 import java.text.NumberFormat
 import java.util.Locale
 
+// ====== Price Formatter Utility ===============================
+
 object PriceFormatter {
+
+    // ====== Configuration ===============================
 
     private val swedishCurrencyFormat by lazy {
         NumberFormat.getCurrencyInstance(Locale("sv", "SE")).apply {
@@ -11,6 +15,8 @@ object PriceFormatter {
             minimumFractionDigits = 2
         }
     }
+
+    // ====== Formatting (Long/Double to String) ==============
 
     fun format(priceInOre: Long): String {
         val priceInKronor = priceInOre / 100.0
@@ -28,6 +34,8 @@ object PriceFormatter {
             "%.2f kr".format(priceInKronor).replace(".", ",")
         }
     }
+
+    // ====== Parsing (String to Long/Double) =====================
 
     fun parseToOre(priceString: String): Long? {
         return try {
@@ -55,6 +63,8 @@ object PriceFormatter {
             null
         }
     }
+
+    // ====== Extension Functions ===============================
 
     fun Long.toPriceString(): String = format(this)
 

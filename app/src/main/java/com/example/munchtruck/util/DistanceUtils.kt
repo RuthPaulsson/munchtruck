@@ -5,6 +5,8 @@ import android.location.Location
 import java.util.Locale
 import kotlin.math.roundToInt
 
+// ====== Distance Calculation & Formatting ===========================
+
 object DistanceUtils {
 
     fun calculateDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Float {

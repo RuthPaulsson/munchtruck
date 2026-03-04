@@ -1,5 +1,7 @@
 package com.example.munchtruck.util
 
+// ====== Location Constants ===============================
+
 object LocationConstants {
     const val MIN_LATITUDE = -90.0
     const val MAX_LATITUDE = 90.0

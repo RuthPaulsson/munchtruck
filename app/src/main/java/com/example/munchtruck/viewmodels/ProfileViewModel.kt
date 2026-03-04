@@ -17,6 +17,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.update
 
+// ====== Profile State Definitions ===============================
+
 sealed class ProfileError {
     data object LoadProfileFailed : ProfileError()
     data object UpdateFailed : ProfileError()
@@ -42,14 +44,20 @@ data class ProfileUiState(
     val isOpenNow: Boolean = false
 )
 
+// ====== Profile ViewModel ===============================
+
 class ProfileViewModel(
     private val profileRepository: ProfileRepository,
     private val imageRepository: ImageRepository,
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
+    // ====== State & Initialization ===============================
+
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
+
+    // ====== Profile Actions ===============================
 
     fun saveProfile(
         name: String,
@@ -137,6 +145,8 @@ class ProfileViewModel(
         }
     }
 
+    // ====== Account Deletion Flow ===============================
+
     fun onDeleteAccountClicked() {
         _uiState.update { it.copy(showDeleteConfirmation = true) }
     }
@@ -160,6 +170,8 @@ class ProfileViewModel(
             }
         }
     }
+
+    // ====== UI State Helpers ===============================
 
     fun resetState(){
         _uiState.value = ProfileUiState()
