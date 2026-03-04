@@ -36,6 +36,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -87,6 +88,7 @@ fun EditProfileContent(
     errorMessage: String? = null,
     isLoading: Boolean = false,
     locationState: LocationUiState,
+    cameraPositionState: com.google.maps.android.compose.CameraPositionState,
     menuItems: List<MenuItem>,
     onEditMenuClick: (String) -> Unit,
     onDeleteMenuClick: (String) -> Unit,
@@ -274,11 +276,16 @@ fun EditProfileContent(
                     Spacer(modifier = Modifier.width(SpaceS))
 
                     Text(
-                        text = if (hasLocation)
+                        text = if (hasLocation && !locationState.address.isNullOrBlank()) {
+                            // Här kombinerar vi "Change location" med den faktiska adressen
+                            "${stringResource(R.string.profile_change_location)}: ${locationState.address}"
+                        } else {
                             stringResource(R.string.profile_add_location)
-                        else
-                            stringResource(R.string.profile_add_location),
+                        },
                         style = MaterialTheme.typography.bodyLarge,
+                        maxLines = 1,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f),
                         color = if (hasLocation)
                             MaterialTheme.colorScheme.onSurface
                         else
@@ -295,6 +302,7 @@ fun EditProfileContent(
                     LocationMap(
                         lat = locationState.selectedLat,
                         lng = locationState.selectedLng,
+                        cameraPositionState = cameraPositionState,
                         onMapClick = onMapPicked
                     )
 
@@ -302,16 +310,13 @@ fun EditProfileContent(
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(SpaceM)
+                        horizontalArrangement = Arrangement.Start
                     ) {
 
                         TextButton(onClick = onUseCurrentLocation) {
                             Text(stringResource(R.string.profile_use_current_location))
                         }
 
-                        TextButton(onClick = onSaveLocation) {
-                            Text(stringResource(R.string.profile_save_location))
-                        }
                     }
 
                     Spacer(modifier = Modifier.height(SpaceL))
@@ -465,9 +470,11 @@ fun EditProfileContent(
 fun LocationMap(
     lat: Double?,
     lng: Double?,
+    cameraPositionState: com.google.maps.android.compose.CameraPositionState,
     onMapClick: (Double, Double) -> Unit
 ) {
     val cameraPositionState = rememberCameraPositionState()
+
 
     GoogleMap(
         modifier = Modifier
@@ -493,11 +500,13 @@ fun LocationMap(
 @Composable
 fun EditProfileContentPreview() {
     AppPreviewWrapper {
+        val previewCameraState = rememberCameraPositionState()
         EditProfileContent(
             name = "",
             description = "",
             foodType = "",
             locationState = LocationUiState(),
+            cameraPositionState = previewCameraState,
             selectedImageUri = null,
             onMapPicked = { _, _ -> },
             onUseCurrentLocation = {},

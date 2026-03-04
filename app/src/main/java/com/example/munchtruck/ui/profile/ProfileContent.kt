@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -56,6 +57,7 @@ import com.example.munchtruck.R
 import com.example.munchtruck.data.model.OpeningHours
 import com.example.munchtruck.ui.components.CenteredLoading
 import com.example.munchtruck.ui.components.FoodTypeSection
+import com.example.munchtruck.ui.components.ItemCard
 import com.example.munchtruck.ui.components.OpeningHoursSection
 import com.example.munchtruck.ui.theme.Dimens
 import com.example.munchtruck.ui.theme.Dimens.HeroHeight
@@ -151,9 +153,6 @@ fun ProfileContent (
             // ====== Menu Section ===============================
 
             if (menuItems.isNotEmpty()) {
-
-                Spacer(modifier = Modifier.height(SpaceL))
-
                 Text(
                     text = stringResource(R.string.profile_menu),
                     style = MaterialTheme.typography.titleMedium,
@@ -164,7 +163,17 @@ fun ProfileContent (
 
                 Column(modifier = Modifier.padding(horizontal = SpaceM)) {
                     menuItems.forEach { item ->
-                        ProfileMenuItemCard(item)
+                        // NY KOD: Här använder vi nu den gemensamma ItemCard istället för den gamla interna funktionen
+                        ItemCard(
+                            title = item.name,
+                            description = item.description,
+                            imageUrl = item.imageUrl,
+                            priceOrInfo = stringResource(
+                                R.string.menu_price_format,
+                                item.price / 100,
+                                stringResource(R.string.currency_sek)
+                            )
+                        )
                         Spacer(modifier = Modifier.height(SpaceS))
                     }
                 }
@@ -178,7 +187,6 @@ fun ProfileContent (
 }
 
 
-
 // ====== Hero Section ===============================
 
 @Composable
@@ -190,7 +198,6 @@ fun ProfileHeroSection(
     onLogoutClick: () -> Unit
 ) {
 
-    // ====== State ===============================
 
     var expanded by remember { mutableStateOf(false) }
 
@@ -289,92 +296,65 @@ fun ProfileInfoRow(
     foodType: String?,
     openingHours: OpeningHours?
 ) {
+    // ====== State ===============================
+
     var isExpanded by remember { mutableStateOf(false) }
 
     // ====== Row Container ===============================
-    Column(modifier = Modifier.fillMaxWidth()){
-        val hours = openingHours
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = SpaceM)
+    ) {
+        // ====== Row 1: Rating, Location & Opening Hours ===============================
+
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = SpaceM),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // ====== Rating ===============================
-
+            // Rating
             if (!rating.isNullOrBlank()) {
                 Icon(
                     imageVector = Icons.Default.Star,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(18.dp)
                 )
-
                 Spacer(modifier = Modifier.width(SpaceXS))
-
-                Text(
-                    text = rating,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-
-            // ====== Divider ===============================
-
-            if (!rating.isNullOrBlank() && !location.isNullOrBlank()) {
-                Spacer(modifier = Modifier.width(SpaceS))
-
-                Text(
-                    text = "•",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-
-                Spacer(modifier = Modifier.width(SpaceS))
-            }
-
-            // ====== Location ===============================
-
-            if (!location.isNullOrBlank()) {
-                Icon(
-                    imageVector = Icons.Default.LocationOn,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-
-                Spacer(modifier = Modifier.width(SpaceXS))
-
-                Text(
-                    text = location,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-
-            // ====== Divider 2 & FoodType ======
-
-            if (!foodType.isNullOrBlank() && (!rating.isNullOrBlank() || !location.isNullOrBlank())) {
+                Text(text = rating, style = MaterialTheme.typography.bodyMedium)
                 Spacer(modifier = Modifier.width(SpaceS))
                 Text(text = "•", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Spacer(modifier = Modifier.width(SpaceS))
             }
 
-            if (!foodType.isNullOrBlank()) {
-              FoodTypeSection(
-                    foodType = foodType,
-                    isReadOnly = true
+            // Location
+            if (!location.isNullOrBlank()) {
+                Icon(
+                    imageVector = Icons.Default.LocationOn,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(16.dp)
                 )
+                Spacer(modifier = Modifier.width(SpaceXS))
+                Text(
+                    text = location,
+                    style = MaterialTheme.typography.bodyMedium,
+                    maxLines = 1,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f)
+                )
+            } else {
+                Spacer(modifier = Modifier.weight(1f))
             }
 
-            Spacer(modifier = Modifier.weight(1f))
-
-
-            // ====== Opening Hours ===============================
-
-            if (hours != null) {
-
+            // Opening Hours Toggle
+            if (openingHours != null) {
                 Row(
                     modifier = Modifier
                         .clip(RoundedCornerShape(SpaceS))
                         .clickable { isExpanded = !isExpanded }
-                        .padding(SpaceXS),
+                        .padding(start = SpaceS),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
@@ -384,23 +364,36 @@ fun ProfileInfoRow(
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(modifier = Modifier.width(SpaceXS))
-
                     Text(
-                        text = stringResource(R.string.opening_hours_title), // Använd din strängresurs
+                        text = stringResource(R.string.opening_hours_title),
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    Spacer(modifier = Modifier.width(SpaceXS))
                     Icon(
                         imageVector = if (isExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-
                 }
             }
         }
-        if (hours != null) {
+
+        // ====== Row 2: Food Type (Added more vertical space here) ===============================
+
+        if (!foodType.isNullOrBlank()) {
+            Spacer(modifier = Modifier.height(SpaceS)) // Skapar avståndet ner till mattypen
+
+            Text(
+                text = foodType,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(start = if (!rating.isNullOrBlank()) 22.dp else 0.dp)
+            )
+        }
+
+        // ====== Opening Hours Section (Expanded) ===============================
+
+        if (openingHours != null) {
             AnimatedVisibility(
                 visible = isExpanded,
                 enter = expandVertically(),
@@ -409,8 +402,9 @@ fun ProfileInfoRow(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = SpaceM, vertical = SpaceS)
-                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                        .padding(vertical = SpaceM) // Extra space for the dropdown
+                        .background(
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
                             RoundedCornerShape(MenuItemImageRadius)
                         )
                         .border(
@@ -419,10 +413,9 @@ fun ProfileInfoRow(
                             shape = RoundedCornerShape(MenuItemImageRadius)
                         )
                         .padding(SpaceM)
-
                 ) {
                     OpeningHoursSection(
-                        openingHours = hours,
+                        openingHours = openingHours,
                         isReadOnly = true
                     )
                 }
@@ -431,76 +424,6 @@ fun ProfileInfoRow(
     }
 }
 
-
-// ====== Menu Item Card ===============================
-
-@Composable
-fun ProfileMenuItemCard(item: MenuItem) {
-    androidx.compose.material3.Card(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Row(
-            modifier = Modifier.padding(SpaceM),
-            verticalAlignment = Alignment.CenterVertically
-        ){
-            // ====== Item Image ===============================
-
-            Box(
-                modifier = Modifier
-                    .size(MenuItemImageSize)
-                    .clip(RoundedCornerShape(MenuItemImageRadius)),
-                contentAlignment = Alignment.Center
-            ) {
-
-                if (!item.imageUrl.isNullOrBlank()) {
-                    Image(
-                        painter = rememberAsyncImagePainter(item.imageUrl),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                } else {
-                    Icon(
-                        imageVector = Icons.Default.RestaurantMenu,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.width(SpaceM))
-
-            // ====== Item Info ===============================
-
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = item.name,
-                    style = MaterialTheme.typography.titleMedium
-                )
-
-                if (item.description.isNotBlank()) {
-                    Spacer(modifier = Modifier.height(SpaceXS))
-
-                    Text(
-                        text = item.description,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
-
-            // ====== Price ===============================
-
-            Text(
-                text = stringResource(
-                    R.string.menu_price_format,
-                    item.price / 100,
-                    stringResource(R.string.currency_sek)
-                ),
-                style = MaterialTheme.typography.titleMedium
-            )
-        }
-    }
-}
 
 // ====== Preview ===============================
 
