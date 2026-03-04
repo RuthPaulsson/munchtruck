@@ -3,11 +3,15 @@ package com.example.munchtruck.data.repository
 import com.example.munchtruck.data.model.MenuItem
 import kotlinx.coroutines.flow.Flow
 
+// ====== Menu Repository Interface ===============================
 interface MenuRepository {
-    fun observeMyMenu(): Flow<Result<List<MenuItem>>> // FoodTruck owner
 
-    fun observeTruckMenu(truckId: String): Flow<Result<List<MenuItem>>> // FoodLover guest
+    // ====== Data Streams ===============================
+    fun observeMyMenu(): Flow<Result<List<MenuItem>>>
 
+    fun observeTruckMenu(truckId: String): Flow<Result<List<MenuItem>>>
+
+    // ====== Menu Operations ===============================
     suspend fun addMenuItem(
         name: String,
         price: Long,

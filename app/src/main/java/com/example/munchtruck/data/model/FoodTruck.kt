@@ -1,5 +1,9 @@
 package com.example.munchtruck.data.model
 
+/**
+ * Full data model for a Food Truck.
+ * Contains comprehensive information including location, menu items (implied), and status.
+ */
 data class FoodTruck (
     val id: String = "",
     val name: String = "",

@@ -14,12 +14,13 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.util.Locale
 
+// ====== Device Location Provider Implementation ===============================
 class FusedDeviceLocationProvider(
     private val context: Context
 ) : DeviceLocationProvider {
 
     private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
-
+    // ====== Location Logic ===============================
     @SuppressLint("MissingPermission")
     override suspend fun getCurrentLatLng(): Pair<Double, Double> {
         if (!hasLocationPermission()) {
@@ -40,7 +41,7 @@ class FusedDeviceLocationProvider(
             throw SecurityException("Location permission denied")
         }
     }
-
+    // ====== Permission Helper ===============================
     private fun hasLocationPermission(): Boolean {
         val fineLocation = ContextCompat.checkSelfPermission(
             context,
@@ -55,7 +56,7 @@ class FusedDeviceLocationProvider(
         return fineLocation || coarseLocation
     }
 
-
+    // ====== Geocoding Logic ===============================
    override suspend fun getAddressFromCords(lat: Double, lng: Double): String {
         return withContext(Dispatchers.IO) {
             try {

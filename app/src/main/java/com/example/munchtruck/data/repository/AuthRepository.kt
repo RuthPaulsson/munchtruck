@@ -1,6 +1,10 @@
 package com.example.munchtruck.data.repository
 
+// ====== Authentication Repository Interface ===============================
+
 interface AuthRepository {
+
+    // ====== Session Management ===============================
 
     suspend fun login(email: String, password: String)
 
@@ -10,6 +14,7 @@ interface AuthRepository {
 
     fun isUserLoggedIn(): Boolean
 
+    // ====== Account Security & Management ===============================
     suspend fun reauthenticate(password: String)
 
     suspend fun deleteUserDocument()

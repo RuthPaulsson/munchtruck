@@ -2,10 +2,7 @@ package com.example.munchtruck.data.model
 
 /**
  * User profile data model.
- * @property id Unique identifier for the user (FirebaseAuth UID).
- * @property email Email address used for authentication.
- * @property companyName Company/FoodTruck name associated with the user.
- * @property role User role (e.g., "owner"). Can be used later if introduced to allow more roles.
+ * Represents an authenticated user and their associated company and role.
  */
 data class User(
     val id: String = "",
