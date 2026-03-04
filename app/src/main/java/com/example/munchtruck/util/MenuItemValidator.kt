@@ -1,5 +1,7 @@
 package com.example.munchtruck.util
 
+// ====== Menu Item Validation Errors ===============================
+
 sealed class MenuItemValidationError {
     data object NameEmpty : MenuItemValidationError()
     data object NameTooShort : MenuItemValidationError()
@@ -17,6 +19,9 @@ sealed class MenuItemValidationError {
 
     data object ImageUrlInvalid : MenuItemValidationError()
 }
+
+// ====== Menu Item Validator Logic ===============================
+
 object MenuItemValidator {
     
     fun validateName(name: String): MenuItemValidationError? {

@@ -1,16 +1,17 @@
 package com.example.munchtruck.viewmodels
 
-import com.example.munchtruck.data.firebase.FirebaseAuthRepository
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.munchtruck.data.repository.AuthRepository
 import com.example.munchtruck.util.LoginValidationError
 import com.example.munchtruck.util.ValidationResult
 import com.example.munchtruck.util.Validators
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+
+// ====== Auth State Definitions ===============================
 
 sealed class AuthError {
     data object EmptyFields : AuthError()
@@ -20,9 +21,14 @@ sealed class AuthError {
     data object RegistrationFailed : AuthError()
     data object PasswordsDoNotMatch : AuthError()
 }
+
+// ====== Auth ViewModel ===============================
+
 class AuthViewModel(
     private val repository: AuthRepository
 ) : ViewModel() {
+
+    // ====== State & Initialization ===============================
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
@@ -33,6 +39,8 @@ class AuthViewModel(
   private val _isLoggedIn = MutableStateFlow(repository.isUserLoggedIn())
 
     val isLoggedIn: StateFlow<Boolean> = _isLoggedIn
+
+    // ====== Authentication Actions ===============================
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
