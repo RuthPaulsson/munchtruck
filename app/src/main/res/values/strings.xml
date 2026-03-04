@@ -153,7 +153,7 @@
     <string name="location_no_location_selected">No location selected</string>
     <string name="location_use_current">Use current location</string>
     <string name="location_select_on_map">Select on map</string>
-    <string name="location_save">Save location</string>
+    <string name="profile_change_location">Change location</string>
     <string name="location_selected_coordinates">Selected Coordinates:</string>
     <string name="location_latitude">Latitude</string>
     <string name="location_longitude">Longitude</string>
