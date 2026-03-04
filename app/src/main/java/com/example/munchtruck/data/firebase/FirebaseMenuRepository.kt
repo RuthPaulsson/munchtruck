@@ -42,7 +42,7 @@ class FirebaseMenuRepository(
             if (e != null) {
                 val wrappedError = when (e.code) {
                     FirebaseFirestoreException.Code.PERMISSION_DENIED -> FirebaseExceptions.AccessDenied()
-                    else -> FirebaseExceptions.DatabaseError(e.message)
+                    else -> FirebaseExceptions.DatabaseError(e.message,e)
                 }
                 trySend(Result.failure(wrappedError))
                 return@addSnapshotListener
@@ -64,7 +64,7 @@ class FirebaseMenuRepository(
                     if (e != null) {
                         val wrappedError = when (e.code) {
                             FirebaseFirestoreException.Code.PERMISSION_DENIED -> FirebaseExceptions.AccessDenied()
-                            else -> FirebaseExceptions.DatabaseError(e.message)
+                            else -> FirebaseExceptions.DatabaseError(e.message,e)
                         }
                         trySend(Result.failure(wrappedError))
                         return@addSnapshotListener
@@ -104,7 +104,7 @@ class FirebaseMenuRepository(
             itemRef.id
         } catch (e: Exception) {
 
-            throw FirebaseExceptions.DatabaseError(e.message)
+            throw FirebaseExceptions.DatabaseError(e.message,e)
         }
 
     }
@@ -131,7 +131,7 @@ class FirebaseMenuRepository(
             }
             myMenuCollection().document(itemId).set(updatedMenuItem, SetOptions.merge()).await()
         } catch (e: Exception) {
-            throw FirebaseExceptions.DatabaseError(e.message)
+            throw FirebaseExceptions.DatabaseError(e.message,e)
         }
     }
 
@@ -143,7 +143,7 @@ class FirebaseMenuRepository(
         try {
             myMenuCollection().document(itemId).delete().await()
         } catch (e: Exception) {
-            throw FirebaseExceptions.DatabaseError(e.message)
+            throw FirebaseExceptions.DatabaseError(e.message,e)
         }
     }
 }

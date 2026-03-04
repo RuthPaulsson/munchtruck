@@ -72,7 +72,7 @@ class FirebaseProfileRepository(
 
             myTruckDoc().set(updates, SetOptions.merge()).await()
         } catch (e: Exception) {
-            throw FirebaseExceptions.DatabaseError(e.message)
+            throw FirebaseExceptions.DatabaseError(e.message,e)
         }
     }
 
@@ -92,7 +92,7 @@ class FirebaseProfileRepository(
             }
             myTruckDoc().set(updatedLocation, SetOptions.merge()).await()
         } catch (e: Exception) {
-            throw FirebaseExceptions.DatabaseError(e.message)
+            throw FirebaseExceptions.DatabaseError(e.message,e)
         }
     }
 
@@ -145,7 +145,7 @@ class FirebaseProfileRepository(
         } catch (e: Exception) {
             throw when (e) {
                 is FirebaseAuthRecentLoginRequiredException -> FirebaseExceptions.RecentLoginRequired()
-                else -> FirebaseExceptions.DatabaseError(e.message)
+                else -> FirebaseExceptions.DatabaseError(e.message,e)
             }
         }
     }
@@ -156,7 +156,7 @@ class FirebaseProfileRepository(
             storage.getReferenceFromUrl(url).delete().await()
         } catch (e: Exception) {
             if (e.message?.contains(STORAGE_ERROR_NOT_FOUND) == false) {
-                throw FirebaseExceptions.StorageError(e.message)
+                throw FirebaseExceptions.StorageError(e.message,e)
             }
         }
     }

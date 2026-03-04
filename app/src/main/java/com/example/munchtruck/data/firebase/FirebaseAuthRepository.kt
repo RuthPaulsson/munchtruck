@@ -102,7 +102,7 @@ class FirebaseAuthRepository(
             firestore.collection(FirestoreCollections.USERS)
                 .document(uid).delete().await()
         } catch (e: Exception) {
-            throw FirebaseExceptions.DatabaseError(e.message)
+            throw FirebaseExceptions.DatabaseError(e.message,e)
         }
 
     }

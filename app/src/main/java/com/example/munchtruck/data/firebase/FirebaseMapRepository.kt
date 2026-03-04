@@ -24,7 +24,7 @@ class FirebaseMapRepository(
                 if (error != null) {
                     val wrappedError = when (error.code) {
                         FirebaseFirestoreException.Code.PERMISSION_DENIED -> FirebaseExceptions.AccessDenied()
-                        else -> FirebaseExceptions.DatabaseError(error.message)
+                        else -> FirebaseExceptions.DatabaseError(error.message,error)
                     }
                     trySend(Result.failure(wrappedError))
                     return@addSnapshotListener

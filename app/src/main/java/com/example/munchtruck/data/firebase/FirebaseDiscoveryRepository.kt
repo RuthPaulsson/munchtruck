@@ -25,7 +25,7 @@ class FirebaseDiscoveryRepository(
                     if (e != null) {
                         val error = when (e.code) {
                             FirebaseFirestoreException.Code.PERMISSION_DENIED -> FirebaseExceptions.AccessDenied()
-                            else -> FirebaseExceptions.DatabaseError(e.message)
+                            else -> FirebaseExceptions.DatabaseError(e.message, e)
                         }
                         trySend(Result.failure(error))
                         return@addSnapshotListener

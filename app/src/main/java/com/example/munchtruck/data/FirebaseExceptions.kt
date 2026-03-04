@@ -2,6 +2,9 @@ package com.example.munchtruck.data
 
 sealed class FirebaseExceptions(message: String, cause: Throwable? = null) : Exception(message, cause) {
 
+    // ====== AUTH ===============================
+
+
     class Unauthorized : FirebaseExceptions("User is not authenticated")
     class UserNotFound : FirebaseExceptions("User not found in authentication system")
     class EmailAlreadyInUse : FirebaseExceptions("The email address is already in use")
@@ -11,24 +14,28 @@ sealed class FirebaseExceptions(message: String, cause: Throwable? = null) : Exc
     class RecentLoginRequired : FirebaseExceptions("Re-authentication is required for this sensitive operation")
 
 
-    // ======= DATABASE & STORAGE ===================================
+
+    // ====== GENERAL ===============================
+
 
 
     class NotFound : FirebaseExceptions("The requested document or resource was not found")
-
     class AccessDenied : FirebaseExceptions("Permission denied")
-
-
-// ======= TECH DETAILS (DEBUGGING) =================================
-
     class ParseError : FirebaseExceptions("Data format is incorrect or mandatory fields are missing")
 
 
-    data class StorageError(val technicalDetails: String?) :
-        FirebaseExceptions("Storage operation failed: ${technicalDetails ?: "No details"}")
+    // ====== TECH DETAILS ===============================
 
-    data class DatabaseError(val technicalDetails: String?) :
-        FirebaseExceptions("Database error: ${technicalDetails ?: "No details"}")
+
+
+    data class UploadFailed(val technicalDetails: String?, val origin: Throwable? = null) :
+        FirebaseExceptions("Failed to upload image: ${technicalDetails ?: "Unknown cause"}", origin)
+
+    data class StorageError(val technicalDetails: String?, val origin: Throwable? = null) :
+        FirebaseExceptions("Storage operation failed: ${technicalDetails ?: "No details"}", origin)
+
+    data class DatabaseError(val technicalDetails: String?, val origin: Throwable? = null) :
+        FirebaseExceptions("Database error: ${technicalDetails ?: "No details"}", origin)
 
     data class Unknown(val technicalDetails: String?, val origin: Throwable? = null) :
         FirebaseExceptions("Unknown error: ${technicalDetails ?: "No details"}", origin)
