@@ -5,6 +5,10 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
 
+/**
+ * Handles the opening hours logic for a truck.
+ * Includes timezone support and helper functions to determine if a truck is currently open.
+ */
 data class OpeningHours(
     val timeZone: String = "",
     val weekly: WeeklyOpeningHours = WeeklyOpeningHours(),
@@ -46,7 +50,9 @@ fun isValidInterval(start: String, end: String): Boolean {
         false
     }
 }
-
+/**
+ * Collection of opening intervals for each day of the week.
+ */
 data class WeeklyOpeningHours(
     val mon: OpeningInterval? = null,
     val tue: OpeningInterval? = null,
@@ -57,6 +63,9 @@ data class WeeklyOpeningHours(
     val sun: OpeningInterval? = null
 )
 
+/**
+ * Represents a single opening time interval with a start and end time.
+ */
 data class OpeningInterval(
     val start: String = "",
     val end: String = ""
