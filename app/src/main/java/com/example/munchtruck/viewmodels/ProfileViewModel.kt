@@ -44,7 +44,7 @@ data class ProfileUiState(
     val isOpenNow: Boolean = false
 )
 
-// ====== Profile ViewModel ===============================
+    // ====== Profile ViewModel ===============================
 
 class ProfileViewModel(
     private val profileRepository: ProfileRepository,
@@ -161,7 +161,7 @@ class ProfileViewModel(
                 profileRepository.deleteAllTruckData()
                 authRepository.deleteUserDocument()
                 authRepository.deleteAuthAccount()
-                _uiState.update { it.copy(isDeleting = false, isAccountDeleted = true) }
+                _uiState.value = ProfileUiState(isAccountDeleted = true)
             } catch (e: FirebaseAuthRecentLoginRequiredException) {
                 _uiState.update { it.copy(
                     isDeleting = false,

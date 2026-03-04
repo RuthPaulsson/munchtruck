@@ -1,6 +1,5 @@
 package com.example.munchtruck.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.munchtruck.data.model.TruckLocation
@@ -16,6 +15,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 
+// ====== Location State Definitions ===============================
+
 sealed class LocationError {
     object NoPermission : LocationError()
     object NoLocation : LocationError()
@@ -23,7 +24,8 @@ sealed class LocationError {
     object GpsTimeout : LocationError()
     object AddressTooShort : LocationError()
     object SaveFailed : LocationError()
-    data class Unknown(val message: String) : LocationError()
+    data object LoadFailed : LocationError()
+    data class Unknown(val message: String?) : LocationError()
 }
 data class LocationUiState(
     val isLoading: Boolean = false,
@@ -34,14 +36,17 @@ data class LocationUiState(
     val error: LocationError? = null,
     val saveSuccess: Boolean = false
 )
+
+// ====== Location ViewModel ===============================
+
 class LocationViewModel(
     private val profileRepository: ProfileRepository,
     private val locationProvider: DeviceLocationProvider
 ) : ViewModel() {
 
-    private val validator = LocationValidator()
-    private val TAG = "OwnerLocationViewModel"
+    // ====== State & Initialization ===============================
 
+    private val validator = LocationValidator()
     private val _uiState = MutableStateFlow(LocationUiState())
     val uiState: StateFlow<LocationUiState> = _uiState.asStateFlow()
 
@@ -49,7 +54,7 @@ class LocationViewModel(
         loadSavedLocation()
     }
 
-    // ====== Load saved location ===============================
+    // ====== Load Data ===============================
 
     private fun loadSavedLocation() {
         viewModelScope.launch {
@@ -68,18 +73,17 @@ class LocationViewModel(
                     _uiState.update { it.copy(isLoading = false) }
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "Failed to load saved location", e)
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = LocationError.Unknown("Kunde inte ladda sparad plats")
+                        error = LocationError.LoadFailed
                     )
                 }
             }
         }
     }
 
-    // ====== Permission ===============================
+    // ====== Permission Actions ===============================
 
     fun onPermissionResult(granted: Boolean) {
         _uiState.update { currentState ->
@@ -90,7 +94,7 @@ class LocationViewModel(
         }
     }
 
-    // ====== Manual input ===============================
+    // ====== Manual Input & Selection ===========================
 
     fun onManualAddressChanged(address: String) {
         val error = validator.validateAddress(address)
@@ -119,7 +123,7 @@ class LocationViewModel(
         }
         }
 
-        // ====== GPS ===============================
+        // ====== GPS Actions ===============================
 
         fun useCurrentLocation() {
 
@@ -164,18 +168,17 @@ class LocationViewModel(
                         )
                     }
                 } catch (e: Exception) {
-                    Log.e(TAG, "Error getting current location", e)
                     _uiState.update { currentState ->
                         currentState.copy(
                             isLoading = false,
-                            error = LocationError.Unknown(e.message ?: "Unknown error")
+                            error = LocationError.Unknown(e.message)
                         )
                     }
                 }
             }
         }
 
-        // ====== Save ===============================
+        // ====== Save Actions ===============================
 
         fun saveLocation() {
 
@@ -208,12 +211,10 @@ class LocationViewModel(
                         currentState.copy(isLoading = false, saveSuccess = true)
                     }
                 } catch (e: Exception) {
-                    Log.e(TAG, "Failed to save location with exception:", e)
-                    val errorMessage = e.message ?: "Ett okänt fel inträffade vid sparande."
                     _uiState.update { currentState ->
                         currentState.copy(
                             isLoading = false,
-                            error = LocationError.Unknown(errorMessage)
+                            error = LocationError.SaveFailed
                         )
                     }
                 }
@@ -221,7 +222,7 @@ class LocationViewModel(
         }
 
 
-        // ====== Public helpers ===============================
+        // ====== UI helpers ===============================
 
         fun clearError() {
             _uiState.update { currentState ->
