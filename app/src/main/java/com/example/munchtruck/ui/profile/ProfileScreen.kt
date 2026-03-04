@@ -17,6 +17,7 @@ import com.example.munchtruck.R
 import com.example.munchtruck.ui.components.toDisplayString
 import com.example.munchtruck.ui.components.toMessage
 import com.example.munchtruck.viewmodels.AuthViewModel
+import com.example.munchtruck.viewmodels.LocationViewModel
 import com.example.munchtruck.viewmodels.MenuViewModel
 import com.example.munchtruck.viewmodels.ProfileError
 import com.example.munchtruck.viewmodels.ProfileViewModel
@@ -27,11 +28,12 @@ fun ProfileScreen(
     navController: NavController,
     authViewModel: AuthViewModel,
     profileViewModel: ProfileViewModel,
-    menuViewModel: MenuViewModel
+    menuViewModel: MenuViewModel,
+    locationViewModel: LocationViewModel
 ){
     val uiState by profileViewModel.uiState.collectAsStateWithLifecycle()
     val menuUiState by menuViewModel.uiState.collectAsStateWithLifecycle()
-
+    val locationUiState by locationViewModel.uiState.collectAsStateWithLifecycle()
     val profileErrorMessage = (uiState.error as? ProfileError)?.toMessage()
 
     LaunchedEffect(Unit) {
@@ -56,7 +58,7 @@ fun ProfileScreen(
         onEditClick = { navController.navigate("edit_profile") },
         onLogoutClick  = { showDialog = true },
         rating = null,
-        location = null,
+        location = locationUiState.address,
         openingHours = uiState.openingHours
 
     )

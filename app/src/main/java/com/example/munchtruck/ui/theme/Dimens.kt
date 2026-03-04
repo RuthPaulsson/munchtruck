@@ -64,11 +64,13 @@ object Dimens {
 
     val TruckImageSize = 64.dp
     val BottomNavHeight = 80.dp
+    val DiscoveryCardRadius = 12.dp
 
     // ====== Profile ===============================
 
     val ProfileImageHeight = 200.dp
-    val LocationMapHeight = 160.dp
+    val LocationMapHeight = 250.dp
+
     val TopBarLogoHeight = 28.dp
     val HeroHeight = 220.dp
     val MenuItemImageSize = 80.dp
@@ -79,5 +81,9 @@ object Dimens {
     val MenuImageHeight = 180.dp
     val MenuImageButtonBottomPadding = 12.dp
 
+    val MenuItemCardHeight = 100.dp
+    val MenuItemImageWidth = 100.dp
+
     val BorderThin = 1.dp
+    val CardElevation = 2.dp
 }

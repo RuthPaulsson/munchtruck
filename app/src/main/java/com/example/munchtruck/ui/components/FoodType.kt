@@ -1,5 +1,6 @@
 package com.example.munchtruck.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,8 +9,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.RestaurantMenu
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
@@ -105,6 +110,61 @@ fun FoodTypeSection(
                             }
                         )
                     }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun FoodTypeFilterBar(
+    selectedCategory: String,
+    onCategoryClick: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val foodOptions = listOf(
+        R.string.food_type_burger to "🍔",
+        R.string.food_type_tacos to "🌮",
+        R.string.food_type_pizza to "🍕"
+    )
+
+    // ÄNDRINGARNA HÄR:
+    Row(
+        modifier = modifier
+            .fillMaxWidth() // Behåller denna för att ha hela raden att spela på...
+            .wrapContentHeight(),
+        horizontalArrangement = Arrangement.Center, // ...men centrerar allt innehåll
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        foodOptions.forEach { (resId, emoji) ->
+            val label = stringResource(resId)
+            val isSelected = selectedCategory == label
+
+            // Lägg till ett litet mellanrum mellan chipsen manuellt eller via spacedBy
+            if (foodOptions.indexOf(resId to emoji) != 0) {
+                Spacer(modifier = Modifier.width(8.dp)) // Motsvarar SpaceS/ChipSpacing
+            }
+
+            Card(
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
+                ),
+                modifier = Modifier.clickable {
+                    if (isSelected) onCategoryClick("") else onCategoryClick(label)
+                }
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
+                ) {
+                    Text(text = emoji)
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = label,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+                    )
                 }
             }
         }

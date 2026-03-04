@@ -28,6 +28,9 @@ import com.example.munchtruck.viewmodels.LocationViewModel
 import com.example.munchtruck.viewmodels.MenuViewModel
 import com.example.munchtruck.viewmodels.ProfileError
 import com.example.munchtruck.viewmodels.ProfileViewModel
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.launch
 
 @Composable
@@ -75,6 +78,8 @@ fun EditProfileScreen(
     var openingHours by remember(uiState.openingHours) {
         mutableStateOf(uiState.openingHours ?: OpeningHours())
     }
+
+    val cameraPositionState = rememberCameraPositionState()
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -134,6 +139,40 @@ fun EditProfileScreen(
         selectedImageUri = uri
     }
 
+
+    // ====== Permission Launcher for GPS ===============================
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val isGranted = permissions.values.all { it }
+        locationViewModel.onPermissionResult(isGranted)
+
+        if (isGranted) {
+            // Om användaren godkänner, hämta platsen direkt
+            locationViewModel.useCurrentLocation()
+        }
+    }
+    // ====== Location ===============================
+
+    LaunchedEffect(locationState.selectedLat, locationState.selectedLng) {
+        val lat = locationState.selectedLat
+        val lng = locationState.selectedLng
+
+        if (lat != null && lng != null) {
+            try {
+                cameraPositionState.animate(
+                    com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom(
+                        com.google.android.gms.maps.model.LatLng(lat, lng),
+                        15f
+                    )
+                )
+            } catch (e: Exception) {
+                // Detta hindrar kraschen "CameraUpdateFactory is not initialized"
+                android.util.Log.e("EditProfile", "Kartan inte redo än")
+            }
+        }
+    }
+
     // ====== UI Content ===============================
 
     EditProfileContent(
@@ -143,6 +182,7 @@ fun EditProfileScreen(
         selectedImageUri = selectedImageUri,
         existingImageUrl = existingImageUrl,
         locationState = locationState,
+        cameraPositionState = cameraPositionState,
         menuItems = menuUiState.menuItems,
         isLoading = uiState.isLoading,
         errorMessage = profileErrorMessage,
@@ -157,21 +197,29 @@ fun EditProfileScreen(
             locationViewModel.onMapPicked(lat, lng)
         },
         onUseCurrentLocation = {
-            locationViewModel.useCurrentLocation()
+            permissionLauncher.launch(
+                arrayOf(
+                    android.Manifest.permission.ACCESS_FINE_LOCATION,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
         },
         onSaveLocation = {
-            locationViewModel.saveLocation()
+
+
         },
         onBackClick = {
             navController.popBackStack()
         },
         onSaveClick = {
+
             profileViewModel.saveProfile(
                 name = name,
                 description = description,
                 foodType = foodType,
                 imageUri = selectedImageUri,
                 openingHours = openingHours
+
             )
         },
         onImageClick = {
