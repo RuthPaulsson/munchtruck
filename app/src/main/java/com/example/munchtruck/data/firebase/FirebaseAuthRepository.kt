@@ -74,6 +74,18 @@ class FirebaseAuthRepository(
         }
     }
 
+    override suspend fun sendPasswordResetEmail(email: String) {
+        try {
+            firebaseAuth.sendPasswordResetEmail(email).await()
+        } catch (e: Exception) {
+            throw when (e) {
+                is FirebaseAuthInvalidUserException ->
+                    FirebaseExceptions.UserNotFound()
+                else -> FirebaseExceptions.Unknown(e.message, e)
+            }
+        }
+    }
+
     override fun logout() {
         firebaseAuth.signOut()
     }
