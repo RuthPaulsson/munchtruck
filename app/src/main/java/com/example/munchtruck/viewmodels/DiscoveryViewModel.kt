@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-// ====== Discovery State Definitions ===============================
+    // ====== Discovery State Definitions ===============================
 
 sealed class DiscoveryError {
     data object LocationPermissionDenied : DiscoveryError()
@@ -36,7 +36,6 @@ data class DiscoveryUiState(
     val mapMarkers: List<MapMarker> = emptyList(),
     val isMapLoading: Boolean = false,
     val selectedCategory: String = ""
-
 )
 
 data class MapMarker(
@@ -46,7 +45,7 @@ data class MapMarker(
     val longitude: Double
 )
 
-// ====== Discovery ViewModel ===============================
+    // ====== Discovery ViewModel ===============================
 
 class DiscoveryViewModel(
     private val discoveryRepository: DiscoveryRepository,
@@ -68,8 +67,6 @@ class DiscoveryViewModel(
         observeTrucks()
         startLocationUpdates()
     }
-
-
 
     // ====== Truck Observation & Menu Actions =======================
 
@@ -100,14 +97,12 @@ class DiscoveryViewModel(
         viewModelScope.launch {
             discoveryRepository.observeOpenTrucks().collect { result ->
                 result.onSuccess { trucks ->
-                    // 1. Spara ner rådatan så vi kan filtrera på den senare utan att ladda om
                     allTrucks = trucks
 
-                    // 2. Nollställ kategorin så att alla visas (enligt ditt önskemål vid refresh)
                     _uiState.update { currentState ->
                         currentState.copy(
-                            selectedCategory = "", // Nollställer filtret
-                            trucks = trucks,       // Visar alla
+                            selectedCategory = "",
+                            trucks = trucks,
                             isLoading = false,
                             isListEmpty = trucks.isEmpty(),
                             error = null,
@@ -130,38 +125,6 @@ class DiscoveryViewModel(
             }
         }
     }
-
-//    fun observeTrucks() {
-//        _uiState.update { it.copy(isLoading = true) }
-//
-//        viewModelScope.launch {
-//            discoveryRepository.observeOpenTrucks().collect { result ->
-//                result.onSuccess { trucks ->
-//                    _uiState.update { currentState ->
-//                        currentState.copy(
-//                            trucks = trucks,
-//                            isLoading = false,
-//                            isListEmpty = trucks.isEmpty(),
-//                            error = null,
-//                            mapMarkers = trucks.map { truck ->
-//                                MapMarker(
-//                                    id = truck.id,
-//                                    title = truck.name,
-//                                    latitude = truck.location?.latitude ?: 0.0,
-//                                    longitude = truck.location?.longitude ?: 0.0
-//                                )
-//                            }
-//                        )
-//                    }
-//                }.onFailure {
-//                    _uiState.update { it.copy(
-//                        isLoading = false,
-//                        error = DiscoveryError.LoadTrucksFailed
-//                    ) }
-//                }
-//            }
-//        }
-//    }
 
     // ====== Location & Sorting Logic ===============================
 
@@ -219,32 +182,26 @@ class DiscoveryViewModel(
     }
 
     fun onCategorySelected(category: String) {
-        // 1. Uppdatera statet med den nya valda kategorin (för att chippet ska lysa)
         _uiState.update { it.copy(selectedCategory = category) }
 
-        // 2. Filtrera den sparade listan (allTrucks) baserat på valet
         val filteredList = if (category.isEmpty()) {
             allTrucks
         } else {
             allTrucks.filter { it.foodType?.trim().equals(category.trim(), ignoreCase = true) }
         }
 
-        // 3. Sortera resultatet baserat på var användaren är just nu
         val sortedFiltered = sortTrucks(filteredList, _uiState.value.userLocation)
 
-        // 4. Uppdatera UI-statet med den nya listan
         _uiState.update { currentState ->
             currentState.copy(
                 trucks = sortedFiltered,
                 isListEmpty = sortedFiltered.isEmpty()
             )
         }
-
-        // 5. Uppdatera kartan så bara de rätta truckarna syns där med
         updateMapMarkers(sortedFiltered)
     }
 
-    // ====== UI Helper Methods ===============================
+    // ====== UI State Helpers ===============================
 
     private fun updateMapMarkers(trucks: List<FoodTruck>) {
         val markers = trucks.map { truck ->

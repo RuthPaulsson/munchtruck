@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-// ====== Auth State Definitions ===============================
+    // ====== Auth State Definitions ===============================
 
 sealed class AuthError {
     data object EmptyFields : AuthError()
@@ -26,7 +26,7 @@ sealed class AuthError {
     data object Unknown : AuthError()
 }
 
-// ====== Auth ViewModel ===============================
+    // ====== Auth ViewModel ===============================
 
 class AuthViewModel(
     private val repository: AuthRepository
@@ -41,6 +41,7 @@ class AuthViewModel(
     val error: StateFlow<AuthError?> = _error.asStateFlow()
 
     private val _isLoggedIn = MutableStateFlow(repository.isUserLoggedIn())
+
     val isLoggedIn: StateFlow<Boolean> = _isLoggedIn
 
     private val _isResetEmailSent = MutableStateFlow(false)
@@ -115,6 +116,8 @@ class AuthViewModel(
             }
         }
     }
+
+
 
     fun sendPasswordReset(email: String) {
         val trimmedEmail = email.trim()

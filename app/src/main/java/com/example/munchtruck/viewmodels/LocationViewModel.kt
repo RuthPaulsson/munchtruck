@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 
-// ====== Location State Definitions ===============================
+    // ====== Location State Definitions ===============================
 
 sealed class LocationError {
     object NoPermission : LocationError()
@@ -38,7 +38,7 @@ data class LocationUiState(
     val saveSuccess: Boolean = false
 )
 
-// ====== Location ViewModel ===============================
+    // ====== Location ViewModel ===============================
 
 class LocationViewModel(
     private val profileRepository: ProfileRepository,
@@ -138,7 +138,6 @@ class LocationViewModel(
             currentState.copy(isLoading = true, error = null, saveSuccess = false)
         }
 
-        
         viewModelScope.launch {
             try {
                 val point = withTimeout(LocationConstants.GPS_TIMEOUT_MS) {
@@ -223,8 +222,7 @@ class LocationViewModel(
         }
     }
 
-
-    // ====== UI helpers ===============================
+    // ====== UI State Helpers ===============================
 
     fun clearError() {
         _uiState.update { currentState ->
