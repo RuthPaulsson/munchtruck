@@ -30,6 +30,7 @@ sealed class ProfileError {
 }
 data class ProfileUiState(
     val isLoading: Boolean = false,
+    val isLoaded: Boolean = false, // ny kod
     val isSaving: Boolean = false,
     val isDeleting: Boolean = false,
     val showDeleteConfirmation: Boolean = false,
@@ -41,7 +42,8 @@ data class ProfileUiState(
     val foodType: String = "",
     val imageUrl: String = "",
     val openingHours: OpeningHours? = null,
-    val isOpenNow: Boolean = false
+    val isOpenNow: Boolean = false,
+
 )
 
     // ====== Profile ViewModel ===============================
@@ -117,6 +119,7 @@ class ProfileViewModel(
     }
 
     fun loadProfile() {
+        if (uiState.value.isLoaded) return // ny kod
 
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
@@ -126,6 +129,7 @@ class ProfileViewModel(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
+                        isLoaded = true, // ny kod
                         name = truck.name,
                         description = truck.description,
                         foodType = truck.foodType,
@@ -138,6 +142,7 @@ class ProfileViewModel(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
+                        isLoaded = true, // ny kod
                         error = ProfileError.LoadProfileFailed
                     )
                 }
@@ -145,6 +150,22 @@ class ProfileViewModel(
         }
     }
 
+    // ======= NY kod Ruth ========
+    fun onNameChanged(newName: String) {
+        _uiState.update { it.copy(name = newName, isLoaded = true) }
+    }
+
+    fun onDescriptionChanged(newDesc: String) {
+        _uiState.update { it.copy(description = newDesc, isLoaded = true) }
+    }
+
+    fun onFoodTypeChanged(newType: String) {
+        _uiState.update { it.copy(foodType = newType, isLoaded = true) }
+    }
+
+    fun onOpeningHoursChanged(newHours: OpeningHours) {
+        _uiState.update { it.copy(openingHours = newHours, isLoaded = true) }
+    }
     // ====== Account Deletion Flow ===============================
 
     fun onDeleteAccountClicked() {
@@ -170,6 +191,8 @@ class ProfileViewModel(
             }
         }
     }
+
+
 
     // ====== UI State Helpers ===============================
 

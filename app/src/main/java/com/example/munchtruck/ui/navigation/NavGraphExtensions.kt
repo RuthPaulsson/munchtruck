@@ -69,6 +69,12 @@ fun NavGraphBuilder.customerNavGraph(
     }
     composable("public_profile/{truckId}") { backStackEntry ->
         val truckId = backStackEntry.arguments?.getString("truckId")
-        truckId?.let { PublicProfileScreen(it, discoveryViewModel) }
+        truckId?.let {
+            PublicProfileScreen(
+                truckId = it,
+                discoveryViewModel = discoveryViewModel,
+                navController = navController
+            )
+        }
     }
 }

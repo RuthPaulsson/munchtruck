@@ -194,6 +194,20 @@ class MenuViewModel(
 
     // ====== UI State Helpers ===============================
 
+    // ==== Ny kod Ruth ======
+    fun resetItemInput() {
+        _uiState.update {
+            it.copy(
+                itemName = "",
+                itemPrice = "",
+                itemDescription = "",
+                priceError = null,
+                saveSuccess = false,
+                error = null
+            )
+        }
+    }
+
     fun resetState() {
         _uiState.value = MenuUiState()
         isObserving = false

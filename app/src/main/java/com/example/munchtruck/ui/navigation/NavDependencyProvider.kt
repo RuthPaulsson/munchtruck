@@ -1,3 +1,5 @@
+package com.example.munchtruck.ui.navigation
+
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

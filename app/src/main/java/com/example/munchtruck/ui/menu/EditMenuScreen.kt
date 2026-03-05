@@ -19,6 +19,8 @@ import com.example.munchtruck.R
 import com.example.munchtruck.ui.components.toMessage
 import com.example.munchtruck.util.MenuItemValidationError
 import com.example.munchtruck.viewmodels.MenuViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
@@ -34,6 +36,7 @@ fun EditMenuScreen(
     val existingImageUrl = item?.imageUrl
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     var hasLoadedItem by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
 
 
 
@@ -57,8 +60,15 @@ fun EditMenuScreen(
     val successMessage = stringResource(R.string.menu_item_saved)
     LaunchedEffect(uiState.saveSuccess) {
         if (uiState.saveSuccess) {
-            snackbarHostState.showSnackbar(successMessage)
+            // 1. Visa meddelandet (detta körs asynkront)
+            coroutineScope.launch {
+                snackbarHostState.showSnackbar(successMessage)
+            }
+
+            // 2. Navigera tillbaka direkt
             navController.popBackStack()
+
+            // 3. Nollställ flaggan så vi inte hoppar tillbaka igen av misstag
             viewModel.resetSaveState()
         }
     }

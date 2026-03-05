@@ -1,5 +1,6 @@
 package com.example.munchtruck.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,7 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -98,16 +100,21 @@ fun FoodTypeSection(
 
                 ExposedDropdownMenu(
                     expanded = expanded,
-                    onDismissRequest = { expanded = false }
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant)
                 ) {
                     foodOptions.forEach { resId ->
                         val label = stringResource(resId)
                         DropdownMenuItem(
-                            text = { Text(label) },
+                            text = {
+                                Text(
+                                    text =label,
+                                    color = MaterialTheme.colorScheme.onSurface)
+                            },
                             onClick = {
                                 onFoodTypeChange?.invoke(label)
                                 expanded = false
-                            }
+                            },
                         )
                     }
                 }
@@ -168,5 +175,17 @@ fun FoodTypeFilterBar(
                 }
             }
         }
+    }
+}
+
+// ====== Food Type Helpers ===============================
+
+@Composable
+fun getFoodTypeImage(foodType: String?): Int? {
+    return when (foodType) {
+        stringResource(R.string.food_type_burger) -> R.drawable.img_burger
+        stringResource(R.string.food_type_tacos) -> R.drawable.img_tacos
+        stringResource(R.string.food_type_pizza) -> R.drawable.img_pizza
+        else -> null
     }
 }

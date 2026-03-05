@@ -56,9 +56,13 @@ import com.example.munchtruck.ui.theme.Dimens.SpaceXS
 import com.example.munchtruck.R
 import com.example.munchtruck.data.model.OpeningHours
 import com.example.munchtruck.ui.components.CenteredLoading
+import com.example.munchtruck.ui.components.DiscoveryBottom
 import com.example.munchtruck.ui.components.FoodTypeSection
 import com.example.munchtruck.ui.components.ItemCard
 import com.example.munchtruck.ui.components.OpeningHoursSection
+import com.example.munchtruck.ui.components.SharedImagePlaceholder
+import com.example.munchtruck.ui.theme.AppColors.PrimaryOrange
+import com.example.munchtruck.ui.theme.AppColors.White
 import com.example.munchtruck.ui.theme.Dimens
 import com.example.munchtruck.ui.theme.Dimens.HeroHeight
 import com.example.munchtruck.ui.theme.Dimens.MenuItemImageIconSize
@@ -81,7 +85,10 @@ fun ProfileContent (
     isLoading: Boolean = false,
     errorMessage: String? = null,
     onLogoutClick: () -> Unit,
-    onEditClick: () -> Unit
+    onEditClick: () -> Unit,
+    onMapClick: () -> Unit = {},
+    onHomeClick: () -> Unit = {},
+    currentRoute: String = "",
 ) {
     // ====== Root Container ===============================
     Box(
@@ -163,7 +170,6 @@ fun ProfileContent (
 
                 Column(modifier = Modifier.padding(horizontal = SpaceM)) {
                     menuItems.forEach { item ->
-                        // NY KOD: Här använder vi nu den gemensamma ItemCard istället för den gamla interna funktionen
                         ItemCard(
                             title = item.name,
                             description = item.description,
@@ -177,6 +183,19 @@ fun ProfileContent (
                         Spacer(modifier = Modifier.height(SpaceS))
                     }
                 }
+            }
+            if (!isOwner) {
+                Spacer(modifier = Modifier.height(Dimens.BottomNavHeight))
+            }
+        }
+
+        if (!isOwner) {
+            Box(modifier = Modifier.align(Alignment.BottomCenter)) {
+                DiscoveryBottom(
+                    currentRoute = currentRoute,
+                    onMapClick = onMapClick,
+                    onHomeClick = onHomeClick
+                )
             }
         }
 
@@ -213,29 +232,10 @@ fun ProfileHeroSection(
 
         // ====== Image / Placeholder ===============================
 
-        if (!imageUrl.isNullOrBlank()) {
-            Image(
-                painter = rememberAsyncImagePainter(imageUrl),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
-            )
-        } else {
-
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.surfaceVariant),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.RestaurantMenu,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.height(MenuItemImageIconSize)
-                )
-            }
-        }
+        SharedImagePlaceholder(
+            existingImageUrl = imageUrl,
+            modifier = Modifier.fillMaxSize()
+        )
 
         // ====== Owner Menu ===============================
 
@@ -254,10 +254,12 @@ fun ProfileHeroSection(
 
                 DropdownMenu(
                     expanded = expanded,
-                    onDismissRequest = { expanded = false }
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
                 ) {
                     DropdownMenuItem(
-                        text = { Text(stringResource(R.string.profile_edit)) },
+                        text = { Text(text = stringResource(R.string.profile_edit)) },
                         onClick = {
                             expanded = false
                             onEditClick()
@@ -265,7 +267,7 @@ fun ProfileHeroSection(
                     )
 
                     DropdownMenuItem(
-                        text = { Text(stringResource(R.string.profile_logout)) },
+                        text = {Text(text = stringResource(R.string.profile_logout))},
                         onClick = {
                             expanded = false
                             onLogoutClick()
@@ -402,9 +404,9 @@ fun ProfileInfoRow(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = SpaceM) // Extra space for the dropdown
+                        .padding(vertical = SpaceM)
                         .background(
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                            MaterialTheme.colorScheme.surfaceVariant,
                             RoundedCornerShape(MenuItemImageRadius)
                         )
                         .border(

@@ -59,6 +59,7 @@ import com.example.munchtruck.ui.components.FoodTypeSection
 import com.example.munchtruck.ui.components.InlineError
 import com.example.munchtruck.ui.components.InputField
 import com.example.munchtruck.ui.components.OpeningHoursSection
+import com.example.munchtruck.ui.components.SharedImagePlaceholder
 import com.example.munchtruck.ui.theme.AppPreviewWrapper
 import com.example.munchtruck.ui.theme.Dimens
 import com.example.munchtruck.ui.theme.Dimens.BorderThin
@@ -164,35 +165,15 @@ fun EditProfileContent(
 
                 // ===== Profile Image =====
 
-                Box(
+                SharedImagePlaceholder(
+                    selectedImageUri = selectedImageUri,
+                    existingImageUrl = existingImageUrl,
+                    onImageClick = onImageClick,
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .fillMaxSize()
                         .height(ProfileImageHeight)
                         .clip(RoundedCornerShape(ProfileImageRadius))
-                ) {
-                    val painter = when {
-                        selectedImageUri != null -> rememberAsyncImagePainter(selectedImageUri)
-                        !existingImageUrl.isNullOrBlank() -> rememberAsyncImagePainter(existingImageUrl)
-                        else -> painterResource(R.drawable.ic_launcher_background)
-                    }
-
-                    Image(
-                        painter = painter,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
-                    )
-
-                    Button(
-                        onClick = onImageClick,
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .padding(bottom = SpaceM),
-                        shape = RoundedCornerShape(ProfileImageButtonRadius)
-                    ) {
-                        Text(stringResource(R.string.profile_load_image))
-                    }
-                }
+                )
 
                 Spacer(modifier = Modifier.height(SpaceL))
 
