@@ -170,3 +170,15 @@ fun FoodTypeFilterBar(
         }
     }
 }
+
+// ====== Food Type Helpers ===============================
+
+@Composable
+fun getFoodTypeImage(foodType: String?): Int? {
+    return when (foodType) {
+        stringResource(R.string.food_type_burger) -> R.drawable.img_burger
+        stringResource(R.string.food_type_tacos) -> R.drawable.img_tacos
+        stringResource(R.string.food_type_pizza) -> R.drawable.img_pizza
+        else -> null
+    }
+}
