@@ -20,11 +20,13 @@ class FusedDeviceLocationProvider(
 ) : DeviceLocationProvider {
 
     private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+
     // ====== Location Logic ===============================
+
     @SuppressLint("MissingPermission")
     override suspend fun getCurrentLatLng(): Pair<Double, Double> {
         if (!hasLocationPermission()) {
-            throw SecurityException("Location permission not granted")
+            throw LocationExceptions.PermissionDenied()
         }
 
         return try {
@@ -36,12 +38,17 @@ class FusedDeviceLocationProvider(
 
             location?.let {
                 it.latitude to it.longitude
-            } ?: throw IllegalStateException("Could not get current location")
-        } catch (e: SecurityException) {
-            throw SecurityException("Location permission denied")
+            } ?: throw LocationExceptions.ProviderUnavailable()
+        } catch (e: Exception) {
+            throw when (e) {
+                is LocationExceptions -> e
+                else -> LocationExceptions.ProviderUnavailable()
+            }
         }
     }
+
     // ====== Permission Helper ===============================
+
     private fun hasLocationPermission(): Boolean {
         val fineLocation = ContextCompat.checkSelfPermission(
             context,
@@ -56,25 +63,35 @@ class FusedDeviceLocationProvider(
         return fineLocation || coarseLocation
     }
 
+
     // ====== Geocoding Logic ===============================
-   override suspend fun getAddressFromCords(lat: Double, lng: Double): String {
+
+    override suspend fun getAddressFromCords(lat: Double, lng: Double): String {
         return withContext(Dispatchers.IO) {
             try {
                 val geocoder = Geocoder(context, Locale.getDefault())
-                val addresses = geocoder.getFromLocation(lat, lng, 1) // see why .getFromLocation is deprecated
 
-                if (!addresses.isNullOrEmpty()) {
-                    val address = addresses[0]
+                @Suppress("DEPRECATION")
+                val addresses = geocoder.getFromLocation(lat, lng, 1)
 
-                    val street = address.thoroughfare ?: ""
-                    val number = address.subThoroughfare ?: ""
+                if (addresses.isNullOrEmpty()) {
+                    throw LocationExceptions.AddressNotFound()
+                }
 
-                    if (street.isNotEmpty()) "$street $number".trim() else "Unknown Street"
+                val address = addresses[0]
+                val street = address.thoroughfare ?: LocationConstants.EMPTY_STRING
+                val number = address.subThoroughfare ?: LocationConstants.EMPTY_STRING
+
+                if (street.isNotEmpty()) {
+                    "$street $number".trim()
                 } else {
-                    "Adress Missing"
+                    LocationConstants.UNKNOWN_STREET
                 }
             } catch (e: Exception) {
-                "Couldn't fetch the adress"
+                throw when (e) {
+                    is LocationExceptions -> e
+                    else -> LocationExceptions.GeocodingFailed(e.message, e)
+                }
             }
         }
     }
