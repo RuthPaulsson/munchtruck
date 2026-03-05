@@ -1,6 +1,5 @@
 package com.example.munchtruck.ui.navigation
 
-import NavDependencyProvider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
