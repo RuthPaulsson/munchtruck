@@ -205,14 +205,13 @@ fun EditProfileScreen(
             )
         },
         onSaveLocation = {
-
-
         },
+
         onBackClick = {
             navController.popBackStack()
         },
         onSaveClick = {
-
+            locationViewModel.saveLocation()
             profileViewModel.saveProfile(
                 name = name,
                 description = description,
