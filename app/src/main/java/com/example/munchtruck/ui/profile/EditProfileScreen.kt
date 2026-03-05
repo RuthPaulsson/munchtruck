@@ -1,5 +1,6 @@
 package com.example.munchtruck.ui.profile
 
+import android.R.attr.description
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -63,21 +64,21 @@ fun EditProfileScreen(
         mutableStateOf(uiState.imageUrl)
     }
 
-    var name by remember(uiState.name) {
-        mutableStateOf(uiState.name)
-    }
-
-    var description by remember(uiState.description) {
-        mutableStateOf(uiState.description)
-    }
-
-    var foodType by remember(uiState.foodType) {
-        mutableStateOf(uiState.foodType ?: "")
-    }
-
-    var openingHours by remember(uiState.openingHours) {
-        mutableStateOf(uiState.openingHours ?: OpeningHours())
-    }
+//    var name by remember(uiState.name) {
+//        mutableStateOf(uiState.name)
+//    }
+//
+//    var description by remember(uiState.description) {
+//        mutableStateOf(uiState.description)
+//    }
+//
+//    var foodType by remember(uiState.foodType) {
+//        mutableStateOf(uiState.foodType ?: "")
+//    }
+//
+//    var openingHours by remember(uiState.openingHours) {
+//        mutableStateOf(uiState.openingHours ?: OpeningHours())
+//    }
 
     val cameraPositionState = rememberCameraPositionState()
 
@@ -99,11 +100,11 @@ fun EditProfileScreen(
         }
     }
 
-    LaunchedEffect(uiState.openingHours) {
-        uiState.openingHours?.let { savedHours ->
-            openingHours = savedHours
-        }
-    }
+//    LaunchedEffect(uiState.openingHours) {
+//        uiState.openingHours?.let { savedHours ->
+//            openingHours = savedHours
+//        }
+//    }
 
     // ====== Delete account ===============================
 
@@ -176,9 +177,9 @@ fun EditProfileScreen(
     // ====== UI Content ===============================
 
     EditProfileContent(
-        name = name,
-        description = description,
-        foodType = foodType,
+        name = uiState.name,
+        description = uiState.description,
+        foodType = uiState.foodType,
         selectedImageUri = selectedImageUri,
         existingImageUrl = existingImageUrl,
         locationState = locationState,
@@ -186,13 +187,20 @@ fun EditProfileScreen(
         menuItems = menuUiState.menuItems,
         isLoading = uiState.isLoading,
         errorMessage = profileErrorMessage,
-        onNameChange = { name = it },
-        openingHours = openingHours, // Skicka ner tiderna
+        onNameChange = { profileViewModel.onNameChanged(it) },
+        openingHours = uiState.openingHours ?: OpeningHours(),
         onOpeningHoursChange = { day, interval ->
-            openingHours = updateOpeningHoursState(openingHours, day, interval)
+            // Skapa den uppdaterade listan baserat på nuvarande state
+            val updatedHours = updateOpeningHoursState(
+                uiState.openingHours ?: OpeningHours(),
+                day,
+                interval
+            )
+            // Skicka direkt till ViewModel (den nya funktionen vi skapade)
+            profileViewModel.onOpeningHoursChanged(updatedHours)
         },
-        onDescriptionChange = { description = it },
-        onFoodTypeChange = { foodType = it },
+        onDescriptionChange = { profileViewModel.onDescriptionChanged(it) },
+        onFoodTypeChange = { profileViewModel.onFoodTypeChanged(it) },
         onMapPicked = { lat, lng ->
             locationViewModel.onMapPicked(lat, lng)
         },
@@ -213,11 +221,11 @@ fun EditProfileScreen(
         onSaveClick = {
             locationViewModel.saveLocation()
             profileViewModel.saveProfile(
-                name = name,
-                description = description,
-                foodType = foodType,
+                name = uiState.name,
+                description = uiState.description,
+                foodType = uiState.foodType,
                 imageUri = selectedImageUri,
-                openingHours = openingHours
+                openingHours = uiState.openingHours
 
             )
         },
@@ -225,6 +233,7 @@ fun EditProfileScreen(
             imageLauncher.launch("image/*")
         },
         onMenuClick = {
+            menuViewModel.resetItemInput()
             navController.navigate("edit_menu/new")
         },
         onEditMenuClick = { id ->
