@@ -2,6 +2,7 @@ package com.example.munchtruck.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.munchtruck.data.FirebaseExceptions
 import com.example.munchtruck.data.repository.AuthRepository
 import com.example.munchtruck.util.LoginValidationError
 import com.example.munchtruck.util.ValidationResult
@@ -20,6 +21,9 @@ sealed class AuthError {
     data object LoginFailed : AuthError()
     data object RegistrationFailed : AuthError()
     data object PasswordsDoNotMatch : AuthError()
+    data object UserNotFound : AuthError()
+    data object NetworkError : AuthError()
+    data object Unknown : AuthError()
 }
 
     // ====== Auth ViewModel ===============================
@@ -39,6 +43,9 @@ class AuthViewModel(
     private val _isLoggedIn = MutableStateFlow(repository.isUserLoggedIn())
 
     val isLoggedIn: StateFlow<Boolean> = _isLoggedIn
+
+    private val _isResetEmailSent = MutableStateFlow(false)
+    val isResetEmailSent: StateFlow<Boolean> = _isResetEmailSent.asStateFlow()
 
     // ====== Authentication Actions ===============================
 
@@ -110,8 +117,44 @@ class AuthViewModel(
         }
     }
 
+
+
+    fun sendPasswordReset(email: String) {
+        val trimmedEmail = email.trim()
+
+        if (trimmedEmail.isEmpty()) {
+            _error.value = AuthError.EmptyFields
+            return
+        }
+
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            _isResetEmailSent.value = false
+
+            try {
+                repository.sendPasswordResetEmail(trimmedEmail)
+                _isResetEmailSent.value = true
+            } catch (e: Exception) {
+                _error.value = when (e) {
+                    is FirebaseExceptions.UserNotFound -> AuthError.UserNotFound
+                    else -> AuthError.Unknown
+                }
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
     // ====== UI State Helpers ===============================
 
+    fun clearError() {
+        _error.value = null
+    }
+
+    fun clearResetStatus() {
+        _isResetEmailSent.value = false
+    }
     fun logout() {
         repository.logout()
         _isLoggedIn.value = false
