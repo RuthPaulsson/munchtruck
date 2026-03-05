@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-// ====== Auth State Definitions ===============================
+    // ====== Auth State Definitions ===============================
 
 sealed class AuthError {
     data object EmptyFields : AuthError()
@@ -22,7 +22,7 @@ sealed class AuthError {
     data object PasswordsDoNotMatch : AuthError()
 }
 
-// ====== Auth ViewModel ===============================
+    // ====== Auth ViewModel ===============================
 
 class AuthViewModel(
     private val repository: AuthRepository
@@ -36,7 +36,7 @@ class AuthViewModel(
     private val _error = MutableStateFlow<AuthError?>(null)
     val error: StateFlow<AuthError?> = _error.asStateFlow()
 
-  private val _isLoggedIn = MutableStateFlow(repository.isUserLoggedIn())
+    private val _isLoggedIn = MutableStateFlow(repository.isUserLoggedIn())
 
     val isLoggedIn: StateFlow<Boolean> = _isLoggedIn
 
@@ -109,6 +109,8 @@ class AuthViewModel(
             }
         }
     }
+
+    // ====== UI State Helpers ===============================
 
     fun logout() {
         repository.logout()

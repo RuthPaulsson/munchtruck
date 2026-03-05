@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-// ====== Menu State Definitions ===============================
+    // ====== Menu State Definitions ===============================
 
 sealed class MenuError {
     data object LoadMenuFailed : MenuError()
@@ -33,7 +33,7 @@ data class MenuUiState(
     val saveSuccess: Boolean = false
 )
 
-// ====== Menu ViewModel ===============================
+    // ====== Menu ViewModel ===============================
 
 class MenuViewModel(
     private val repository: MenuRepository,
@@ -69,11 +69,9 @@ class MenuViewModel(
     fun saveItem(itemId: String?, imageUri: Uri?) {
         val currentState = _uiState.value
 
-
         val nameError = MenuItemValidator.validateName(currentState.itemName)
         val priceError = MenuItemValidator.validatePrice(currentState.itemPrice)
         val descError = MenuItemValidator.validateDescription(currentState.itemDescription)
-
 
         val firstError = nameError ?: priceError ?: descError
 
@@ -83,7 +81,6 @@ class MenuViewModel(
         }
 
         val priceInOre = PriceFormatter.parseToOre(currentState.itemPrice) ?: return
-
 
         if (itemId == null) {
             addMenuItem(
@@ -142,9 +139,7 @@ class MenuViewModel(
                     val imageUrl = imageRepository.uploadMenuImage(itemId, imageUri)
 
                     repository.updateMenuItem(itemId, name, price, description, imageUrl)
-
                 }
-
                 _uiState.update { it.copy(isLoading = false, saveSuccess = true) }
 
             } catch (e: Exception) {
@@ -194,7 +189,6 @@ class MenuViewModel(
 
     // ====== UI State Helpers ===============================
 
-    // ==== Ny kod Ruth ======
     fun resetItemInput() {
         _uiState.update {
             it.copy(
