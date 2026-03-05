@@ -1,6 +1,8 @@
 package com.example.munchtruck.data.firebase
 
 import android.net.Uri
+import com.example.munchtruck.data.FirebaseExceptions
+import com.example.munchtruck.data.FirebaseStoragePaths
 import com.example.munchtruck.data.repository.ImageRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
@@ -11,23 +13,35 @@ class StorageImageRepository(
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 ) : ImageRepository {
 
+    private fun truckId(): String =
+        auth.currentUser?.uid ?: throw FirebaseExceptions.Unauthorized()
+
+
     // ====== PROFILE IMAGE ===============================
 
     override suspend fun uploadProfileImage(imageUri: Uri): String {
-        val uid = auth.currentUser?.uid ?: throw IllegalStateException("Ej inloggad")
+        return try {
 
-        val ref = storage.getReference("foodtrucks/$uid/profile.jpg")
+            val path = FirebaseStoragePaths.profilePicture(truckId())
+            val ref = storage.getReference(path)
 
-        ref.putFile(imageUri).await()
-        return ref.downloadUrl.await().toString()
+            ref.putFile(imageUri).await()
+            ref.downloadUrl.await().toString()
+
+        } catch (e: Exception) {
+            throw when (e) {
+                is FirebaseExceptions -> e
+                else -> FirebaseExceptions.UploadFailed(e.message, e)
+            }
+        }
     }
 
     override suspend fun getProfileImageUri(): String? {
-        val uid = auth.currentUser?.uid ?: return null
-        val ref = storage.getReference("foodtrucks/$uid/profile.jpg")
+        val truckId = auth.currentUser?.uid ?: return null
 
         return try {
-            ref.downloadUrl.await().toString()
+            val path = FirebaseStoragePaths.profilePicture(truckId)
+            storage.getReference(path).downloadUrl.await().toString()
         } catch (e: Exception) {
             null
         }
@@ -39,13 +53,19 @@ class StorageImageRepository(
         itemId: String,
         imageUri: Uri
     ): String {
-        val uid = auth.currentUser?.uid ?: throw IllegalStateException("Ej inloggad")
+        return try {
+            val path = FirebaseStoragePaths.menuPicture(truckId(), itemId)
+            val ref = storage.getReference(path)
 
-        val ref = storage.getReference(
-            "foodtrucks/$uid/menu/$itemId.jpg"
-        )
+            ref.putFile(imageUri).await()
+            ref.downloadUrl.await().toString()
 
-        ref.putFile(imageUri).await()
-        return ref.downloadUrl.await().toString()
+        } catch (e: Exception) {
+            throw when (e) {
+                is FirebaseExceptions -> e
+                else -> FirebaseExceptions.UploadFailed(e.message, e)
+            }
+
+        }
     }
 }

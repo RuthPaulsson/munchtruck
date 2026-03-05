@@ -1,5 +1,13 @@
 package com.example.munchtruck.data
 
+object FirebaseStoragePaths {
+    private const val ROOT_TRUCKS = "foodtrucks"
+    private const val MENU_FOLDER = "menu"
+
+    fun profilePicture(uid: String) = "$ROOT_TRUCKS/$uid/profile.jpg"
+
+    fun menuPicture(uid: String, itemId: String) = "$ROOT_TRUCKS/$uid/$MENU_FOLDER/$itemId.jpg"
+}
 
 object FirestoreCollections {
     const val TRUCKS = "foodTrucks"
