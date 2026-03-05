@@ -19,6 +19,8 @@ class FirebaseAuthRepository(
     private val firestore: FirebaseFirestore
 ) : AuthRepository {
 
+    // ============ AUTH ACTIONS ============================================
+
     override suspend fun login(email: String, password: String) {
         try {
             firebaseAuth.signInWithEmailAndPassword(email, password).await()
@@ -76,6 +78,8 @@ class FirebaseAuthRepository(
         firebaseAuth.signOut()
     }
 
+    // ============ STATE & RE-AUTH ==========================================
+
     override fun isUserLoggedIn(): Boolean {
         return firebaseAuth.currentUser != null
     }
@@ -95,6 +99,7 @@ class FirebaseAuthRepository(
         }
     }
 
+    // ============ DELETE ==================================================
 
     override suspend fun deleteUserDocument() {
         val uid = firebaseAuth.currentUser?.uid ?: throw FirebaseExceptions.Unauthorized()

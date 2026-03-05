@@ -15,6 +15,7 @@ class FirebaseMapRepository(
     private val firestore: FirebaseFirestore,
 ) : MapRepository {
 
+    // ============ OBSERVE ==============================================
 
     override fun observeActiveTrucksForMap(): Flow<Result<List<MapTruck>>> = callbackFlow {
 
