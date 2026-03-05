@@ -36,6 +36,7 @@ import com.example.munchtruck.ui.components.DiscoveryBottom
 import com.example.munchtruck.ui.components.FoodTypeFilterBar
 import com.example.munchtruck.ui.components.ItemCard
 import com.example.munchtruck.ui.components.getFoodTypeImage
+import com.example.munchtruck.ui.components.isOpenNow
 import com.example.munchtruck.ui.theme.AppColors.PrimaryBackground
 import com.example.munchtruck.ui.theme.AppColors.White
 import com.example.munchtruck.ui.theme.AppPreviewWrapper
@@ -99,28 +100,29 @@ fun DiscoveryContent(
                 }
 
                 items(uiState.trucks) { truck ->
-
-                    val statusText = if (truck.isOpen) {
+                    val isOpen = truck.openingHours?.isOpenNow() ?: false
+                    val statusText = if (isOpen) {
                         stringResource(R.string.status_open)
                     } else {
                         stringResource(R.string.status_closed)
                     }
 
-                    val distanceText = uiState.userLocation?.let { userLoc ->
+                    val calculatedDistance = uiState.userLocation?.let { userLoc ->
                         truck.location?.let { loc ->
                             val truckLoc = Location("").apply {
                                 latitude = loc.latitude
                                 longitude = loc.longitude
                             }
-                            " • ${formatDistance(userLoc.distanceTo(truckLoc))}"
+                            formatDistance(userLoc.distanceTo(truckLoc))
                         }
-                    } ?: ""
+                    }
 
                     val foodImage = getFoodTypeImage(truck.foodType)
 
                     ItemCard(
                         title = truck.name,
-                        description = "$statusText$distanceText",
+                        description = statusText,
+                        distance = calculatedDistance,
                         imageUrl = truck.imageUrl,
                         priceOrInfo = truck.foodType ?: "",
                         trailingImageRes = foodImage,

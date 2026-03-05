@@ -7,10 +7,15 @@ object AppColors {
     // ====== Brand colors ===============================
 
     val PrimaryOrange = Color(0xFFED6114)
+
+    val PrimaryOrangeLowAlpha = PrimaryOrange.copy(alpha = 0.2f)
     val White = Color(0xFFFFFFFF)
     val PrimaryBackground = Color(0xFFF9F5F1)
     val LinkColor = Color(0xFFFCDA9C)
     val PrimaryText = Color(0xFF000000)
+
+    val StatusOpen = Color(0xFF4CAF50)   // Grön
+    val StatusClosed = Color(0xFFE53935) // Röd
 
     // ====== Overlays ===============================
 

@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import com.example.munchtruck.ui.theme.AppColors.PrimaryBackground
 import com.example.munchtruck.ui.theme.AppColors.PrimaryOrange
+import com.example.munchtruck.ui.theme.AppColors.PrimaryOrangeLowAlpha
 import com.example.munchtruck.ui.theme.AppColors.PrimaryText
 import com.example.munchtruck.ui.theme.AppColors.White
 
@@ -24,7 +25,9 @@ private val LightColorScheme = lightColorScheme(
     onSecondary = White,
     onTertiary = White,
     onBackground = PrimaryText,
-    onSurface = PrimaryText
+    onSurface = PrimaryText,
+    surfaceVariant = PrimaryOrangeLowAlpha,
+    onSurfaceVariant = PrimaryOrange,
 
 )
 

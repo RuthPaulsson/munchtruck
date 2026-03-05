@@ -14,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.munchtruck.R
+import com.example.munchtruck.ui.components.ConfirmationDialog
 import com.example.munchtruck.ui.components.toDisplayString
 import com.example.munchtruck.ui.components.toMessage
 import com.example.munchtruck.viewmodels.AuthViewModel
@@ -65,25 +66,19 @@ fun ProfileScreen(
 
     // ====== Logout Dialog ===============================
 
-    if (showDialog) {
-        AlertDialog(
-            onDismissRequest = { showDialog = false },
-            title = { Text(stringResource(R.string.profile_logout_title)) },
-            text = { Text(stringResource(R.string.profile_logout_message))},
-            confirmButton = {
-                TextButton(onClick = {
-                    authViewModel.logout()
-                    showDialog = false
-                    navController.navigate("login") { popUpTo(0) }
-                }) {
-                    Text(stringResource(R.string.profile_logout_confirm))
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showDialog = false }) {
-                    Text(stringResource(R.string.profile_logout_cancel))
-                }
-            }
-        )
-    }
+    ConfirmationDialog(
+        show = showDialog,
+        onDismiss = { showDialog = false },
+        onConfirm = {
+            authViewModel.logout()
+            showDialog = false
+            navController.navigate("login") { popUpTo(0) }
+        },
+        title = stringResource(R.string.profile_logout_title),
+        message = stringResource(R.string.profile_logout_message),
+        confirmText = stringResource(R.string.profile_logout_confirm),
+        dismissText = stringResource(R.string.profile_logout_cancel),
+        isDangerous = false
+    )
 }
+

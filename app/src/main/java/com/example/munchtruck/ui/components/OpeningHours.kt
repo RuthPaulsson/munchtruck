@@ -166,3 +166,35 @@ fun DayInputRow(
         }
     }
 }
+
+fun OpeningHours.isOpenNow(): Boolean {
+    if (this.tempClosed) return false
+
+    val now = java.time.LocalTime.now()
+    val today = java.time.LocalDate.now().dayOfWeek.name.lowercase().take(3)
+
+    val interval = when(today) {
+        "mon" -> weekly.mon
+        "tue" -> weekly.tue
+        "wed" -> weekly.wed
+        "thu" -> weekly.thu
+        "fri" -> weekly.fri
+        "sat" -> weekly.sat
+        "sun" -> weekly.sun
+        else -> null
+    } ?: return false
+
+    return try {
+        // Vi fixar formatet här så det tål "9:00" istället för "09:00"
+        val formatter = java.time.format.DateTimeFormatter.ofPattern("H:mm")
+
+        val start = java.time.LocalTime.parse(interval.start.trim(), formatter)
+        val end = java.time.LocalTime.parse(interval.end.trim(), formatter)
+
+        now.isAfter(start) && now.isBefore(end)
+    } catch (e: Exception) {
+        // Om det fortfarande står Closed, beror det på att tiderna
+        // i databasen är tomma eller helt felaktiga.
+        false
+    }
+}

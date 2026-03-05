@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import com.example.munchtruck.R
 import com.example.munchtruck.ui.components.CenteredLoading
 import com.example.munchtruck.ui.components.CenteredMessage
@@ -22,6 +23,7 @@ import com.example.munchtruck.viewmodels.DiscoveryViewModel
 fun PublicProfileScreen(
     truckId: String,
     discoveryViewModel: DiscoveryViewModel,
+    navController: NavController
 
 ) {
     val uiState by discoveryViewModel.uiState.collectAsStateWithLifecycle()
@@ -75,7 +77,9 @@ fun PublicProfileScreen(
                     isLoading = uiState.isMenuLoading,
                     errorMessage = null,
                     onLogoutClick = {},
-                    onEditClick = {}
+                    onEditClick = {},
+                    onHomeClick = { navController.navigate("discovery") },
+                    onMapClick = { navController.navigate("map_view") }
                 )
             }
         }

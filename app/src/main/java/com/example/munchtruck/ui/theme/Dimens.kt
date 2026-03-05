@@ -46,7 +46,7 @@ object Dimens {
     val LogoHeightLarge = 90.dp
     val LogoWidthSmall = 0.7f
     val HeroLogoWidth = 200.dp
-    val HeroLogoTopPadding = 20.dp
+    val HeroLogoTopPadding = 40.dp
 
     // ====== Start ===============================
 

@@ -38,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.rememberAsyncImagePainter
 import com.example.munchtruck.R
 import com.example.munchtruck.ui.components.InputField
+import com.example.munchtruck.ui.components.SharedImagePlaceholder
 import com.example.munchtruck.ui.theme.AppPreviewWrapper
 import com.example.munchtruck.ui.theme.Dimens.ButtonRadius
 import com.example.munchtruck.ui.theme.Dimens.LoaderSize
@@ -114,47 +115,15 @@ fun EditMenuContent(
 
             // ===== Image Section =====
 
-            Box(
+            SharedImagePlaceholder(
+                selectedImageUri = selectedImageUri,
+                existingImageUrl = existingImageUrl,
+                onImageClick = onImageClick,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(MenuImageHeight)
                     .clip(RoundedCornerShape(MenuImageRadius))
-            ) {
-                // Vi skapar en painter som kollar båda källorna
-                val painter = when {
-                    selectedImageUri != null -> rememberAsyncImagePainter(selectedImageUri)
-                    !existingImageUrl.isNullOrBlank() -> rememberAsyncImagePainter(existingImageUrl)
-                    else -> null
-                }
-
-                if (painter != null) {
-                    // Om vi har antingen en ny bild eller en sparad bild, rita den!
-                    Image(
-                        painter = painter,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                } else {
-                    // Om BÅDA är null, visa din placeholder-text
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(stringResource(R.string.menu_no_image))
-                    }
-                }
-
-                Button(
-                    onClick = onImageClick,
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(bottom = MenuImageButtonBottomPadding),
-                    shape = RoundedCornerShape(ButtonRadius)
-                ) {
-                    Text(stringResource(R.string.menu_select_image))
-                }
-            }
+            )
 
             Spacer(modifier = Modifier.height(SpaceL))
 
