@@ -2,7 +2,6 @@ package com.example.munchtruck.data.firebase
 
 import com.example.munchtruck.data.FirebaseExceptions
 import com.example.munchtruck.data.FirestoreCollections
-import com.example.munchtruck.data.FirestoreFields
 import com.example.munchtruck.data.model.FoodTruck
 import com.example.munchtruck.data.repository.DiscoveryRepository
 import com.example.munchtruck.data.toFoodTruck
@@ -15,6 +14,8 @@ import kotlinx.coroutines.flow.callbackFlow
 class FirebaseDiscoveryRepository(
     private val firestore: FirebaseFirestore,
 ) : DiscoveryRepository {
+
+    // ============ OBSERVE ==============================================
 
     override fun observeOpenTrucks(): Flow<Result<List<FoodTruck>>> = callbackFlow {
 

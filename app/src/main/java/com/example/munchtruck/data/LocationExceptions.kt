@@ -1,4 +1,4 @@
-package com.example.munchtruck.data.location
+package com.example.munchtruck.data
 
 sealed class LocationExceptions(message: String, cause: Throwable? = null) : Exception(message, cause) {
     class PermissionDenied : LocationExceptions("Location permission not granted")

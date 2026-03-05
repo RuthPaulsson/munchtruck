@@ -23,6 +23,8 @@ class FirebaseProfileRepository(
     private val storage: FirebaseStorage
 ) : ProfileRepository {
 
+    // ============ ID & DOC ================================================
+
     private fun truckId(): String =
         auth.currentUser?.uid ?: throw FirebaseExceptions.Unauthorized()
 
@@ -100,7 +102,7 @@ class FirebaseProfileRepository(
         saveMyTruckProfile("", "", "", "", hours)
     }
 
-    // ============ GET PROFILE (Fetches raw data for UI/ViewModel) ============
+    // ============ GET PROFILE =============================================
 
 
     override suspend fun getTruckProfile(): FoodTruck {
@@ -117,6 +119,7 @@ class FirebaseProfileRepository(
         }
     }
 
+    // ============ DELETE ==================================================
 
 
     override suspend fun deleteAllTruckData() {

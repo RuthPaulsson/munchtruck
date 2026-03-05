@@ -13,11 +13,13 @@ class StorageImageRepository(
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 ) : ImageRepository {
 
+    // ============ ID ==============================================
+
     private fun truckId(): String =
         auth.currentUser?.uid ?: throw FirebaseExceptions.Unauthorized()
 
 
-    // ====== PROFILE IMAGE ===============================
+    // ============ PROFILE IMAGE ===========================================
 
     override suspend fun uploadProfileImage(imageUri: Uri): String {
         return try {
@@ -47,7 +49,7 @@ class StorageImageRepository(
         }
     }
 
-    // ====== MENU IMAGE ===============================
+    // ============ MENU IMAGE ==============================================
 
     override suspend fun uploadMenuImage(
         itemId: String,

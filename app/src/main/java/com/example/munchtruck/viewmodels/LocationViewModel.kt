@@ -2,10 +2,10 @@ package com.example.munchtruck.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.munchtruck.data.LocationConstants
 import com.example.munchtruck.data.model.TruckLocation
 import com.example.munchtruck.data.repository.ProfileRepository  // Rätt!
 import com.example.munchtruck.data.location.DeviceLocationProvider
-import com.example.munchtruck.util.LocationConstants
 import com.example.munchtruck.util.LocationValidator
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.MutableStateFlow

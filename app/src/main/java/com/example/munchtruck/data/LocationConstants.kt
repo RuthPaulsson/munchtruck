@@ -1,8 +1,9 @@
-package com.example.munchtruck.util
-
-// ====== Location Constants ===============================
+package com.example.munchtruck.data
 
 object LocationConstants {
+    const val UNKNOWN_STREET = "Unknown Street"
+    const val EMPTY_STRING = ""
+
     const val MIN_LATITUDE = -90.0
     const val MAX_LATITUDE = 90.0
     const val MIN_LONGITUDE = -180.0
