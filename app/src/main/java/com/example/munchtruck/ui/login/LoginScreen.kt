@@ -11,7 +11,7 @@ import androidx.navigation.NavController
 import com.example.munchtruck.ui.components.toMessage
 import com.example.munchtruck.viewmodels.AuthViewModel
 
-// ====== Login Screen (Logic Layer) ===============================
+// ====== Login Screen (UI Layer) ===============================
 
 @Composable
 fun LoginScreen(

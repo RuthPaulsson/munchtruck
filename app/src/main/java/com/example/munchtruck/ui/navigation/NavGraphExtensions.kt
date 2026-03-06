@@ -66,7 +66,8 @@ fun NavGraphBuilder.ownerNavGraph(
             navController = navController,
             profileViewModel = profileViewModel,
             locationViewModel = locationViewModel,
-            menuViewModel = menuViewModel
+            menuViewModel = menuViewModel,
+            authViewModel = authViewModel
         )
     }
 

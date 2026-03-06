@@ -23,6 +23,7 @@ import com.example.munchtruck.ui.components.ConfirmationDialog
 import com.example.munchtruck.ui.components.toMessage
 import com.example.munchtruck.ui.components.updateOpeningHoursState
 import com.example.munchtruck.util.MenuItemValidationError
+import com.example.munchtruck.viewmodels.AuthViewModel
 import com.example.munchtruck.viewmodels.LocationViewModel
 import com.example.munchtruck.viewmodels.MenuViewModel
 import com.example.munchtruck.viewmodels.ProfileError
@@ -39,7 +40,8 @@ fun EditProfileScreen(
     navController: NavController,
     profileViewModel: ProfileViewModel,
     locationViewModel: LocationViewModel,
-    menuViewModel: MenuViewModel
+    menuViewModel: MenuViewModel,
+    authViewModel: AuthViewModel
 ) {
     // ====== State & Initialization ===============================
 
@@ -65,6 +67,7 @@ fun EditProfileScreen(
 
     LaunchedEffect(Unit) {
         profileViewModel.loadProfile()
+        locationViewModel.loadSavedLocation()
         menuViewModel.observeMenu()
     }
 
@@ -77,9 +80,7 @@ fun EditProfileScreen(
 
     LaunchedEffect(uiState.isAccountDeleted) {
         if (uiState.isAccountDeleted) {
-            navController.navigate("start") {
-                popUpTo(0) { inclusive = true }
-            }
+            authViewModel.logout()
         }
     }
 

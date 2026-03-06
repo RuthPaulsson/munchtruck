@@ -22,7 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -130,7 +129,7 @@ fun DiscoveryContent(
                         description = statusText,
                         distance = calculatedDistance,
                         imageUrl = truck.imageUrl,
-                        priceOrInfo = truck.foodType ?: "",
+                        priceOrInfo = "", 
                         trailingImageRes = foodImage,
                         modifier = Modifier
                             .padding(horizontal = SpaceM, vertical = SpaceS)
@@ -180,14 +179,15 @@ fun HeroSection(
             modifier = Modifier.fillMaxSize()
         )
 
+        // Använder nu MaterialTheme.colorScheme.scrim konsekvent
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(
-                            Color.Black.copy(alpha = 0.15f),
-                            Color.Black.copy(alpha = 0.35f)
+                            MaterialTheme.colorScheme.scrim.copy(alpha = 0.2f),
+                            MaterialTheme.colorScheme.scrim.copy(alpha = 0.5f)
                         )
                     )
                 )
