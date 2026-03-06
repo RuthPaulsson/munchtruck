@@ -1,27 +1,18 @@
 package com.example.munchtruck.ui.login
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.munchtruck.R
-import com.example.munchtruck.ui.components.AuthBackground
+import com.example.munchtruck.ui.components.DarkAuthBackground
 import com.example.munchtruck.ui.components.AuthHeader
 import com.example.munchtruck.ui.components.InlineError
 import com.example.munchtruck.ui.components.InputField
@@ -33,8 +24,6 @@ import com.example.munchtruck.ui.theme.Dimens.ScreenPadding
 import com.example.munchtruck.ui.theme.Dimens.SpaceL
 import com.example.munchtruck.ui.theme.Dimens.SpaceM
 import com.example.munchtruck.ui.theme.Dimens.SpaceS
-
-// ====== Login Content (UI Layer) ===============================
 
 @Composable
 fun LoginContent(
@@ -48,23 +37,27 @@ fun LoginContent(
     onRegisterClick: () -> Unit,
     onForgotPasswordClick: () -> Unit
 ) {
-    AuthBackground {
+    DarkAuthBackground {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(ScreenPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            AuthHeader(
-                subtitle = stringResource(R.string.start_welcome)
-            )
+            // Lagom avstånd i toppen så loggan hamnar bra
+            Spacer(modifier = Modifier.height(SpaceL))
 
-            // ====== Input Fields ===============================
+            // AuthHeader utan subtitle
+            AuthHeader(subtitle = "")
+
+            Spacer(modifier = Modifier.height(SpaceL))
+
+            // ====== Input Fields (Utan labels) =====================
 
             InputField(
                 value = email,
                 onChange = onEmailChange,
-                label = stringResource(R.string.register_email_label),
+                label = "", // Ingen label här
                 placeholder = stringResource(R.string.input_email_hint)
             )
 
@@ -73,7 +66,7 @@ fun LoginContent(
             InputField(
                 value = password,
                 onChange = onPasswordChange,
-                label = stringResource(R.string.register_password_label),
+                label = "", // Ingen label här
                 placeholder = stringResource(R.string.input_password_hint),
                 isPassword = true
             )
@@ -96,10 +89,12 @@ fun LoginContent(
 
             // ====== Error Messages ===============================
 
-            InlineError(
-                message = error,
-                modifier = Modifier.padding(bottom = SpaceS)
-            )
+            if (error.isNotEmpty()) {
+                InlineError(
+                    message = error,
+                    modifier = Modifier.padding(bottom = SpaceS)
+                )
+            }
 
             // ====== Actions ===============================
 
@@ -126,7 +121,7 @@ fun LoginContent(
             Row {
                 Text(
                     text = stringResource(R.string.login_no_account),
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    color = Color.White,
                     style = MaterialTheme.typography.bodySmall
                 )
                 Text(
@@ -143,8 +138,6 @@ fun LoginContent(
         }
     }
 }
-
-// ====== Preview ===============================
 
 @Preview(showBackground = true)
 @Composable
