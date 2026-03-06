@@ -17,11 +17,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.munchtruck.R
 import com.example.munchtruck.ui.components.toMessage
-import com.example.munchtruck.util.MenuItemValidationError
 import com.example.munchtruck.viewmodels.MenuViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+
+// ====== Edit Menu Screen (Logic Layer) ===============================
 
 @Composable
 fun EditMenuScreen(
@@ -29,16 +28,20 @@ fun EditMenuScreen(
     viewModel: MenuViewModel,
     itemId: String? = null
 ) {
+    // ====== State & Initialization ===============================
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val isEditing = itemId != null
     val snackbarHostState = remember { SnackbarHostState() }
-    val item = uiState.menuItems.find { it.id == itemId }
-    val existingImageUrl = item?.imageUrl
-    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
-    var hasLoadedItem by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
+    val isEditing = itemId != null
+    val item = uiState.menuItems.find { it.id == itemId }
+    val existingImageUrl = item?.imageUrl
 
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    var hasLoadedItem by remember { mutableStateOf(false) }
+
+    // ====== Side Effects ===============================
 
     LaunchedEffect(Unit) {
         viewModel.observeMenu()
@@ -46,8 +49,8 @@ fun EditMenuScreen(
 
     LaunchedEffect(uiState.menuItems, itemId) {
         if (!hasLoadedItem && isEditing && itemId != null) {
-            val item = uiState.menuItems.find { it.id == itemId }
-            item?.let {
+            val currentItem = uiState.menuItems.find { it.id == itemId }
+            currentItem?.let {
                 viewModel.onNameChanged(it.name)
                 viewModel.onDescriptionChanged(it.description)
                 viewModel.onPriceChanged((it.price / 100.0).toString())
@@ -56,19 +59,13 @@ fun EditMenuScreen(
         }
     }
 
-
     val successMessage = stringResource(R.string.menu_item_saved)
     LaunchedEffect(uiState.saveSuccess) {
         if (uiState.saveSuccess) {
-            // 1. Visa meddelandet (detta körs asynkront)
             coroutineScope.launch {
                 snackbarHostState.showSnackbar(successMessage)
             }
-
-            // 2. Navigera tillbaka direkt
             navController.popBackStack()
-
-            // 3. Nollställ flaggan så vi inte hoppar tillbaka igen av misstag
             viewModel.resetSaveState()
         }
     }
@@ -80,11 +77,15 @@ fun EditMenuScreen(
         }
     }
 
+    // ====== Callbacks & Launchers ===============================
+
     val imageLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri ->
         selectedImageUri = uri
     }
+
+    // ====== UI Rendering ===============================
 
     EditMenuContent(
         name = uiState.itemName,
@@ -95,7 +96,7 @@ fun EditMenuScreen(
         isLoading = uiState.isLoading,
         priceError = uiState.priceError?.toMessage(),
         onNameChange = { viewModel.onNameChanged(it) },
-        onPriceChange = {viewModel.onPriceChanged(it) },
+        onPriceChange = { viewModel.onPriceChanged(it) },
         onDescriptionChange = { viewModel.onDescriptionChanged(it) },
         onBackClick = { navController.popBackStack() },
         onSaveClick = { viewModel.saveItem(itemId, selectedImageUri) },

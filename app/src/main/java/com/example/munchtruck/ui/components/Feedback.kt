@@ -16,6 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.munchtruck.ui.theme.Dimens.SpaceSM
 
+// ====== Inline Error Message (UI Layer) ===============================
+
 @Composable
 fun InlineError(
     message: String,
@@ -30,6 +32,9 @@ fun InlineError(
         )
     }
 }
+
+// ====== Feedback Snackbar (UI Layer) ===============================
+
 @Composable
 fun FeedbackSnackbar(
     message: String?,
@@ -44,6 +49,8 @@ fun FeedbackSnackbar(
     }
 }
 
+// ====== Centered Loading Indicator (UI Layer) ===============================
+
 @Composable
 fun CenteredLoading(
     modifier: Modifier = Modifier
@@ -52,9 +59,13 @@ fun CenteredLoading(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator()
+        CircularProgressIndicator(
+            color = MaterialTheme.colorScheme.primary
+        )
     }
 }
+
+// ====== Centered Message (UI Layer) ===============================
 
 @Composable
 fun CenteredMessage(
@@ -67,11 +78,13 @@ fun CenteredMessage(
     ) {
         Text(
             text = message,
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface
         )
     }
 }
 
+// ====== Centered Message With Retry (UI Layer) ===============================
 
 @Composable
 fun CenteredMessageWithRetry(
@@ -83,10 +96,14 @@ fun CenteredMessageWithRetry(
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(message)
+            Text(
+                text = message,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
             Spacer(modifier = Modifier.height(SpaceSM))
             Button(onClick = onRetry) {
-                Text("Retry")
+                Text(text = "Retry") // Rekommenderar stringResource här sen
             }
         }
     }

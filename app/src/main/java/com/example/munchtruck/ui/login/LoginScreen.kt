@@ -1,6 +1,5 @@
 package com.example.munchtruck.ui.login
 
-
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -12,33 +11,35 @@ import androidx.navigation.NavController
 import com.example.munchtruck.ui.components.toMessage
 import com.example.munchtruck.viewmodels.AuthViewModel
 
-// ====== Login Screen ===============================
+// ====== Login Screen (Logic Layer) ===============================
 
 @Composable
 fun LoginScreen(
     navController: NavController,
     authViewModel: AuthViewModel
 ) {
-    // ====== UI State ===============================
+    // ====== State & Initialization ===============================
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
     val errorState by authViewModel.error.collectAsState()
     val isLoading by authViewModel.isLoading.collectAsState()
     val isLoggedIn by authViewModel.isLoggedIn.collectAsState()
 
     val errorMessage = errorState?.toMessage() ?: ""
+
     // ====== Navigation Effects ===============================
 
     LaunchedEffect(isLoggedIn) {
         if (isLoggedIn) {
-            navController.navigate("profile"){
+            navController.navigate("profile") {
                 popUpTo("login") { inclusive = true }
             }
         }
     }
 
-    // ====== UI Content ===============================
+    // ====== UI Rendering ===============================
 
     LoginContent(
         email = email,
@@ -47,7 +48,6 @@ fun LoginScreen(
         isLoading = isLoading,
         onEmailChange = { email = it },
         onPasswordChange = { password = it },
-
         onLoginClick = {
             authViewModel.login(email, password)
         },
@@ -58,5 +58,4 @@ fun LoginScreen(
             navController.navigate("forgot_password")
         }
     )
-
 }

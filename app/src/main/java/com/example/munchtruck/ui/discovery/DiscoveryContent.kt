@@ -1,6 +1,5 @@
 package com.example.munchtruck.ui.discovery
 
-
 import android.location.Location
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,6 +17,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,8 +37,6 @@ import com.example.munchtruck.ui.components.FoodTypeFilterBar
 import com.example.munchtruck.ui.components.ItemCard
 import com.example.munchtruck.ui.components.getFoodTypeImage
 import com.example.munchtruck.ui.components.isOpenNow
-import com.example.munchtruck.ui.theme.AppColors.PrimaryBackground
-import com.example.munchtruck.ui.theme.AppColors.White
 import com.example.munchtruck.ui.theme.AppPreviewWrapper
 import com.example.munchtruck.ui.theme.Dimens.BottomNavHeight
 import com.example.munchtruck.ui.theme.Dimens.DiscoveryHeroHeight
@@ -52,6 +50,7 @@ import com.example.munchtruck.ui.theme.Dimens.SpaceXXXL
 import com.example.munchtruck.util.DistanceUtils.formatDistance
 import com.example.munchtruck.viewmodels.DiscoveryUiState
 
+// ====== Discovery Content (UI Layer) ===============================
 
 @Composable
 fun DiscoveryContent(
@@ -64,17 +63,23 @@ fun DiscoveryContent(
     onMapClick: () -> Unit,
     onHomeClick: () -> Unit
 ) {
+    val refreshState = rememberPullToRefreshState()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(PrimaryBackground)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         PullToRefreshBox(
             isRefreshing = uiState.isLoading,
             onRefresh = onRefresh,
+            state = refreshState,
             modifier = Modifier.fillMaxSize()
         ) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
+
+                // ====== Hero Section ===============================
+
                 item {
                     HeroSection(
                         selectedCategory = selectedCategory,
@@ -82,12 +87,11 @@ fun DiscoveryContent(
                     )
                 }
 
+                // ====== Message States ===============================
+
                 if (errorMessage != null) {
                     item {
-                        CenteredMessageWithRetry(
-                            message = errorMessage,
-                            onRetry = onRefresh
-                        )
+                        CenteredMessage(message = errorMessage)
                     }
                 }
 
@@ -98,6 +102,8 @@ fun DiscoveryContent(
                         )
                     }
                 }
+
+                // ====== Truck List ===============================
 
                 items(uiState.trucks) { truck ->
                     val isOpen = truck.openingHours?.isOpenNow() ?: false
@@ -138,6 +144,8 @@ fun DiscoveryContent(
             }
         }
 
+        // ====== Navigation ===============================
+
         Box(modifier = Modifier.align(Alignment.BottomCenter)) {
             DiscoveryBottom(
                 currentRoute = "home",
@@ -152,21 +160,18 @@ fun DiscoveryContent(
     }
 }
 
-@Composable
-fun CenteredMessageWithRetry(message: String, onRetry: () -> Unit) {
-    TODO("Not yet implemented")
-}
+// ====== Hero Section (UI Layer) ===============================
 
 @Composable
 fun HeroSection(
     selectedCategory: String,
     onCategoryChange: (String) -> Unit
-){
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(DiscoveryHeroHeight)
-    ){
+    ) {
         Image(
             painter = painterResource(R.drawable.discovery_hero),
             contentDescription = null,
@@ -194,7 +199,6 @@ fun HeroSection(
                 .padding(horizontal = ScreenPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             Image(
                 painter = painterResource(R.drawable.munchtruck_text),
                 contentDescription = stringResource(R.string.logo_munchtruck),
@@ -208,7 +212,7 @@ fun HeroSection(
             Text(
                 text = stringResource(R.string.discovery_search_placeholder),
                 style = MaterialTheme.typography.titleMedium,
-                color = White
+                color = MaterialTheme.colorScheme.onPrimary
             )
 
             Spacer(modifier = Modifier.height(SpaceM))
@@ -229,13 +233,13 @@ fun HeroSection(
                 Text(
                     text = stringResource(R.string.discovery_hero_title_line1),
                     style = MaterialTheme.typography.headlineSmall,
-                    color = White
+                    color = MaterialTheme.colorScheme.onPrimary
                 )
 
                 Text(
                     text = stringResource(R.string.discovery_hero_title_line2),
                     style = MaterialTheme.typography.headlineSmall,
-                    color = White
+                    color = MaterialTheme.colorScheme.onPrimary
                 )
 
                 Spacer(modifier = Modifier.height(SpaceS))
@@ -243,17 +247,19 @@ fun HeroSection(
                 Text(
                     text = stringResource(R.string.discovery_hero_subtitle),
                     style = MaterialTheme.typography.bodySmall,
-                    color = White
+                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
                 )
             }
         }
     }
 }
+
+// ====== Preview ===============================
+
 @Preview(showBackground = true)
 @Composable
 fun DiscoveryContentPreview() {
     AppPreviewWrapper {
-
         val mockTrucks = listOf(
             FoodTruck(
                 id = "1",
@@ -278,7 +284,7 @@ fun DiscoveryContentPreview() {
                 error = null,
                 isListEmpty = false
             ),
-            errorMessage = "",
+            errorMessage = null,
             selectedCategory = "",
             onCategoryChange = {},
             onRefresh = {},

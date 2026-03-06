@@ -106,6 +106,8 @@ class AuthViewModel(
             val trimmedPassword = password.trim()
             val trimmedCompanyName = companyName.trim()
 
+
+
             _isLoading.value = true
             try {
                 repository.register(trimmedEmail, trimmedPassword, trimmedCompanyName)

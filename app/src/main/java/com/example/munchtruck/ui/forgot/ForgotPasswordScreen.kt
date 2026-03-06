@@ -12,14 +12,14 @@ import com.example.munchtruck.ui.components.toMessage
 import com.example.munchtruck.viewmodels.AuthViewModel
 import kotlinx.coroutines.delay
 
-// ====== Forgot Password Screen ===============================
+// ====== Forgot Password Screen (Logic Layer) ===============================
 
 @Composable
 fun ForgotPasswordScreen(
     navController: NavController,
     authViewModel: AuthViewModel
 ) {
-    // ====== UI State ===============================
+    // ====== State & Initialization ===============================
 
     var email by remember { mutableStateOf("") }
 
@@ -43,7 +43,7 @@ fun ForgotPasswordScreen(
         }
     }
 
-    // ====== UI Content ===============================
+    // ====== UI Rendering ===============================
 
     ForgotPasswordContent(
         email = email,

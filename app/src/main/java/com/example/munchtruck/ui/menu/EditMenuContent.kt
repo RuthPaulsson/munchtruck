@@ -2,8 +2,6 @@ package com.example.munchtruck.ui.menu
 
 import android.net.Uri
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,40 +13,34 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import coil.compose.rememberAsyncImagePainter
 import com.example.munchtruck.R
 import com.example.munchtruck.ui.components.InputField
 import com.example.munchtruck.ui.components.SharedImagePlaceholder
 import com.example.munchtruck.ui.theme.AppPreviewWrapper
-import com.example.munchtruck.ui.theme.Dimens.ButtonRadius
 import com.example.munchtruck.ui.theme.Dimens.LoaderSize
 import com.example.munchtruck.ui.theme.Dimens.LoaderStroke
-import com.example.munchtruck.ui.theme.Dimens.MenuImageButtonBottomPadding
 import com.example.munchtruck.ui.theme.Dimens.MenuImageHeight
 import com.example.munchtruck.ui.theme.Dimens.MenuImageRadius
 import com.example.munchtruck.ui.theme.Dimens.ScreenPadding
 import com.example.munchtruck.ui.theme.Dimens.SpaceL
 import com.example.munchtruck.ui.theme.Dimens.SpaceM
+
+// ====== Edit Menu Content (UI Layer) ===============================
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,7 +60,6 @@ fun EditMenuContent(
     onImageClick: () -> Unit,
     snackbarHost: @Composable () -> Unit
 ) {
-
     Scaffold(
         snackbarHost = { snackbarHost() },
         topBar = {
@@ -93,10 +84,14 @@ fun EditMenuContent(
                         if (isLoading) {
                             CircularProgressIndicator(
                                 modifier = Modifier.size(LoaderSize),
-                                strokeWidth = LoaderStroke
+                                strokeWidth = LoaderStroke,
+                                color = MaterialTheme.colorScheme.primary
                             )
                         } else {
-                            Text(stringResource(R.string.common_save))
+                            Text(
+                                text = stringResource(R.string.common_save),
+                                color = MaterialTheme.colorScheme.primary
+                            )
                         }
                     }
                 }
@@ -113,7 +108,7 @@ fun EditMenuContent(
 
             Spacer(modifier = Modifier.height(SpaceL))
 
-            // ===== Image Section =====
+            // ====== Image Section ===============================
 
             SharedImagePlaceholder(
                 selectedImageUri = selectedImageUri,
@@ -127,7 +122,7 @@ fun EditMenuContent(
 
             Spacer(modifier = Modifier.height(SpaceL))
 
-            // ===== Dish Name =====
+            // ====== Input Form Section ===============================
 
             InputField(
                 value = name,
@@ -136,8 +131,6 @@ fun EditMenuContent(
             )
 
             Spacer(modifier = Modifier.height(SpaceM))
-
-            // ===== Price =====
 
             InputField(
                 value = price,
@@ -151,8 +144,6 @@ fun EditMenuContent(
 
             Spacer(modifier = Modifier.height(SpaceM))
 
-            // ===== Description =====
-
             InputField(
                 value = description,
                 onChange = onDescriptionChange,
@@ -162,23 +153,23 @@ fun EditMenuContent(
             )
 
             Spacer(modifier = Modifier.height(SpaceL))
-
         }
     }
 }
 
+// ====== Preview ===============================
 
 @Preview(showBackground = true)
 @Composable
 fun EditMenuContentPreview() {
     AppPreviewWrapper {
         EditMenuContent(
-            name = "",
-            price = "",
-            description = "",
-            priceError= "",
+            name = "Kebabtallrik",
+            price = "120",
+            description = "En klassiker med pommes och sås",
+            priceError = null,
             selectedImageUri = null,
-            isLoading = true,
+            isLoading = false,
             onNameChange = {},
             onPriceChange = {},
             onDescriptionChange = {},

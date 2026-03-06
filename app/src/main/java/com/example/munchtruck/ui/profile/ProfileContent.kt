@@ -3,7 +3,6 @@ package com.example.munchtruck.ui.profile
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,52 +25,47 @@ import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.RestaurantMenu
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.example.munchtruck.ui.theme.AppPreviewWrapper
-import com.example.munchtruck.ui.theme.Dimens.SpaceL
-import com.example.munchtruck.ui.theme.Dimens.SpaceS
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import coil.compose.rememberAsyncImagePainter
-import com.example.munchtruck.data.model.MenuItem
-import com.example.munchtruck.ui.theme.Dimens.SpaceXS
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.munchtruck.R
+import com.example.munchtruck.data.model.MenuItem
 import com.example.munchtruck.data.model.OpeningHours
 import com.example.munchtruck.ui.components.CenteredLoading
 import com.example.munchtruck.ui.components.DiscoveryBottom
-import com.example.munchtruck.ui.components.FoodTypeSection
+import com.example.munchtruck.ui.components.InlineError
 import com.example.munchtruck.ui.components.ItemCard
 import com.example.munchtruck.ui.components.OpeningHoursSection
 import com.example.munchtruck.ui.components.SharedImagePlaceholder
-import com.example.munchtruck.ui.theme.AppColors.PrimaryOrange
-import com.example.munchtruck.ui.theme.AppColors.White
+import com.example.munchtruck.ui.theme.AppPreviewWrapper
 import com.example.munchtruck.ui.theme.Dimens
 import com.example.munchtruck.ui.theme.Dimens.HeroHeight
-import com.example.munchtruck.ui.theme.Dimens.MenuItemImageIconSize
 import com.example.munchtruck.ui.theme.Dimens.MenuItemImageRadius
-import com.example.munchtruck.ui.theme.Dimens.MenuItemImageSize
+import com.example.munchtruck.ui.theme.Dimens.SpaceL
 import com.example.munchtruck.ui.theme.Dimens.SpaceM
+import com.example.munchtruck.ui.theme.Dimens.SpaceS
+import com.example.munchtruck.ui.theme.Dimens.SpaceXS
 
-// ====== Profile Content ===============================
+// ====== Profile Content (UI Layer) ===============================
+
 @Composable
-fun ProfileContent (
+fun ProfileContent(
     isOwner: Boolean,
     truckName: String,
     foodType: String?,
@@ -90,11 +83,11 @@ fun ProfileContent (
     onHomeClick: () -> Unit = {},
     currentRoute: String = "",
 ) {
-    // ====== Root Container ===============================
     Box(
         modifier = Modifier
             .fillMaxSize()
-    ){
+            .background(MaterialTheme.colorScheme.background)
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -112,7 +105,7 @@ fun ProfileContent (
             )
 
             errorMessage?.let {
-                com.example.munchtruck.ui.components.InlineError(
+                InlineError(
                     message = it,
                     modifier = Modifier.padding(SpaceM)
                 )
@@ -122,40 +115,34 @@ fun ProfileContent (
 
             // ====== Info Section ===============================
 
-            if (
-                !rating.isNullOrBlank() ||
-                !location.isNullOrBlank() ||
-                openingHours != null
-            ) {
+            if (!rating.isNullOrBlank() || !location.isNullOrBlank() || openingHours != null) {
                 ProfileInfoRow(
                     rating = rating,
                     location = location,
                     foodType = foodType,
                     openingHours = openingHours
                 )
-
                 Spacer(modifier = Modifier.height(SpaceL))
             }
 
             // ====== About Section ===============================
 
-            if(!description.isNullOrBlank()) {
+            if (!description.isNullOrBlank()) {
                 Text(
                     text = stringResource(R.string.profile_about),
                     style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.padding(horizontal = SpaceM)
                 )
+                Spacer(modifier = Modifier.height(SpaceS))
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.padding(horizontal = SpaceM)
+                )
+                Spacer(modifier = Modifier.height(SpaceL))
             }
-
-            Spacer(modifier = Modifier.height(SpaceS))
-
-            Text(
-                text = description,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(horizontal = SpaceM)
-            )
-
-            Spacer(modifier = Modifier.height(SpaceL))
 
             // ====== Menu Section ===============================
 
@@ -163,6 +150,7 @@ fun ProfileContent (
                 Text(
                     text = stringResource(R.string.profile_menu),
                     style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.padding(horizontal = SpaceM)
                 )
 
@@ -184,10 +172,13 @@ fun ProfileContent (
                     }
                 }
             }
+
             if (!isOwner) {
                 Spacer(modifier = Modifier.height(Dimens.BottomNavHeight))
             }
         }
+
+        // ====== Navigation Overlays (UI Layer) ===============================
 
         if (!isOwner) {
             Box(modifier = Modifier.align(Alignment.BottomCenter)) {
@@ -205,8 +196,7 @@ fun ProfileContent (
     }
 }
 
-
-// ====== Hero Section ===============================
+// ====== Hero Section (UI Layer) ===============================
 
 @Composable
 fun ProfileHeroSection(
@@ -216,58 +206,46 @@ fun ProfileHeroSection(
     onEditClick: () -> Unit,
     onLogoutClick: () -> Unit
 ) {
-
-
     var expanded by remember { mutableStateOf(false) }
-
-    // ====== Hero Container ===============================
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(HeroHeight),
         contentAlignment = Alignment.Center
-
     ) {
-
-        // ====== Image / Placeholder ===============================
-
         SharedImagePlaceholder(
             existingImageUrl = imageUrl,
             modifier = Modifier.fillMaxSize()
         )
-
-        // ====== Owner Menu ===============================
 
         if (isOwner) {
             Box(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(SpaceM)
-            ){
+            ) {
                 IconButton(onClick = { expanded = true }) {
                     Icon(
                         imageVector = Icons.Default.MoreVert,
-                        contentDescription = stringResource(R.string.profile_options)
+                        contentDescription = stringResource(R.string.profile_options),
+                        tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
 
                 DropdownMenu(
                     expanded = expanded,
-                    onDismissRequest = { expanded = false },
-                    modifier = Modifier
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                    onDismissRequest = { expanded = false }
                 ) {
                     DropdownMenuItem(
-                        text = { Text(text = stringResource(R.string.profile_edit)) },
+                        text = { Text(stringResource(R.string.profile_edit)) },
                         onClick = {
                             expanded = false
                             onEditClick()
                         }
                     )
-
                     DropdownMenuItem(
-                        text = {Text(text = stringResource(R.string.profile_logout))},
+                        text = { Text(stringResource(R.string.profile_logout)) },
                         onClick = {
                             expanded = false
                             onLogoutClick()
@@ -277,11 +255,10 @@ fun ProfileHeroSection(
             }
         }
 
-        // ====== Truck Name ===============================
-
         Text(
             text = truckName,
             style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .padding(SpaceM)
@@ -289,7 +266,7 @@ fun ProfileHeroSection(
     }
 }
 
-// ====== Info Row ===============================
+// ====== Info Row Section (UI Layer) ===============================
 
 @Composable
 fun ProfileInfoRow(
@@ -298,24 +275,17 @@ fun ProfileInfoRow(
     foodType: String?,
     openingHours: OpeningHours?
 ) {
-    // ====== State ===============================
-
     var isExpanded by remember { mutableStateOf(false) }
-
-    // ====== Row Container ===============================
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = SpaceM)
     ) {
-        // ====== Row 1: Rating, Location & Opening Hours ===============================
-
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Rating
             if (!rating.isNullOrBlank()) {
                 Icon(
                     imageVector = Icons.Default.Star,
@@ -324,13 +294,16 @@ fun ProfileInfoRow(
                     modifier = Modifier.size(18.dp)
                 )
                 Spacer(modifier = Modifier.width(SpaceXS))
-                Text(text = rating, style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    text = rating,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
                 Spacer(modifier = Modifier.width(SpaceS))
-                Text(text = "•", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(text = "•", color = MaterialTheme.colorScheme.outline)
                 Spacer(modifier = Modifier.width(SpaceS))
             }
 
-            // Location
             if (!location.isNullOrBlank()) {
                 Icon(
                     imageVector = Icons.Default.LocationOn,
@@ -342,15 +315,15 @@ fun ProfileInfoRow(
                 Text(
                     text = location,
                     style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
                     maxLines = 1,
-                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                    overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f)
                 )
             } else {
                 Spacer(modifier = Modifier.weight(1f))
             }
 
-            // Opening Hours Toggle
             if (openingHours != null) {
                 Row(
                     modifier = Modifier
@@ -380,11 +353,8 @@ fun ProfileInfoRow(
             }
         }
 
-        // ====== Row 2: Food Type (Added more vertical space here) ===============================
-
         if (!foodType.isNullOrBlank()) {
-            Spacer(modifier = Modifier.height(SpaceS)) // Skapar avståndet ner till mattypen
-
+            Spacer(modifier = Modifier.height(SpaceS))
             Text(
                 text = foodType,
                 style = MaterialTheme.typography.bodyMedium,
@@ -392,8 +362,6 @@ fun ProfileInfoRow(
                 modifier = Modifier.padding(start = if (!rating.isNullOrBlank()) 22.dp else 0.dp)
             )
         }
-
-        // ====== Opening Hours Section (Expanded) ===============================
 
         if (openingHours != null) {
             AnimatedVisibility(
@@ -426,16 +394,15 @@ fun ProfileInfoRow(
     }
 }
 
-
 // ====== Preview ===============================
 
 @Preview(showBackground = true)
 @Composable
 fun ProfileContentPreview() {
-    AppPreviewWrapper() {
+    AppPreviewWrapper {
         ProfileContent(
             isOwner = true,
-            foodType = "",
+            foodType = "Burgare",
             truckName = "Crazy Burgers",
             description = "Best smash burgers in town.",
             rating = "4.7",

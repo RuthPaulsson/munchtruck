@@ -1,19 +1,17 @@
 package com.example.munchtruck.ui.components
 
-import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.munchtruck.R
-import com.example.munchtruck.ui.theme.AppColors.PrimaryOrange
-import com.example.munchtruck.ui.theme.AppColors.White
 import com.example.munchtruck.ui.theme.Dimens.SpaceS
+
+// ====== Discovery Bottom Navigation (UI Layer) ===============================
 
 @Composable
 fun DiscoveryBottom(
@@ -23,13 +21,15 @@ fun DiscoveryBottom(
 ) {
     Surface(
         shadowElevation = SpaceS,
-        color = White
+        color = MaterialTheme.colorScheme.surface
     ) {
         NavigationBar(
-            containerColor = White,
+            containerColor = MaterialTheme.colorScheme.surface,
             tonalElevation = 0.dp,
         ) {
-            // HOME ITEM
+
+            // ====== Home Item ===============================
+
             NavigationBarItem(
                 selected = currentRoute == "home",
                 onClick = onHomeClick,
@@ -37,19 +37,29 @@ fun DiscoveryBottom(
                     Icon(
                         imageVector = Icons.Default.Home,
                         contentDescription = stringResource(R.string.discovery_nav_home),
-                        tint = if (currentRoute == "home") PrimaryOrange else Color.LightGray
+                        tint = if (currentRoute == "home") {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                        }
                     )
                 },
                 label = {
                     Text(
                         text = stringResource(R.string.discovery_nav_home),
-                        color = if (currentRoute == "home") PrimaryOrange else Color.Gray
+                        color = if (currentRoute == "home") {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        }
                     )
                 },
                 colors = NavigationBarItemDefaults.colors(
                     indicatorColor = Color.Transparent
                 )
             )
+
+            // ====== Map Item ===============================
 
             NavigationBarItem(
                 selected = currentRoute == "map",
@@ -58,13 +68,21 @@ fun DiscoveryBottom(
                     Icon(
                         imageVector = Icons.Default.LocationOn,
                         contentDescription = stringResource(R.string.discovery_nav_map),
-                        tint = if (currentRoute == "map") PrimaryOrange else Color.LightGray
+                        tint = if (currentRoute == "map") {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                        }
                     )
                 },
                 label = {
                     Text(
                         text = stringResource(R.string.discovery_nav_map),
-                        color = if (currentRoute == "map") PrimaryOrange else Color.Gray
+                        color = if (currentRoute == "map") {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        }
                     )
                 },
                 colors = NavigationBarItemDefaults.colors(

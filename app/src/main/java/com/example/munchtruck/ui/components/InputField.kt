@@ -10,20 +10,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import com.example.munchtruck.ui.theme.AppColors.InputBorder
-import com.example.munchtruck.ui.theme.AppColors.PrimaryText
-import com.example.munchtruck.ui.theme.AppColors.TextMuted
-import com.example.munchtruck.ui.theme.AppColors.White
 import com.example.munchtruck.ui.theme.Dimens.InputRadius
 import com.example.munchtruck.ui.theme.Dimens.SpaceXS
-import androidx.compose.material3.TextFieldColors
-import androidx.compose.ui.text.TextStyle
 
-// ====== Input Field Component ===============================
+// ====== Input Field Component (UI Layer) ===============================
 
 @Composable
 fun InputField(
@@ -31,7 +27,7 @@ fun InputField(
     onChange: (String) -> Unit,
     modifier: Modifier = Modifier.fillMaxWidth(),
     textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
-    lable: String? = null,
+    label: String? = null,
     placeholder: String,
     isPassword: Boolean = false,
     singleLine: Boolean = true,
@@ -43,31 +39,27 @@ fun InputField(
     trailingIcon: (@Composable (() -> Unit))? = null,
     shape: RoundedCornerShape = RoundedCornerShape(InputRadius),
     colors: TextFieldColors = OutlinedTextFieldDefaults.colors(
-        focusedContainerColor = White,
-        unfocusedContainerColor = White,
+        focusedContainerColor = MaterialTheme.colorScheme.surface,
+        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
         focusedBorderColor = MaterialTheme.colorScheme.primary,
-        unfocusedBorderColor = InputBorder,
-        focusedTextColor = PrimaryText,
-        unfocusedTextColor = PrimaryText,
+        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
         cursorColor = MaterialTheme.colorScheme.primary,
-        focusedLabelColor = MaterialTheme.colorScheme.primary
+        focusedLabelColor = MaterialTheme.colorScheme.primary,
+        errorBorderColor = MaterialTheme.colorScheme.error,
+        errorLabelColor = MaterialTheme.colorScheme.error
     )
-
-){
+) {
     Column(modifier = modifier) {
-
-        // ====== Label ===============================
-
-        if (!lable.isNullOrEmpty()) {
+        if (!label.isNullOrEmpty()) {
             Text(
-                text = lable,
+                text = label,
                 style = MaterialTheme.typography.bodyMedium,
-                color = PrimaryText
+                color = MaterialTheme.colorScheme.onSurface
             )
-
             Spacer(modifier = Modifier.height(SpaceXS))
         }
-        // ====== Text Field ===============================
 
         OutlinedTextField(
             value = value,
@@ -75,12 +67,11 @@ fun InputField(
             placeholder = {
                 Text(
                     text = placeholder,
-                    color = TextMuted,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                     style = textStyle
                 )
             },
-            textStyle = textStyle,
-
+            textStyle = textStyle.copy(color = MaterialTheme.colorScheme.onSurface),
             modifier = Modifier.fillMaxWidth(),
             shape = shape,
             singleLine = singleLine,
@@ -88,19 +79,15 @@ fun InputField(
             maxLines = maxLines,
             isError = errorMessage != null,
             keyboardOptions = keyboardOptions,
-            visualTransformation =
-                if (isPassword) PasswordVisualTransformation()
-                else VisualTransformation.None,
+            visualTransformation = if (isPassword) PasswordVisualTransformation()
+            else VisualTransformation.None,
             leadingIcon = leadingIcon,
             trailingIcon = trailingIcon,
             colors = colors
-
         )
-        // ====== Error Message ===============================
 
         if (!errorMessage.isNullOrBlank()) {
             Spacer(modifier = Modifier.height(SpaceXS))
-
             Text(
                 text = errorMessage,
                 style = MaterialTheme.typography.bodySmall,
