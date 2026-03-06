@@ -20,6 +20,7 @@ object AppColors {
 
     val LinkColor = Color(0xFFFCDA9C)
     val InputBorder = Color(0xFFD3D3D3)
+    val DarkOverlay = Color(0x99000000) 
 
     // ====== Status Colors ===============================
 

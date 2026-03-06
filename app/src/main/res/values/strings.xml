@@ -1,226 +1,203 @@
 <resources>
 
-    <!-- ===== Common inputs ====================================== -->
-
-    <string name="input_email_hint">Email address</string>
-    <string name="input_password_hint">Password</string>
-    <string name="input_confirm_password_hint">Enter password again</string>
-
-    <!-- ===== Common actions ====================================== -->
-
-    <string name="common_back">Back</string>
-    <string name="common_save">Save</string>
-    <string name="common_cancel">Cancel</string>
-
-    <!-- ===== Start screen ====================================== -->
+    <!-- ===== Common / Shared Strings ====================================== -->
 
     <string name="app_name">munchtruck</string>
-    <string name="logo_munchtruck">MunchTruck logo</string>
-    <string name="start_welcome">Welcome to</string>
+    <string name="common_content_desc_logo">MunchTruck logo</string>
 
-    <string name="start_owner_title">I\'m a Food Truck Owner</string>
-    <string name="start_owner_subtitle">For those of you who run a food truck</string>
+    <!-- ===== Common Inputs ====================================== -->
 
-    <string name="start_lover_title">I\'m a Food Lover</string>
-    <string name="start_lover_subtitle">For those of you who want to find a food truck</string>
+    <string name="common_input_hint_email">Email address</string>
+    <string name="common_input_hint_password">Password</string>
+    <string name="common_input_hint_password_confirm">Enter password again</string>
 
-    <!-- ===== Login screen ====================================== -->
+    <!-- ===== Common Actions ====================================== -->
 
-    <string name="login_forgot_password">Forgot password?</string>
-    <string name="login_button">Log In</string>
-    <string name="login_no_account">Don\'t have an account?</string>
-    <string name="login_create_account">Create one here</string>
+    <string name="common_action_back">Back</string>
+    <string name="common_action_save">Save</string>
+    <string name="common_action_cancel">Cancel</string>
+    <string name="common_action_delete">Delete</string>
+    <string name="common_action_confirm">Confirm</string>
+    <string name="common_action_retry">Retry</string>
+    <string name="common_currency_sek">kr</string>
 
-    <!-- ===== Register screen ====================================== -->
+    <!-- ===== Start Screen ====================================== -->
 
-    <string name="register_subtitle">Register as a food truck owner</string>
-    <string name="register_company_label">Company name</string>
-    <string name="register_company_hint">Enter name</string>
-    <string name="register_email_label">Email address</string>
-    <string name="register_password_label">Password</string>
-    <string name="register_confirm_label">Confirm password</string>
-    <string name="register_button">Get Started</string>
+    <string name="start_title_welcome">Welcome to</string>
+    <string name="start_card_title_owner">I\'m a Food Truck Owner</string>
+    <string name="start_card_subtitle_owner">For those of you who run a food truck</string>
+    <string name="start_card_title_lover">I\'m a Food Lover</string>
+    <string name="start_card_subtitle_lover">For those of you who want to find a food truck</string>
 
-    <!-- ===== Forgot Password screen ====================================== -->
+    <!-- ===== Login Screen ====================================== -->
 
-    <string name="forgot_password_subtitle">Create new password</string>
-    <string name="forgot_password_button">Send reset link</string>
-    <string name="forgot_password_success_message">A reset link has been sent to your email address.</string>
+    <string name="login_text_forgot_password">Forgot password?</string>
+    <string name="login_button_login">Log In</string>
+    <string name="login_text_no_account">Don\'t have an account?</string>
+    <string name="login_text_create_account">Create one here</string>
+    <string name="login_error_failed">Login failed</string>
+    <string name="login_error_empty_fields">Email and password cannot be empty</string>
 
-    <!-- ===== Profile screen ====================================== -->
+    <!-- ===== Register Screen ====================================== -->
 
-    <string name="profile_logout_title">Log out</string>
-    <string name="profile_logout_message">Are you sure you want to log out?</string>
-    <string name="profile_logout_confirm">Yes</string>
-    <string name="profile_logout_cancel">Cancel</string>
-    <string name="profile_about">About</string>
-    <string name="profile_menu">Menu</string>
-    <string name="profile_options">Profile options</string>
-    <string name="profile_edit">Edit profile</string>
-    <string name="profile_logout">Log out</string>
+    <string name="register_title_subtitle">Register as a food truck owner</string>
+    <string name="register_label_company">Company name</string>
+    <string name="register_hint_company">Enter name</string>
+    <string name="register_label_email">Email address</string>
+    <string name="register_label_password">Password</string>
+    <string name="register_label_password_confirm">Confirm password</string>
+    <string name="register_button_get_started">Get Started</string>
+    <string name="register_error_failed">Registration failed</string>
+    <string name="register_error_passwords_not_matching">Passwords do not match</string>
+    <string name="register_error_password_too_short">Password must be at least 6 characters long</string>
+    <string name="register_error_invalid_email">Invalid email address</string>
+    <string name="register_error_confirm_password_empty">Confirm password cannot be empty</string>
 
-    <!-- ===== Public Profile screen ====================================== -->
+    <!-- ===== Forgot Password Screen ====================================== -->
 
-    <string name="public_profile_truck_not_found">Truck not found</string>
-    <string name="public_profile_menu_empty">This truck has no menu items yet</string>
+    <string name="forgot_password_title_subtitle">Create new password</string>
+    <string name="forgot_password_button_send_link">Send reset link</string>
+    <string name="forgot_password_message_success">A reset link has been sent to your email address.</string>
+    <string name="forgot_password_error_user_not_found">No user found with this email address.</string>
+    <string name="forgot_password_error_network">Network error. Please check your internet connection.</string>
+    <string name="forgot_password_error_unknown">An unexpected error occurred. Please try again.</string>
 
-    <string name="status_offline">Offline</string>
+    <!-- ===== Profile Screen ====================================== -->
 
-    <string name="profile_active_switch_label">Go Online</string>
-    <string name="profile_active_switch_subtitle">Make your truck visible to customers</string>
+    <string name="profile_title_about">About</string>
+    <string name="profile_title_menu">Menu</string>
+    <string name="profile_label_options">Profile options</string>
+    <string name="profile_menu_item_edit">Edit profile</string>
+    <string name="profile_menu_item_logout">Log out</string>
+    <string name="profile_dialog_logout_title">Log out</string>
+    <string name="profile_dialog_logout_message">Are you sure you want to log out?</string>
+    <string name="profile_dialog_logout_confirm">Yes</string>
+    <string name="profile_dialog_logout_cancel">Cancel</string>
+    <string name="profile_error_load_failed">Failed to load profile</string>
+    <string name="profile_error_update_failed">Failed to update profile</string>
+    <string name="profile_error_sign_out_failed">Logout failed. Please try again.</string>
+    <string name="profile_error_name_empty">Name cannot be empty</string>
 
-
-    <!-- ===== Opening hours ====================================== -->
-
-    <string name="opening_hours_title">Opening Hours</string>
-    <string name="day_mon">Monday</string>
-    <string name="day_tue">Tuesday</string>
-    <string name="day_wed">Wednesday</string>
-    <string name="day_thu">Thursday</string>
-    <string name="day_fri">Friday</string>
-    <string name="day_sat">Saturday</string>
-    <string name="day_sun">Sunday</string>
-
-    <string name="status_open">Open Now</string>
-    <string name="status_closed">Closed</string>
-    <string name="opening_hours_from">From</string>
-    <string name="opening_hours_to">To</string>
-
-    <string name="time_placeholder_start">09:00</string>
-    <string name="time_placeholder_end">17:00</string>
-
-    <string name="status_hours_missing">Hours not available</string>
-
-
-    <!-- ===== Formatting / Currency ====================================== -->
-
-    <string name="menu_price_format">%1$d %2$s</string>
-    <string name="currency_sek">kr</string>
-
-    <!-- ===== Edit Profile screen ====================================== -->
+    <!-- ===== Edit Profile Screen ====================================== -->
 
     <string name="edit_profile_title">Edit Profile</string>
-    <string name="profile_name_hint">Add Truck name..</string>
-    <string name="profile_description_hint">Add a short info about your food truck and the food you serve..</string>
-    <string name="profile_food_type_hint">Food type</string>
-    <string name="profile_load_image">Load image</string>
-    <string name="profile_manage_menu">Manage Menu</string>
-    <string name="profile_add_location">Add location</string>
-    <string name="profile_use_current_location">Use current location</string>
-    <string name="profile_save_location">Save</string>
-    <string name="profile_map_placeholder">Map preview</string>
-    <string name="menu_empty">No dishes added yet. Tap “Manage Menu” to add one.</string>
-    <string name="menu_add_dish">+ Add dish</string>
-    <string name="profile_danger_zone">Danger Zone</string>
-    <string name="profile_delete_account">Delete Account</string>
-    <string name="delete_account_title">Delete Account Permanent?</string>
-    <string name="delete_account_message">This will permanently remove your truck, menu, and account data. This action cannot be undone.</string>
-    <string name="delete_account_confirm">Delete Account</string>
-    <string name="delete_account_cancel">Cancel</string>
-    <string name="food_type_burger">Burger</string>
-    <string name="food_type_tacos">Tacos</string>
-    <string name="food_type_pizza">Pizza</string>
-    <string name="profile_food_type_placeholder">Select food type</string>
+    <string name="edit_profile_hint_name">Add Truck name..</string>
+    <string name="edit_profile_hint_description">Add a short info about your food truck and the food you serve..</string>
+    <string name="edit_profile_label_food_type">Food type</string>
+    <string name="edit_profile_placeholder_food_type">Select food type</string>
+    <string name="edit_profile_button_load_image">Load image</string>
+    <string name="edit_profile_button_manage_menu">Manage Menu</string>
+    <string name="edit_profile_label_danger_zone">Danger Zone</string>
+    <string name="edit_profile_button_delete_account">Delete Account</string>
+    <string name="edit_profile_dialog_delete_title">Delete Account Permanent?</string>
+    <string name="edit_profile_dialog_delete_message">This will permanently remove your truck, menu, and account data. This action cannot be undone.</string>
+    <string name="edit_profile_dialog_delete_confirm">Delete Account</string>
+    <string name="edit_profile_dialog_delete_cancel">Cancel</string>
+    <string name="edit_profile_error_delete_failed">Could not delete account. Please try again later.</string>
+    <string name="edit_profile_error_delete_recent_login">For security reasons, you need to log in again before deleting your account.</string>
 
-    <!-- ===== Edit Menu screen ====================================== -->
+    <!-- ===== Menu Screens ====================================== -->
 
     <string name="menu_title">Menu</string>
-    <string name="menu_name_hint">Dish name</string>
-    <string name="menu_price_hint">Price (kr)</string>
-    <string name="menu_description_hint">Description</string>
-    <string name="menu_select_image">Select image</string>
-    <string name="menu_no_image">No image selected</string>
-    <string name="menu_delete">Delete dish</string>
-    <string name="menu_item_saved">Menu item saved</string>
-    <string name="delete_title">Delete dish</string>
-    <string name="delete_message">Are you sure you want to delete this dish?</string>
-    <string name="delete_confirm">Delete</string>
-    <string name="dish_deleted">Dish deleted successfully.</string>
-    <string name="menu_edit">Edit dish</string>
-    <string name="menu_delete_icon">Delete dish</string>
+    <string name="menu_label_empty">No dishes added yet. Tap “Manage Menu” to add one.</string>
+    <string name="menu_button_add_dish">+ Add dish</string>
+    <string name="menu_hint_name">Dish name</string>
+    <string name="menu_hint_price">Price (kr)</string>
+    <string name="menu_hint_description">Description</string>
+    <string name="menu_button_select_image">Select image</string>
+    <string name="menu_label_no_image">No image selected</string>
+    <string name="menu_button_delete_dish">Delete dish</string>
+    <string name="menu_message_item_saved">Menu item saved</string>
+    <string name="menu_dialog_delete_title">Delete dish</string>
+    <string name="menu_dialog_delete_message">Are you sure you want to delete this dish?</string>
+    <string name="menu_message_dish_deleted">Dish deleted successfully.</string>
+    <string name="menu_title_edit_dish">Edit dish</string>
+    <string name="menu_icon_delete_dish">Delete dish</string>
+    <string name="menu_price_format">%1$d %2$s</string>
+    <string name="menu_error_name_empty">Dish name cannot be empty.</string>
+    <string name="menu_error_name_too_short">Dish name must be at least 2 characters.</string>
+    <string name="menu_error_name_too_long">Dish name can be at most 50 characters.</string>
+    <string name="menu_error_name_only_numbers">Dish name cannot contain only numbers.</string>
+    <string name="menu_error_name_invalid_chars">Dish name contains invalid characters.</string>
+    <string name="menu_error_description_too_long">Description can be at most 200 characters.</string>
+    <string name="menu_error_price_empty">Price cannot be empty.</string>
+    <string name="menu_error_price_invalid_format">Invalid price format.</string>
+    <string name="menu_error_price_must_be_positive">Price must be greater than 0.</string>
+    <string name="menu_error_price_too_high">Price can be at most 9 999.99 kr.</string>
+    <string name="menu_error_price_max_decimals">Maximum 2 decimal places allowed.</string>
+    <string name="menu_error_image_url_invalid">Invalid URL. Must start with http:// or https://</string>
 
-    <!-- ===== Discovery screen ====================================== -->
+    <!-- ===== Discovery Screen ====================================== -->
 
-    <string name="discovery_empty_nearby">No trucks near you</string>
-    <string name="discovery_search_placeholder">What are you craving?</string>
-    <string name="discovery_category_burger">Burger</string>
-    <string name="discovery_category_tacos">Tacos</string>
-    <string name="discovery_category_pizza">Pizza</string>
-    <string name="discovery_hero_title_line1">Discover burgers</string>
-    <string name="discovery_hero_title_line2">near you</string>
+    <string name="discovery_message_empty_nearby">No trucks near you</string>
+    <string name="discovery_placeholder_search">What are you craving?</string>
+    <string name="discovery_hero_title_1">Discover burgers</string>
+    <string name="discovery_hero_title_2">near you</string>
     <string name="discovery_hero_subtitle">Tasty burgers delivered quickly</string>
     <string name="discovery_nav_home">Home</string>
     <string name="discovery_nav_map">Map</string>
+    <string name="discovery_error_load_trucks_failed">Failed to load trucks</string>
+    <string name="discovery_error_load_menu_failed">Could not load menu</string>
 
-    <!-- ===== Location strings ====================================== -->
+    <!-- ===== Public Profile Screen ====================================== -->
 
-    <string name="location_permission_required">Location permission required</string>
-    <string name="location_save_success">Location saved successfully</string>
-    <string name="location_no_location_selected">No location selected</string>
-    <string name="location_use_current">Use current location</string>
-    <string name="location_select_on_map">Select on map</string>
-    <string name="profile_change_location">Change location</string>
-    <string name="location_selected_coordinates">Selected Coordinates:</string>
-    <string name="location_latitude">Latitude</string>
-    <string name="location_longitude">Longitude</string>
-    <string name="location_formatted">Formatted</string>
+    <string name="public_profile_error_truck_not_found">Truck not found</string>
+    <string name="public_profile_message_menu_empty">This truck has no menu items yet</string>
 
+    <!-- ===== Location Strings ====================================== -->
 
-    <!-- ===== Error Messages ====================================== -->
+    <string name="location_button_add">Add location</string>
+    <string name="location_button_change">Change location</string>
+    <string name="location_button_use_current">Use current location</string>
+    <string name="location_button_select_on_map">Select on map</string>
+    <string name="location_button_save">Save</string>
+    <string name="location_placeholder_map">Map preview</string>
+    <string name="location_label_selected_coords">Selected Coordinates:</string>
+    <string name="location_label_latitude">Latitude</string>
+    <string name="location_label_longitude">Longitude</string>
+    <string name="location_label_formatted_address">Formatted</string>
+    <string name="location_message_save_success">Location saved successfully</string>
+    <string name="location_error_permission_required">Location permission required</string>
+    <string name="location_error_no_location_selected">No location selected</string>
+    <string name="location_error_load_failed">Could not load saved location</string>
+    <string name="location_error_permission_denied">Location permission denied</string>
+    <string name="location_error_no_location">Could not get current location</string>
+    <string name="location_error_invalid_coords">Invalid location selected</string>
+    <string name="location_error_gps_timeout">GPS timeout - please try again or select manually</string>
+    <string name="location_error_address_too_short">Address must be at least 3 characters</string>
+    <string name="location_error_save_failed">Failed to save location</string>
+    <string name="location_error_fetch_failed">Could not fetch your location</string>
+    <string name="location_error_unknown">An unknown error occurred</string>
 
-    <!-- Profile -->
-    <string name="error_profile_name_empty">Name cannot be empty</string>
-    <string name="error_profile_update_failed">Failed to update profile</string>
-    <string name="error_profile_load_failed">Failed to load profile</string>
+    <!-- ===== Status Labels ====================================== -->
 
-    <!-- Location -->
-    <string name="error_location_load_failed">Could not load saved location</string>
-    <string name="error_location_permission_denied">Location permission denied</string>
-    <string name="error_location_no_location">Could not get current location</string>
-    <string name="error_location_invalid_coordinates">Invalid location selected</string>
-    <string name="error_location_gps_timeout">GPS timeout - please try again or select manually</string>
-    <string name="error_location_address_too_short">Address must be at least 3 characters</string>
-    <string name="error_location_save_failed">Failed to save location</string>
-    <string name="error_location_unknown">An unknown error occurred</string>
-    <string name="error_location_fetch_failed">Could not fetch your location</string>
+    <string name="status_label_online">Go Online</string>
+    <string name="status_label_online_subtitle">Make your truck visible to customers</string>
+    <string name="status_label_offline">Offline</string>
+    <string name="status_label_open">Open Now</string>
+    <string name="status_label_closed">Closed</string>
+    <string name="status_label_hours_missing">Hours not available</string>
 
-    <!-- Menu -->
-    <string name="error_menu_name_empty">Dish name cannot be empty.</string>
-    <string name="error_menu_name_too_short">Dish name must be at least 2 characters.</string>
-    <string name="error_menu_name_too_long">Dish name can be at most 50 characters.</string>
-    <string name="error_menu_name_only_numbers">Dish name cannot contain only numbers.</string>
-    <string name="error_menu_name_invalid_characters">Dish name contains invalid characters.</string>
-    <string name="error_menu_description_too_long">Description can be at most 200 characters.</string>
-    <string name="error_menu_price_empty">Price cannot be empty.</string>
-    <string name="error_menu_price_invalid_format">Invalid price format.</string>
-    <string name="error_menu_price_must_be_positive">Price must be greater than 0.</string>
-    <string name="error_menu_price_too_high">Price can be at most 9 999.99 kr.</string>
-    <string name="error_menu_price_max_two_decimals">Maximum 2 decimal places allowed.</string>
-    <string name="error_menu_image_invalid_url">Invalid URL. Must start with http:// or https://</string>
+    <!-- ===== Opening Hours ====================================== -->
 
-    <!-- Time -->
-    <string name="error_invalid_time_interval">Closing time must be after opening time (format HH:mm).</string>
+    <string name="opening_hours_title">Opening Hours</string>
+    <string name="opening_hours_day_mon">Monday</string>
+    <string name="opening_hours_day_tue">Tuesday</string>
+    <string name="opening_hours_day_wed">Wednesday</string>
+    <string name="opening_hours_day_thu">Thursday</string>
+    <string name="opening_hours_day_fri">Friday</string>
+    <string name="opening_hours_day_sat">Saturday</string>
+    <string name="opening_hours_day_sun">Sunday</string>
+    <string name="opening_hours_label_from">From</string>
+    <string name="opening_hours_label_to">To</string>
+    <string name="opening_hours_placeholder_start">09:00</string>
+    <string name="opening_hours_placeholder_end">17:00</string>
+    <string name="opening_hours_error_invalid_interval">Closing time must be after opening time (format HH:mm).</string>
 
-    <!-- Discovery -->
-    <string name="error_menu_load_failed">Could not load menu</string>
-    <string name="error_trucks_load_failed">Failed to load trucks</string>
+    <!-- ===== Food Types ====================================== -->
 
-    <!-- Auth -->
-    <string name="error_login_failed">Login failed</string>
-    <string name="error_logout_failed">Logout failed. Please try again.</string>
-    <string name="error_registration_failed">Registration failed</string>
-    <string name="error_login_empty_fields">Email and password cannot be empty</string>
-    <string name="error_invalid_email">Invalid email address</string>
-    <string name="error_password_too_short">Password must be at least 6 characters long</string>
-    <string name="error_confirm_password_empty">Confirm password cannot be empty</string>
-    <string name="error_passwords_not_matching">Passwords do not match</string>
-
-    <string name="error_delete_recent_login_required">For security reasons, you need to log in again before deleting your account.</string>
-    <string name="error_delete_failed">Could not delete account. Please try again later.</string>
-
-    <!--Password -->
-    <string name="error_user_not_found">No user found with this email address.</string>
-    <string name="error_network_error">Network error. Please check your internet connection.</string>
-    <string name="error_unknown_auth_error">An unexpected error occurred. Please try again.</string>
+    <string name="food_type_burger">Burger</string>
+    <string name="food_type_tacos">Tacos</string>
+    <string name="food_type_pizza">Pizza</string>
 
 </resources>

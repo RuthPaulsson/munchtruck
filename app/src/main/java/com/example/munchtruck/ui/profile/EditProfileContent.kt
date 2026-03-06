@@ -124,14 +124,14 @@ fun EditProfileContent(
                     IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.common_back)
+                            contentDescription = stringResource(R.string.common_action_back)
                         )
                     }
                 },
                 actions = {
                     TextButton(onClick = onSaveClick) {
                         Text(
-                            text = stringResource(R.string.common_save),
+                            text = stringResource(R.string.common_action_save),
                             color = MaterialTheme.colorScheme.primary
                         )
                     }
@@ -174,7 +174,7 @@ fun EditProfileContent(
                 InputField(
                     value = name,
                     onChange = onNameChange,
-                    placeholder = stringResource(R.string.profile_name_hint)
+                    placeholder = stringResource(R.string.edit_profile_hint_name)
                 )
 
                 Spacer(modifier = Modifier.height(SpaceL))
@@ -182,7 +182,7 @@ fun EditProfileContent(
                 InputField(
                     value = description,
                     onChange = onDescriptionChange,
-                    placeholder = stringResource(R.string.profile_description_hint),
+                    placeholder = stringResource(R.string.edit_profile_hint_description),
                     singleLine = false,
                     minLines = 3
                 )
@@ -245,9 +245,9 @@ fun EditProfileContent(
                     Spacer(modifier = Modifier.width(SpaceS))
                     Text(
                         text = if (hasLocation && !locationState.address.isNullOrBlank()) {
-                            "${stringResource(R.string.profile_change_location)}: ${locationState.address}"
+                            "${stringResource(R.string.location_button_change)}: ${locationState.address}"
                         } else {
-                            stringResource(R.string.profile_add_location)
+                            stringResource(R.string.location_button_add)
                         },
                         style = MaterialTheme.typography.bodyLarge,
                         maxLines = 1,
@@ -268,7 +268,7 @@ fun EditProfileContent(
                     Spacer(modifier = Modifier.height(SpaceS))
                     TextButton(onClick = onUseCurrentLocation) {
                         Text(
-                            text = stringResource(R.string.profile_use_current_location),
+                            text = stringResource(R.string.location_button_use_current),
                             color = MaterialTheme.colorScheme.primary
                         )
                     }
@@ -291,7 +291,7 @@ fun EditProfileContent(
                     )
                     Spacer(modifier = Modifier.width(SpaceS))
                     Text(
-                        text = stringResource(R.string.profile_menu),
+                        text = stringResource(R.string.profile_title_menu),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurface
                     )
@@ -301,7 +301,7 @@ fun EditProfileContent(
                     Spacer(modifier = Modifier.height(SpaceS))
                     if (menuItems.isEmpty()) {
                         Text(
-                            text = stringResource(R.string.menu_empty),
+                            text = stringResource(R.string.menu_label_empty),
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     } else {
@@ -324,7 +324,7 @@ fun EditProfileContent(
                                         color = MaterialTheme.colorScheme.onSurface
                                     )
                                     Text(
-                                        text = stringResource(R.string.menu_price_format, item.price / 100, stringResource(R.string.currency_sek)),
+                                        text = stringResource(R.string.menu_price_format, item.price / 100, stringResource(R.string.common_currency_sek)),
                                         style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
@@ -349,19 +349,19 @@ fun EditProfileContent(
                     Spacer(modifier = Modifier.height(SpaceS))
                     TextButton(onClick = onMenuClick) {
                         Text(
-                            text = stringResource(R.string.menu_add_dish),
+                            text = stringResource(R.string.menu_button_add_dish),
                             color = MaterialTheme.colorScheme.primary
                         )
                     }
                     Spacer(modifier = Modifier.height(SpaceXL))
                 }
 
-                // ====== Danger Zone (UI Layer) ===============================
+                // ====== Danger Zone Section ===============================
 
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                 Spacer(modifier = Modifier.height(SpaceM))
                 Text(
-                    text = stringResource(R.string.profile_danger_zone),
+                    text = stringResource(R.string.edit_profile_label_danger_zone),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.error
                 )
@@ -372,7 +372,7 @@ fun EditProfileContent(
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
                     border = BorderStroke(BorderThin, MaterialTheme.colorScheme.error)
                 ) {
-                    Text(text = stringResource(R.string.profile_delete_account))
+                    Text(text = stringResource(R.string.edit_profile_button_delete_account))
                 }
                 Spacer(modifier = Modifier.height(SpaceXL))
             }
@@ -414,8 +414,8 @@ fun EditProfileContentPreview() {
     AppPreviewWrapper {
         EditProfileContent(
             name = "Munch Truck",
-            description = "Bästa burgarna i stan",
-            foodType = "Burgare",
+            description = "Best burgers in town",
+            foodType = "Burger",
             locationState = LocationUiState(),
             cameraPositionState = rememberCameraPositionState(),
             selectedImageUri = null,

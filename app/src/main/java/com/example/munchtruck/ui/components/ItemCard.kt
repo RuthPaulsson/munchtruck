@@ -2,6 +2,7 @@ package com.example.munchtruck.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.rememberAsyncImagePainter
 import com.example.munchtruck.R
@@ -40,6 +42,7 @@ import com.example.munchtruck.ui.theme.Dimens.MenuItemImageIconSize
 import com.example.munchtruck.ui.theme.Dimens.MenuItemImageRadius
 import com.example.munchtruck.ui.theme.Dimens.MenuItemImageWidth
 import com.example.munchtruck.ui.theme.Dimens.SpaceM
+import com.example.munchtruck.ui.theme.Dimens.SpaceS
 import com.example.munchtruck.ui.theme.Dimens.SpaceXS
 
 // ====== Item Card (UI Layer) ===============================
@@ -50,6 +53,7 @@ fun ItemCard(
     description: String,
     imageUrl: String?,
     priceOrInfo: String,
+    showPriceOnRight: Boolean = false,
     distance: String? = null,
     trailingImageRes: Int? = null,
     modifier: Modifier = Modifier
@@ -91,53 +95,77 @@ fun ItemCard(
                 }
             }
 
-            Row(
+            Column(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(SpaceM),
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(horizontal = SpaceM, vertical = SpaceS)
             ) {
-                Column(modifier = Modifier.weight(1f)) {
+                // ====== Row 1: Title & Optional Price ===============================
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Text(
                         text = title,
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onSurface,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f)
                     )
 
-                    Spacer(modifier = Modifier.height(SpaceXS))
-
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        val openText = stringResource(R.string.status_open)
-                        val statusColor = if (description.contains(openText, ignoreCase = true))
-                            StatusOpen else StatusClosed
-
-                        Text(
-                            text = description,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = statusColor
-                        )
-
-                        if (!distance.isNullOrBlank()) {
-                            Text(
-                                text = " • $distance",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                maxLines = 1
-                            )
-                        }
-                    }
-
-                    if (priceOrInfo.isNotBlank()) {
-                        Spacer(modifier = Modifier.height(SpaceXS))
+                    if (showPriceOnRight && priceOrInfo.isNotBlank()) {
                         Text(
                             text = priceOrInfo,
-                            style = MaterialTheme.typography.labelSmall,
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                             color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(start = SpaceS)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(SpaceXS))
+
+                // ====== Row 2: Description & Distance ===============================
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    val openText = stringResource(R.string.status_label_open)
+                    val closedText = stringResource(R.string.status_label_closed)
+                    
+                    val statusColor = when {
+                        description.contains(openText, ignoreCase = true) -> StatusOpen
+                        description.contains(closedText, ignoreCase = true) -> StatusClosed
+                        else -> MaterialTheme.colorScheme.onSurfaceVariant
+                    }
+
+                    Text(
+                        text = description,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = statusColor,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f, fill = false)
+                    )
+
+                    if (!distance.isNullOrBlank()) {
+                        Text(
+                            text = " • $distance",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             maxLines = 1
                         )
                     }
+                }
+
+                // ====== Row 3: Price/Info (if not on right) ===============================
+                if (!showPriceOnRight && priceOrInfo.isNotBlank()) {
+                    Spacer(modifier = Modifier.height(SpaceXS))
+                    Text(
+                        text = priceOrInfo,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.primary,
+                        maxLines = 1
+                    )
                 }
             }
 
@@ -201,7 +229,7 @@ fun SharedImagePlaceholder(
                     .padding(bottom = SpaceM),
                 shape = RoundedCornerShape(ButtonRadius)
             ) {
-                Text(stringResource(R.string.menu_select_image))
+                Text(stringResource(R.string.menu_button_select_image))
             }
         }
     }

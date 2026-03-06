@@ -59,7 +59,7 @@ fun EditMenuScreen(
         }
     }
 
-    val successMessage = stringResource(R.string.menu_item_saved)
+    val successMessage = stringResource(R.string.menu_message_item_saved)
     LaunchedEffect(uiState.saveSuccess) {
         if (uiState.saveSuccess) {
             coroutineScope.launch {

@@ -8,6 +8,7 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import com.example.munchtruck.ui.theme.AppColors.DarkOverlay
 import com.example.munchtruck.ui.theme.AppColors.InputBorder
 import com.example.munchtruck.ui.theme.AppColors.LinkColor
 import com.example.munchtruck.ui.theme.AppColors.PrimaryBackground
@@ -31,7 +32,8 @@ private val LightColorScheme = lightColorScheme(
     onSurface = PrimaryText,
     surfaceVariant = PrimaryOrangeLowAlpha,
     onSurfaceVariant = PrimaryText.copy(alpha = 0.6f),
-    outline = InputBorder
+    outline = InputBorder,
+    scrim = DarkOverlay
 )
 
 private val DarkColorScheme = LightColorScheme

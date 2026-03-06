@@ -22,7 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -98,7 +97,7 @@ fun DiscoveryContent(
                 if (uiState.isListEmpty && errorMessage == null) {
                     item {
                         CenteredMessage(
-                            message = stringResource(R.string.discovery_empty_nearby)
+                            message = stringResource(R.string.discovery_message_empty_nearby)
                         )
                     }
                 }
@@ -108,9 +107,9 @@ fun DiscoveryContent(
                 items(uiState.trucks) { truck ->
                     val isOpen = truck.openingHours?.isOpenNow() ?: false
                     val statusText = if (isOpen) {
-                        stringResource(R.string.status_open)
+                        stringResource(R.string.status_label_open)
                     } else {
-                        stringResource(R.string.status_closed)
+                        stringResource(R.string.status_label_closed)
                     }
 
                     val calculatedDistance = uiState.userLocation?.let { userLoc ->
@@ -130,7 +129,7 @@ fun DiscoveryContent(
                         description = statusText,
                         distance = calculatedDistance,
                         imageUrl = truck.imageUrl,
-                        priceOrInfo = truck.foodType ?: "",
+                        priceOrInfo = "", 
                         trailingImageRes = foodImage,
                         modifier = Modifier
                             .padding(horizontal = SpaceM, vertical = SpaceS)
@@ -186,8 +185,8 @@ fun HeroSection(
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(
-                            Color.Black.copy(alpha = 0.15f),
-                            Color.Black.copy(alpha = 0.35f)
+                            MaterialTheme.colorScheme.scrim.copy(alpha = 0.2f),
+                            MaterialTheme.colorScheme.scrim.copy(alpha = 0.5f)
                         )
                     )
                 )
@@ -201,7 +200,7 @@ fun HeroSection(
         ) {
             Image(
                 painter = painterResource(R.drawable.munchtruck_text),
-                contentDescription = stringResource(R.string.logo_munchtruck),
+                contentDescription = stringResource(R.string.common_content_desc_logo),
                 modifier = Modifier
                     .padding(top = HeroLogoTopPadding)
                     .width(HeroLogoWidth)
@@ -210,7 +209,7 @@ fun HeroSection(
             Spacer(modifier = Modifier.height(SpaceXXL))
 
             Text(
-                text = stringResource(R.string.discovery_search_placeholder),
+                text = stringResource(R.string.discovery_placeholder_search),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onPrimary
             )
@@ -231,13 +230,13 @@ fun HeroSection(
                 horizontalAlignment = Alignment.Start
             ) {
                 Text(
-                    text = stringResource(R.string.discovery_hero_title_line1),
+                    text = stringResource(R.string.discovery_hero_title_1),
                     style = MaterialTheme.typography.headlineSmall,
                     color = MaterialTheme.colorScheme.onPrimary
                 )
 
                 Text(
-                    text = stringResource(R.string.discovery_hero_title_line2),
+                    text = stringResource(R.string.discovery_hero_title_2),
                     style = MaterialTheme.typography.headlineSmall,
                     color = MaterialTheme.colorScheme.onPrimary
                 )

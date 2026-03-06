@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -87,20 +88,22 @@ fun AuthHeader(
 
         Image(
             painter = painterResource(R.drawable.munchtruck_text),
-            contentDescription = stringResource(R.string.logo_munchtruck),
+            contentDescription = stringResource(R.string.common_content_desc_logo),
             modifier = Modifier
                 .fillMaxWidth(LogoWidthSmall)
                 .height(LogoHeightSmall),
             contentScale = ContentScale.Fit
         )
 
-        Spacer(modifier = Modifier.height(SpaceS))
+        if (subtitle.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(SpaceS))
 
-        Text(
-            text = subtitle,
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onBackground
-        )
+            Text(
+                text = subtitle,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+        }
 
         Spacer(modifier = Modifier.height(SpaceL))
     }

@@ -23,6 +23,7 @@ import com.example.munchtruck.ui.components.ConfirmationDialog
 import com.example.munchtruck.ui.components.toMessage
 import com.example.munchtruck.ui.components.updateOpeningHoursState
 import com.example.munchtruck.util.MenuItemValidationError
+import com.example.munchtruck.viewmodels.AuthViewModel
 import com.example.munchtruck.viewmodels.LocationViewModel
 import com.example.munchtruck.viewmodels.MenuViewModel
 import com.example.munchtruck.viewmodels.ProfileError
@@ -39,7 +40,8 @@ fun EditProfileScreen(
     navController: NavController,
     profileViewModel: ProfileViewModel,
     locationViewModel: LocationViewModel,
-    menuViewModel: MenuViewModel
+    menuViewModel: MenuViewModel,
+    authViewModel: AuthViewModel
 ) {
     // ====== State & Initialization ===============================
 
@@ -59,12 +61,13 @@ fun EditProfileScreen(
 
     var showDeleteDialog by remember { mutableStateOf(false) }
     var menuItemToDelete by remember { mutableStateOf<String?>(null) }
-    val deletedMessage = stringResource(R.string.dish_deleted)
+    val deletedMessage = stringResource(R.string.menu_message_dish_deleted)
 
     // ====== Side Effects ===============================
 
     LaunchedEffect(Unit) {
         profileViewModel.loadProfile()
+        locationViewModel.loadSavedLocation()
         menuViewModel.observeMenu()
     }
 
@@ -77,9 +80,7 @@ fun EditProfileScreen(
 
     LaunchedEffect(uiState.isAccountDeleted) {
         if (uiState.isAccountDeleted) {
-            navController.navigate("start") {
-                popUpTo(0) { inclusive = true }
-            }
+            authViewModel.logout()
         }
     }
 
@@ -210,8 +211,8 @@ fun EditProfileScreen(
             }
             menuItemToDelete = null
         },
-        title = stringResource(R.string.delete_title),
-        message = stringResource(R.string.delete_message),
+        title = stringResource(R.string.menu_dialog_delete_title),
+        message = stringResource(R.string.menu_dialog_delete_message),
         isDangerous = true
     )
 
@@ -219,9 +220,9 @@ fun EditProfileScreen(
         show = uiState.showDeleteConfirmation,
         onDismiss = { profileViewModel.onDeleteDismissed() },
         onConfirm = { profileViewModel.onDeleteConfirmed() },
-        title = stringResource(R.string.delete_account_title),
-        message = stringResource(R.string.delete_account_message),
-        confirmText = stringResource(R.string.delete_account_confirm),
+        title = stringResource(R.string.edit_profile_dialog_delete_title),
+        message = stringResource(R.string.edit_profile_dialog_delete_message),
+        confirmText = stringResource(R.string.edit_profile_dialog_delete_confirm),
         isDangerous = true
     )
 }

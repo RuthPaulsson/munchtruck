@@ -40,7 +40,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -130,7 +129,7 @@ fun ProfileContent(
 
             if (!description.isNullOrBlank()) {
                 Text(
-                    text = stringResource(R.string.profile_about),
+                    text = stringResource(R.string.profile_title_about),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.padding(horizontal = SpaceM)
@@ -149,7 +148,7 @@ fun ProfileContent(
 
             if (menuItems.isNotEmpty()) {
                 Text(
-                    text = stringResource(R.string.profile_menu),
+                    text = stringResource(R.string.profile_title_menu),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.padding(horizontal = SpaceM)
@@ -166,7 +165,7 @@ fun ProfileContent(
                             priceOrInfo = stringResource(
                                 R.string.menu_price_format,
                                 item.price / 100,
-                                stringResource(R.string.currency_sek)
+                                stringResource(R.string.common_currency_sek)
                             )
                         )
                         Spacer(modifier = Modifier.height(SpaceS))
@@ -179,7 +178,7 @@ fun ProfileContent(
             }
         }
 
-        // ====== Navigation Overlays (UI Layer) ===============================
+        // ====== Navigation Overlays ===============================
 
         if (!isOwner) {
             Box(modifier = Modifier.align(Alignment.BottomCenter)) {
@@ -220,12 +219,13 @@ fun ProfileHeroSection(
             modifier = Modifier.fillMaxSize()
         )
 
-        // Overlay för att säkerställa att vit text syns oavsett bild
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.3f))
-        )
+        if (!imageUrl.isNullOrBlank()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.scrim)
+            )
+        }
 
         if (isOwner) {
             Box(
@@ -236,25 +236,26 @@ fun ProfileHeroSection(
                 IconButton(onClick = { expanded = true }) {
                     Icon(
                         imageVector = Icons.Default.MoreVert,
-                        contentDescription = stringResource(R.string.profile_options),
-                        // Ändrad till vit färg (onPrimary)
-                        tint = MaterialTheme.colorScheme.onPrimary
+                        contentDescription = stringResource(R.string.profile_label_options),
+                        tint = if (imageUrl.isNullOrBlank()) MaterialTheme.colorScheme.onSurfaceVariant 
+                               else MaterialTheme.colorScheme.onPrimary
                     )
                 }
 
                 DropdownMenu(
                     expanded = expanded,
-                    onDismissRequest = { expanded = false }
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant)
                 ) {
                     DropdownMenuItem(
-                        text = { Text(stringResource(R.string.profile_edit)) },
+                        text = { Text(stringResource(R.string.profile_menu_item_edit)) },
                         onClick = {
                             expanded = false
                             onEditClick()
                         }
                     )
                     DropdownMenuItem(
-                        text = { Text(stringResource(R.string.profile_logout)) },
+                        text = { Text(stringResource(R.string.profile_menu_item_logout)) },
                         onClick = {
                             expanded = false
                             onLogoutClick()
@@ -267,8 +268,8 @@ fun ProfileHeroSection(
         Text(
             text = truckName,
             style = MaterialTheme.typography.headlineSmall,
-            // Ändrad till vit färg (onPrimary) för att synas mot bilden
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = if (imageUrl.isNullOrBlank()) MaterialTheme.colorScheme.onSurface 
+                    else MaterialTheme.colorScheme.onPrimary,
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .padding(SpaceM)
@@ -369,7 +370,6 @@ fun ProfileInfoRow(
                 text = foodType,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(start = if (!rating.isNullOrBlank()) 22.dp else 0.dp)
             )
         }
 
@@ -412,7 +412,7 @@ fun ProfileContentPreview() {
     AppPreviewWrapper {
         ProfileContent(
             isOwner = true,
-            foodType = "Burgare",
+            foodType = "Burger",
             truckName = "Crazy Burgers",
             description = "Best smash burgers in town.",
             rating = "4.7",
