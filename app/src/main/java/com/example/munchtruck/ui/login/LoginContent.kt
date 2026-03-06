@@ -44,20 +44,20 @@ fun LoginContent(
                 .padding(ScreenPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Lagom avstånd i toppen så loggan hamnar bra
+            // Top spacing for logo alignment
             Spacer(modifier = Modifier.height(SpaceL))
 
-            // AuthHeader utan subtitle
+            // AuthHeader without subtitle
             AuthHeader(subtitle = "")
 
             Spacer(modifier = Modifier.height(SpaceL))
 
-            // ====== Input Fields (Utan labels) =====================
+            // ====== Input Fields (Without labels) =====================
 
             InputField(
                 value = email,
                 onChange = onEmailChange,
-                label = "", // Ingen label här
+                label = "", // No label used here
                 placeholder = stringResource(R.string.input_email_hint)
             )
 
@@ -66,7 +66,7 @@ fun LoginContent(
             InputField(
                 value = password,
                 onChange = onPasswordChange,
-                label = "", // Ingen label här
+                label = "", // No label used here
                 placeholder = stringResource(R.string.input_password_hint),
                 isPassword = true
             )
