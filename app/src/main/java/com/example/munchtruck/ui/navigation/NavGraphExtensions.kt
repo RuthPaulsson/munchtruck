@@ -4,6 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.example.munchtruck.ui.discovery.DiscoveryScreen
+import com.example.munchtruck.ui.forgot.ForgotPasswordScreen
 import com.example.munchtruck.ui.login.LoginScreen
 import com.example.munchtruck.ui.menu.EditMenuScreen
 import com.example.munchtruck.ui.profile.EditProfileScreen
@@ -26,6 +27,7 @@ fun NavGraphBuilder.authNavGraph(
     composable("start") { StartScreen(navController) }
     composable("login") { LoginScreen(navController, authViewModel) }
     composable("register") { RegisterScreen(navController, authViewModel) }
+    composable("forgot_password") { ForgotPasswordScreen(navController, authViewModel) }
 }
 
 // ====== Owner Navigation Graph ===============================

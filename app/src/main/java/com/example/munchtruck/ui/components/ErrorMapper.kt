@@ -8,6 +8,8 @@ import com.example.munchtruck.viewmodels.AuthError
 import com.example.munchtruck.viewmodels.DiscoveryError
 import com.example.munchtruck.viewmodels.ProfileError
 
+// ====== Auth Error Mapping ===============================
+
 @Composable
 fun AuthError.toMessage(): String = when (this) {
     AuthError.EmptyFields -> stringResource(R.string.error_login_empty_fields)
@@ -16,8 +18,12 @@ fun AuthError.toMessage(): String = when (this) {
     AuthError.PasswordsDoNotMatch -> stringResource(R.string.error_passwords_not_matching)
     AuthError.LoginFailed -> stringResource(R.string.error_login_failed)
     AuthError.RegistrationFailed -> stringResource(R.string.error_registration_failed)
-
+    AuthError.UserNotFound -> stringResource(R.string.error_user_not_found)
+    AuthError.NetworkError -> stringResource(R.string.error_network_error)
+    AuthError.Unknown -> stringResource(R.string.error_unknown_auth_error)
 }
+
+// ====== Profile Error Mapping ===============================
 
 @Composable
 fun ProfileError.toMessage(): String = when (this) {
@@ -28,8 +34,9 @@ fun ProfileError.toMessage(): String = when (this) {
     ProfileError.InvalidTimeInterval -> stringResource(R.string.error_invalid_time_interval)
     ProfileError.DeleteFailed -> stringResource(R.string.error_delete_failed)
     ProfileError.RecentLoginRequired -> stringResource(R.string.error_delete_recent_login_required)
-
 }
+
+// ====== Menu Item Validation Error Mapping ===============================
 
 @Composable
 fun MenuItemValidationError.toMessage(): String = when (this) {
@@ -45,8 +52,9 @@ fun MenuItemValidationError.toMessage(): String = when (this) {
     MenuItemValidationError.PriceTooHigh -> stringResource(R.string.error_menu_price_too_high)
     MenuItemValidationError.PriceTooManyDecimals -> stringResource(R.string.error_menu_price_max_two_decimals)
     MenuItemValidationError.ImageUrlInvalid -> stringResource(R.string.error_menu_image_invalid_url)
-
 }
+
+// ====== Discovery Error Mapping ===============================
 
 @Composable
 fun DiscoveryError.toMessage(): String = when (this) {
