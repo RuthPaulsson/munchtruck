@@ -49,6 +49,7 @@ fun NavGraph() {
             }
         } else {
             profileViewModel.loadProfile()
+            locationViewModel.loadSavedLocation()
             menuViewModel.observeMenu()
         }
     }

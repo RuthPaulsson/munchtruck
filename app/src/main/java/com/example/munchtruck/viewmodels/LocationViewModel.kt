@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.munchtruck.data.LocationConstants
 import com.example.munchtruck.data.model.TruckLocation
-import com.example.munchtruck.data.repository.ProfileRepository  // Rätt!
+import com.example.munchtruck.data.repository.ProfileRepository
 import com.example.munchtruck.data.location.DeviceLocationProvider
 import com.example.munchtruck.util.LocationValidator
 import kotlinx.coroutines.TimeoutCancellationException
@@ -57,8 +57,11 @@ class LocationViewModel(
 
     // ====== Load Data ===============================
 
-    private fun loadSavedLocation() {
+    fun loadSavedLocation() {
+        if (_uiState.value.isLoading) return
+
         viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, error = null) }
             try {
                 val truck = profileRepository.getTruckProfile()
                 truck.location?.let { location ->
