@@ -104,7 +104,7 @@ class AuthViewModelTest {
 
         viewModel.register(email, password, password)
 
-        verify(mockRepo).register(email, password)
+        verify(mockRepo).register(email, password, trimmedCompanyName)
         assertTrue("Registreringen borde ha lyckats", viewModel.isLoggedIn.value)
         assertEquals("", viewModel.error.value)
     }
@@ -118,7 +118,7 @@ class AuthViewModelTest {
         assertTrue(viewModel.error.value.isNotEmpty())
 
 
-        verify(mockRepo, never()).register(any(), any())
+        verify(mockRepo, never()).register(any(), any(), trimmedCompanyName)
         assertFalse(viewModel.isLoggedIn.value)
     }
 
@@ -126,7 +126,7 @@ class AuthViewModelTest {
     @Test
     fun `register_fails_in_repository_sets_error_message`() = runTest {
         val errorMsg = "The email address is already in use by another account."
-        whenever(mockRepo.register(any(), any())).thenThrow(RuntimeException(errorMsg))
+        whenever(mockRepo.register(any(), any(), trimmedCompanyName)).thenThrow(RuntimeException(errorMsg))
 
         viewModel.register("existing@test.com", "Password123!", "Password123!")
 

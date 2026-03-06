@@ -82,7 +82,7 @@ class AuthViewModel(
         }
     }
 
-    fun register(email: String, password: String, confirmPassword: String) {
+    fun register(email: String, password: String, confirmPassword: String, companyName: String) {
         viewModelScope.launch {
 
             _error.value = null
@@ -104,10 +104,11 @@ class AuthViewModel(
 
             val trimmedEmail = email.trim()
             val trimmedPassword = password.trim()
+            val trimmedCompanyName = companyName.trim()
 
             _isLoading.value = true
             try {
-                repository.register(trimmedEmail, trimmedPassword)
+                repository.register(trimmedEmail, trimmedPassword, trimmedCompanyName)
                 _isLoggedIn.value = repository.isUserLoggedIn()
             } catch (e: Exception) {
                 _error.value = AuthError.RegistrationFailed
