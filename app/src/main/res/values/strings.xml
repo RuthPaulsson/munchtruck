@@ -41,6 +41,12 @@
     <string name="register_confirm_label">Confirm password</string>
     <string name="register_button">Get Started</string>
 
+    <!-- ===== Forgot Password screen ====================================== -->
+
+    <string name="forgot_password_subtitle">Create new password</string>
+    <string name="forgot_password_button">Send reset link</string>
+    <string name="forgot_password_success_message">A reset link has been sent to your email address.</string>
+
     <!-- ===== Profile screen ====================================== -->
 
     <string name="profile_logout_title">Log out</string>
@@ -211,5 +217,10 @@
 
     <string name="error_delete_recent_login_required">For security reasons, you need to log in again before deleting your account.</string>
     <string name="error_delete_failed">Could not delete account. Please try again later.</string>
+
+    <!--Password -->
+    <string name="error_user_not_found">No user found with this email address.</string>
+    <string name="error_network_error">Network error. Please check your internet connection.</string>
+    <string name="error_unknown_auth_error">An unexpected error occurred. Please try again.</string>
 
 </resources>

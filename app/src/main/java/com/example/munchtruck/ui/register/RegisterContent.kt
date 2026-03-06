@@ -23,6 +23,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.munchtruck.R
+import com.example.munchtruck.ui.components.AuthBackground
+import com.example.munchtruck.ui.components.AuthHeader
 import com.example.munchtruck.ui.components.InlineError
 import com.example.munchtruck.ui.components.InputField
 import com.example.munchtruck.ui.theme.AppColors.PrimaryBackground
@@ -56,53 +58,16 @@ fun RegisterContent(
     onConfirmPasswordChange: (String) -> Unit,
     onRegisterClick: () -> Unit
 ){
-
-    // ====== Root Container ===============================
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(PrimaryBackground)
-    ) {
-
-        Image(
-            painter = painterResource(R.drawable.basic_car),
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter),
-            contentScale = ContentScale.FillWidth
-
-        )
-
-        // ====== Main Content ===============================
-
+    AuthBackground {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(ScreenPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(SpaceL))
-
-            Image(
-                painter = painterResource(R.drawable.munchtruck_text),
-                contentDescription = stringResource(R.string.logo_munchtruck),
-                modifier = Modifier
-                    .fillMaxWidth(LogoWidthSmall)
-                    .height(LogoHeightSmall),
-                contentScale = ContentScale.Fit
+            AuthHeader(
+                subtitle = stringResource(R.string.register_subtitle)
             )
-
-            Spacer(modifier = Modifier.height(SpaceS))
-
-            Text(
-                text = stringResource(R.string.register_subtitle),
-                style = MaterialTheme.typography.bodyLarge,
-                color = PrimaryText
-            )
-
-            Spacer(modifier = Modifier.height(SpaceL))
 
             // ====== Input Fields ===============================
 
@@ -164,11 +129,9 @@ fun RegisterContent(
                         color = White,
                         strokeWidth = LoaderStroke,
                         modifier = Modifier.size(LoaderSize)
-
                     )
                 } else {
                     Text(stringResource(R.string.register_button))
-
                 }
             }
         }
