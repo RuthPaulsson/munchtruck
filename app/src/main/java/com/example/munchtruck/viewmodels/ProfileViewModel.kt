@@ -90,7 +90,7 @@ class ProfileViewModel(
             _uiState.update { it.copy(isSaving = true, error = null, saveSuccess = false) }
 
             try {
-                val imageUrl: String = if (imageUri != null) {
+                val newImageUrl: String = if (imageUri != null) {
                     imageRepository.uploadProfileImage(imageUri)
                 } else {
                     _uiState.value.imageUrl
@@ -100,12 +100,21 @@ class ProfileViewModel(
                     name,
                     description,
                     foodType,
-                    imageUrl,
+                    newImageUrl,
                     openingHours = openingHours
-                    )
+                )
 
                 _uiState.update {
-                    it.copy(isSaving = false, saveSuccess = true)
+                    it.copy(
+                        isSaving = false,
+                        saveSuccess = true,
+                        name = name,
+                        description = description,
+                        foodType = foodType,
+                        imageUrl = newImageUrl,
+                        openingHours = openingHours,
+                        isOpenNow = openingHours?.isCurrentlyOpen() ?: false
+                    )
                 }
             } catch (e: Exception) {
                 _uiState.update {
