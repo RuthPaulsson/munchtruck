@@ -33,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.munchtruck.R
@@ -167,7 +168,8 @@ fun FoodTypeFilterBar(
                     containerColor = if (isSelected) {
                         MaterialTheme.colorScheme.primary
                     } else {
-                        MaterialTheme.colorScheme.surfaceVariant
+                        // Enbart chipsen får vit bakgrund här
+                        Color.White
                     }
                 ),
                 modifier = Modifier.clickable {
@@ -195,7 +197,8 @@ fun FoodTypeFilterBar(
                         color = if (isSelected) {
                             MaterialTheme.colorScheme.onPrimary
                         } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant
+                            // Textfärgen när chipet är vitt
+                            MaterialTheme.colorScheme.primary
                         }
                     )
                 }
