@@ -3,6 +3,7 @@ package com.example.munchtruck.ui.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,14 +18,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.munchtruck.R
-import com.example.munchtruck.ui.theme.AppColors.PrimaryBackground
-import com.example.munchtruck.ui.theme.AppColors.PrimaryText
 import com.example.munchtruck.ui.theme.Dimens.LogoHeightSmall
 import com.example.munchtruck.ui.theme.Dimens.LogoWidthSmall
 import com.example.munchtruck.ui.theme.Dimens.SpaceL
 import com.example.munchtruck.ui.theme.Dimens.SpaceS
 
-// ====== Background with bottom illustration ===============================
+// ====== Auth Background (UI Layer) ===============================
 
 @Composable
 fun AuthBackground(
@@ -33,21 +32,47 @@ fun AuthBackground(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(PrimaryBackground)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         Image(
             painter = painterResource(R.drawable.basic_car),
             contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
-                .align (Alignment.BottomCenter),
+                .align(Alignment.BottomCenter),
             contentScale = ContentScale.FillWidth
         )
         content()
     }
 }
 
-// ====== Header with logo and subtitle =========================
+// ====== Dark Auth Background (UI Layer) ===============================
+
+@Composable
+fun DarkAuthBackground(
+    content: @Composable BoxScope.() -> Unit
+) {
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Image(
+            painter = painterResource(R.drawable.bg_foodtruck),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.6f))
+        )
+
+        content()
+    }
+}
+
+// ====== Auth Header (UI Layer) ===============================
 
 @Composable
 fun AuthHeader(
@@ -74,7 +99,7 @@ fun AuthHeader(
         Text(
             text = subtitle,
             style = MaterialTheme.typography.bodyLarge,
-            color = PrimaryText
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         Spacer(modifier = Modifier.height(SpaceL))

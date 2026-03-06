@@ -1,5 +1,6 @@
 package com.example.munchtruck.ui.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,7 +24,6 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,9 +33,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.example.munchtruck.R
+import com.example.munchtruck.ui.theme.Dimens.ChipHorizontalPadding
+import com.example.munchtruck.ui.theme.Dimens.ChipRadius
+import com.example.munchtruck.ui.theme.Dimens.ChipSpacing
+import com.example.munchtruck.ui.theme.Dimens.ChipVerticalPadding
+import com.example.munchtruck.ui.theme.Dimens.IconSizeSmall
+import com.example.munchtruck.ui.theme.Dimens.SpaceXS
+
+// ====== Food Type Section (UI Layer) ===============================
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,10 +67,10 @@ fun FoodTypeSection(
                 Icon(
                     imageVector = Icons.Default.RestaurantMenu,
                     contentDescription = null,
-                    modifier = Modifier.size(16.dp),
+                    modifier = Modifier.size(IconSizeSmall),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                Spacer(modifier = Modifier.width(4.dp))
+                Spacer(modifier = Modifier.width(SpaceXS))
                 Text(
                     text = foodType,
                     style = MaterialTheme.typography.bodyMedium,
@@ -78,7 +86,7 @@ fun FoodTypeSection(
                 text = stringResource(R.string.profile_food_type_hint),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(bottom = 4.dp)
+                modifier = Modifier.padding(bottom = SpaceXS)
             )
 
             ExposedDropdownMenuBox(
@@ -108,8 +116,9 @@ fun FoodTypeSection(
                         DropdownMenuItem(
                             text = {
                                 Text(
-                                    text =label,
-                                    color = MaterialTheme.colorScheme.onSurface)
+                                    text = label,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
                             },
                             onClick = {
                                 onFoodTypeChange?.invoke(label)
@@ -123,6 +132,8 @@ fun FoodTypeSection(
     }
 }
 
+// ====== Food Type Filter Bar (UI Layer) ===============================
+
 @Composable
 fun FoodTypeFilterBar(
     selectedCategory: String,
@@ -130,32 +141,34 @@ fun FoodTypeFilterBar(
     modifier: Modifier = Modifier
 ) {
     val foodOptions = listOf(
-        R.string.food_type_burger to "🍔",
-        R.string.food_type_tacos to "🌮",
-        R.string.food_type_pizza to "🍕"
+        R.string.food_type_burger to R.drawable.icon_burger,
+        R.string.food_type_tacos to R.drawable.icon_taco,
+        R.string.food_type_pizza to R.drawable.icon_pizza
     )
 
-    // ÄNDRINGARNA HÄR:
     Row(
         modifier = modifier
-            .fillMaxWidth() // Behåller denna för att ha hela raden att spela på...
+            .fillMaxWidth()
             .wrapContentHeight(),
-        horizontalArrangement = Arrangement.Center, // ...men centrerar allt innehåll
+        horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        foodOptions.forEach { (resId, emoji) ->
+        foodOptions.forEach { (resId, iconRes) ->
             val label = stringResource(resId)
             val isSelected = selectedCategory == label
 
-            // Lägg till ett litet mellanrum mellan chipsen manuellt eller via spacedBy
-            if (foodOptions.indexOf(resId to emoji) != 0) {
-                Spacer(modifier = Modifier.width(8.dp)) // Motsvarar SpaceS/ChipSpacing
+            if (foodOptions.indexOf(resId to iconRes) != 0) {
+                Spacer(modifier = Modifier.width(ChipSpacing))
             }
 
             Card(
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(ChipRadius),
                 colors = CardDefaults.cardColors(
-                    containerColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
+                    containerColor = if (isSelected) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.surfaceVariant
+                    }
                 ),
                 modifier = Modifier.clickable {
                     if (isSelected) onCategoryClick("") else onCategoryClick(label)
@@ -163,14 +176,27 @@ fun FoodTypeFilterBar(
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
+                    modifier = Modifier.padding(
+                        horizontal = ChipHorizontalPadding,
+                        vertical = ChipVerticalPadding
+                    )
                 ) {
-                    Text(text = emoji)
-                    Spacer(modifier = Modifier.width(6.dp))
+                    Image(
+                        painter = painterResource(id = iconRes),
+                        contentDescription = null,
+                        modifier = Modifier.size(IconSizeSmall)
+                    )
+
+                    Spacer(modifier = Modifier.width(ChipSpacing))
+
                     Text(
                         text = label,
                         style = MaterialTheme.typography.bodySmall,
-                        color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+                        color = if (isSelected) {
+                            MaterialTheme.colorScheme.onPrimary
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        }
                     )
                 }
             }
@@ -178,7 +204,7 @@ fun FoodTypeFilterBar(
     }
 }
 
-// ====== Food Type Helpers ===============================
+// ====== Food Type Helpers (UI Layer) ===============================
 
 @Composable
 fun getFoodTypeImage(foodType: String?): Int? {

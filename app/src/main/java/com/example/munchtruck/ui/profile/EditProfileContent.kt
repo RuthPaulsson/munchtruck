@@ -3,9 +3,7 @@ package com.example.munchtruck.ui.profile
 import android.net.Uri
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,23 +18,22 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.RestaurantMenu
-import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,12 +41,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import coil.compose.rememberAsyncImagePainter
 import com.example.munchtruck.R
 import com.example.munchtruck.data.model.MenuItem
 import com.example.munchtruck.data.model.OpeningHours
@@ -61,11 +55,8 @@ import com.example.munchtruck.ui.components.InputField
 import com.example.munchtruck.ui.components.OpeningHoursSection
 import com.example.munchtruck.ui.components.SharedImagePlaceholder
 import com.example.munchtruck.ui.theme.AppPreviewWrapper
-import com.example.munchtruck.ui.theme.Dimens
 import com.example.munchtruck.ui.theme.Dimens.BorderThin
-import com.example.munchtruck.ui.theme.Dimens.ButtonRadius
 import com.example.munchtruck.ui.theme.Dimens.LocationMapHeight
-import com.example.munchtruck.ui.theme.Dimens.ProfileImageButtonRadius
 import com.example.munchtruck.ui.theme.Dimens.ProfileImageHeight
 import com.example.munchtruck.ui.theme.Dimens.ProfileImageRadius
 import com.example.munchtruck.ui.theme.Dimens.ScreenPadding
@@ -75,10 +66,13 @@ import com.example.munchtruck.ui.theme.Dimens.SpaceS
 import com.example.munchtruck.ui.theme.Dimens.SpaceXL
 import com.example.munchtruck.viewmodels.LocationUiState
 import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+
+// ====== Edit Profile Content (UI Layer) ===============================
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -89,7 +83,7 @@ fun EditProfileContent(
     errorMessage: String? = null,
     isLoading: Boolean = false,
     locationState: LocationUiState,
-    cameraPositionState: com.google.maps.android.compose.CameraPositionState,
+    cameraPositionState: CameraPositionState,
     menuItems: List<MenuItem>,
     onEditMenuClick: (String) -> Unit,
     onDeleteMenuClick: (String) -> Unit,
@@ -110,7 +104,6 @@ fun EditProfileContent(
     onDeleteAccountClick: () -> Unit,
     isDeleting: Boolean = false,
     snackbarHost: @Composable () -> Unit
-
 ) {
     var isLocationExpanded by remember { mutableStateOf(false) }
     var isMenuExpanded by remember { mutableStateOf(false) }
@@ -137,16 +130,16 @@ fun EditProfileContent(
                 },
                 actions = {
                     TextButton(onClick = onSaveClick) {
-                        Text(stringResource(R.string.common_save))
+                        Text(
+                            text = stringResource(R.string.common_save),
+                            color = MaterialTheme.colorScheme.primary
+                        )
                     }
                 }
             )
         }
     ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
+        Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -155,7 +148,6 @@ fun EditProfileContent(
                     .padding(innerPadding)
                     .padding(ScreenPadding)
             ) {
-
                 errorMessage?.let {
                     InlineError(
                         message = it,
@@ -163,21 +155,21 @@ fun EditProfileContent(
                     )
                 }
 
-                // ===== Profile Image =====
+                // ====== Image Section ===============================
 
                 SharedImagePlaceholder(
                     selectedImageUri = selectedImageUri,
                     existingImageUrl = existingImageUrl,
                     onImageClick = onImageClick,
                     modifier = Modifier
-                        .fillMaxSize()
+                        .fillMaxWidth()
                         .height(ProfileImageHeight)
                         .clip(RoundedCornerShape(ProfileImageRadius))
                 )
 
                 Spacer(modifier = Modifier.height(SpaceL))
 
-                // ===== Inputs =====
+                // ====== General Info Section ===============================
 
                 InputField(
                     value = name,
@@ -205,7 +197,8 @@ fun EditProfileContent(
 
                 Spacer(modifier = Modifier.height(SpaceL))
 
-                // ===== Opening Hours =====
+                // ====== Opening Hours Section ===============================
+
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -218,16 +211,12 @@ fun EditProfileContent(
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.primary
                     )
-
                     Spacer(modifier = Modifier.width(SpaceS))
-
                     Text(
                         text = stringResource(R.string.opening_hours_title),
-                        style = MaterialTheme.typography.bodyLarge
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
-
-                    Spacer(modifier = Modifier.weight(1f))
-
                 }
 
                 if (isOpeningHoursExpanded) {
@@ -239,7 +228,7 @@ fun EditProfileContent(
                     Spacer(modifier = Modifier.height(SpaceL))
                 }
 
-                // ===== Location Row =====
+                // ====== Location Section ===============================
 
                 Row(
                     modifier = Modifier
@@ -253,62 +242,45 @@ fun EditProfileContent(
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.primary
                     )
-
                     Spacer(modifier = Modifier.width(SpaceS))
-
                     Text(
                         text = if (hasLocation && !locationState.address.isNullOrBlank()) {
-                            // Här kombinerar vi "Change location" med den faktiska adressen
                             "${stringResource(R.string.profile_change_location)}: ${locationState.address}"
                         } else {
                             stringResource(R.string.profile_add_location)
                         },
                         style = MaterialTheme.typography.bodyLarge,
                         maxLines = 1,
-                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                        overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.weight(1f),
-                        color = if (hasLocation)
-                            MaterialTheme.colorScheme.onSurface
-                        else
-                            MaterialTheme.colorScheme.onSurfaceVariant
+                        color = if (hasLocation) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
                     )
-
-                    Spacer(modifier = Modifier.weight(1f))
                 }
 
                 if (isLocationExpanded) {
-
                     Spacer(modifier = Modifier.height(SpaceS))
-
                     LocationMap(
                         lat = locationState.selectedLat,
                         lng = locationState.selectedLng,
                         cameraPositionState = cameraPositionState,
                         onMapClick = onMapPicked
                     )
-
                     Spacer(modifier = Modifier.height(SpaceS))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-
-                        TextButton(onClick = onUseCurrentLocation) {
-                            Text(stringResource(R.string.profile_use_current_location))
-                        }
-
+                    TextButton(onClick = onUseCurrentLocation) {
+                        Text(
+                            text = stringResource(R.string.profile_use_current_location),
+                            color = MaterialTheme.colorScheme.primary
+                        )
                     }
-
                     Spacer(modifier = Modifier.height(SpaceL))
                 }
 
-                // ===== Menu Row =====
+                // ====== Menu Section ===============================
 
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable{ isMenuExpanded = !isMenuExpanded }
+                        .clickable { isMenuExpanded = !isMenuExpanded }
                         .padding(vertical = SpaceM),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -317,37 +289,22 @@ fun EditProfileContent(
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.primary
                     )
-
                     Spacer(modifier = Modifier.width(SpaceS))
-
                     Text(
                         text = stringResource(R.string.profile_menu),
-                        style = MaterialTheme.typography.bodyLarge
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
-                    Spacer(modifier = Modifier.weight(1f))
                 }
 
                 if (isMenuExpanded) {
-
                     Spacer(modifier = Modifier.height(SpaceS))
-
                     if (menuItems.isEmpty()) {
-
                         Text(
                             text = stringResource(R.string.menu_empty),
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-
-                        Spacer(modifier = Modifier.height(SpaceS))
-
-                        TextButton(
-                            onClick = { onMenuClick() }
-                        ) {
-                            Text(stringResource(R.string.menu_add_dish))
-                        }
-
                     } else {
-
                         menuItems.forEach { item ->
                             Row(
                                 modifier = Modifier
@@ -355,91 +312,71 @@ fun EditProfileContent(
                                     .padding(vertical = SpaceS),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-
                                 Icon(
                                     imageVector = Icons.Default.RestaurantMenu,
-                                    contentDescription = null
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onSurface
                                 )
-
                                 Spacer(modifier = Modifier.width(SpaceS))
-
                                 Column(modifier = Modifier.weight(1f)) {
-                                    Text(item.name)
-
                                     Text(
-                                        text = stringResource(
-                                            R.string.menu_price_format,
-                                            item.price / 100,
-                                            stringResource(R.string.currency_sek)
-                                        ),
+                                        text = item.name,
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    )
+                                    Text(
+                                        text = stringResource(R.string.menu_price_format, item.price / 100, stringResource(R.string.currency_sek)),
                                         style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                 }
-
-                                IconButton(
-                                    onClick = { onEditMenuClick(item.id) }
-                                ) {
+                                IconButton(onClick = { onEditMenuClick(item.id) }) {
                                     Icon(
                                         imageVector = Icons.Default.Edit,
-                                        contentDescription = stringResource(R.string.menu_edit),
+                                        contentDescription = null,
                                         tint = MaterialTheme.colorScheme.primary
                                     )
                                 }
-
-                                IconButton(
-                                    onClick = { onDeleteMenuClick(item.id) }
-                                ) {
+                                IconButton(onClick = { onDeleteMenuClick(item.id) }) {
                                     Icon(
                                         imageVector = Icons.Default.Delete,
-                                        contentDescription = stringResource(R.string.menu_delete_icon),
+                                        contentDescription = null,
                                         tint = MaterialTheme.colorScheme.error
                                     )
                                 }
                             }
                         }
-
-                        Spacer(modifier = Modifier.height(SpaceS))
-
-                        TextButton(
-                            onClick = { onMenuClick() }
-                        ) {
-                            Text(stringResource(R.string.menu_add_dish))
-                        }
                     }
-
+                    Spacer(modifier = Modifier.height(SpaceS))
+                    TextButton(onClick = onMenuClick) {
+                        Text(
+                            text = stringResource(R.string.menu_add_dish),
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
                     Spacer(modifier = Modifier.height(SpaceXL))
                 }
 
-                // ===== Danger Zone =====
+                // ====== Danger Zone (UI Layer) ===============================
 
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-
                 Spacer(modifier = Modifier.height(SpaceM))
-
                 Text(
                     text = stringResource(R.string.profile_danger_zone),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.error
                 )
-
                 Spacer(modifier = Modifier.height(SpaceS))
-
-                androidx.compose.material3.OutlinedButton(
+                OutlinedButton(
                     onClick = onDeleteAccountClick,
                     modifier = Modifier.fillMaxWidth(),
-                    colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(
-                        contentColor = MaterialTheme.colorScheme.error
-                    ),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
                     border = BorderStroke(BorderThin, MaterialTheme.colorScheme.error)
                 ) {
-                    Text(stringResource(R.string.profile_delete_account))
+                    Text(text = stringResource(R.string.profile_delete_account))
                 }
-
                 Spacer(modifier = Modifier.height(SpaceXL))
-
-
             }
+
             if (isLoading || isDeleting) {
                 CenteredLoading()
             }
@@ -447,47 +384,40 @@ fun EditProfileContent(
     }
 }
 
+// ====== Sub-components (UI Layer) ===============================
+
 @Composable
 fun LocationMap(
     lat: Double?,
     lng: Double?,
-    cameraPositionState: com.google.maps.android.compose.CameraPositionState,
+    cameraPositionState: CameraPositionState,
     onMapClick: (Double, Double) -> Unit
 ) {
-    val cameraPositionState = rememberCameraPositionState()
-
-
     GoogleMap(
         modifier = Modifier
             .fillMaxWidth()
             .height(LocationMapHeight),
         cameraPositionState = cameraPositionState,
-        onMapClick = { latLng ->
-            onMapClick(latLng.latitude, latLng.longitude)
-        }
+        onMapClick = { latLng -> onMapClick(latLng.latitude, latLng.longitude) }
     ) {
         if (lat != null && lng != null) {
-            Marker(
-                state = MarkerState(
-                    position = LatLng(lat, lng)
-                )
-            )
+            Marker(state = MarkerState(position = LatLng(lat, lng)))
         }
     }
 }
 
+// ====== Preview ===============================
 
 @Preview(showBackground = true)
 @Composable
 fun EditProfileContentPreview() {
     AppPreviewWrapper {
-        val previewCameraState = rememberCameraPositionState()
         EditProfileContent(
-            name = "",
-            description = "",
-            foodType = "",
+            name = "Munch Truck",
+            description = "Bästa burgarna i stan",
+            foodType = "Burgare",
             locationState = LocationUiState(),
-            cameraPositionState = previewCameraState,
+            cameraPositionState = rememberCameraPositionState(),
             selectedImageUri = null,
             onMapPicked = { _, _ -> },
             onUseCurrentLocation = {},
@@ -501,16 +431,12 @@ fun EditProfileContentPreview() {
             onDescriptionChange = {},
             onFoodTypeChange = {},
             onMenuClick = {},
-            menuItems = listOf(
-                MenuItem("1", "Classic Burger", 9500, "Best burger"),
-                MenuItem("2", "Fries", 7500, "Crispy fries")
-            ),
+            menuItems = listOf(MenuItem("1", "Classic Burger", 9500, "Best burger")),
             onEditMenuClick = {},
             onDeleteMenuClick = {},
             onDeleteAccountClick = {},
             isDeleting = false,
-            snackbarHost = {},
-
+            snackbarHost = {}
         )
     }
 }

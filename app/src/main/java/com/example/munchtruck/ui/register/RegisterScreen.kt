@@ -1,39 +1,37 @@
 package com.example.munchtruck.ui.register
 
-
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.munchtruck.ui.components.toMessage
-
 import com.example.munchtruck.viewmodels.AuthViewModel
 
-// ====== Register Screen ===============================
+// ====== Register Screen (Logic Layer) ===============================
 
 @Composable
 fun RegisterScreen(
     navController: NavController,
     authViewModel: AuthViewModel
-){
-    // ====== UI State ===============================
+) {
+    // ====== State & Initialization ===============================
 
-    var company by remember { mutableStateOf("") }
+    var companyName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
-    val errorState by authViewModel.error.collectAsState()
-    val isLoading by authViewModel.isLoading.collectAsState()
-    val isLoggedIn by authViewModel.isLoggedIn.collectAsState()
+
+    val errorState by authViewModel.error.collectAsStateWithLifecycle()
+    val isLoading by authViewModel.isLoading.collectAsStateWithLifecycle()
+    val isLoggedIn by authViewModel.isLoggedIn.collectAsStateWithLifecycle()
 
     val errorMessage = errorState?.toMessage() ?: ""
 
-    // ====== Navigation Effects ===============================
+    // ====== Side Effects ===============================
 
     LaunchedEffect(isLoggedIn) {
         if (isLoggedIn) {
@@ -43,22 +41,26 @@ fun RegisterScreen(
         }
     }
 
-
-    // ====== UI Content ===============================
+    // ====== UI Rendering ===============================
 
     RegisterContent(
-        company = company,
+        company = companyName,
         email = email,
         password = password,
         confirmPassword = confirmPassword,
         error = errorMessage,
         isLoading = isLoading,
-        onCompanyChange = { company = it },
+        onCompanyChange = { companyName = it },
         onEmailChange = { email = it },
         onPasswordChange = { password = it },
         onConfirmPasswordChange = { confirmPassword = it },
         onRegisterClick = {
-            authViewModel.register(email, password, confirmPassword)
+            authViewModel.register(
+                email = email,
+                password = password,
+                confirmPassword = confirmPassword,
+                companyName = companyName
+            )
         }
     )
 }

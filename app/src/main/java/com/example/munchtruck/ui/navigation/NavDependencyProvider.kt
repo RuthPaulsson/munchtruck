@@ -18,7 +18,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 
-// ====== Nav Dependency Provider ===============================
+// ====== Nav Dependency Provider (Infrastructure Layer) ===============================
 
 class NavDependencyProvider(context: Context) {
 
@@ -40,32 +40,41 @@ class NavDependencyProvider(context: Context) {
     // ====== ViewModel Factories ===============================
 
     val authFactory = object : ViewModelProvider.Factory {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T = AuthViewModel(authRepository) as T
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T =
+            AuthViewModel(authRepository) as T
     }
 
     val profileFactory = object : ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
             ProfileViewModel(
                 profileRepository,
                 imageRepository,
-                authRepository) as T
+                authRepository
+            ) as T
     }
 
     val locationFactory = object : ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
             LocationViewModel(
                 profileRepository,
-                locationProvider) as T
+                locationProvider
+            ) as T
     }
 
     val menuFactory = object : ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
             MenuViewModel(
                 menuRepository,
-                imageRepository) as T
+                imageRepository
+            ) as T
     }
 
     val discoveryFactory = object : ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
             DiscoveryViewModel(
                 discoveryRepository,

@@ -2,22 +2,20 @@ package com.example.munchtruck.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.example.munchtruck.viewmodels.AuthViewModel
-import com.example.munchtruck.viewmodels.MenuViewModel
-import com.example.munchtruck.viewmodels.ProfileViewModel
 import com.example.munchtruck.viewmodels.DiscoveryViewModel
 import com.example.munchtruck.viewmodels.LocationViewModel
+import com.example.munchtruck.viewmodels.MenuViewModel
+import com.example.munchtruck.viewmodels.ProfileViewModel
 
-
-
-// ====== Main Navigation Graph ===============================
+// ====== Main Navigation Graph (Routing Layer) ===============================
 
 @Composable
 fun NavGraph() {
@@ -36,13 +34,12 @@ fun NavGraph() {
     val menuViewModel: MenuViewModel = viewModel(factory = provider.menuFactory)
     val discoveryViewModel: DiscoveryViewModel = viewModel(factory = provider.discoveryFactory)
 
-    val isLoggedIn by authViewModel.isLoggedIn.collectAsState()
+    val isLoggedIn by authViewModel.isLoggedIn.collectAsStateWithLifecycle()
 
     // ====== Global Navigation Logic ===============================
 
     LaunchedEffect(isLoggedIn) {
         if (!isLoggedIn) {
-
             profileViewModel.resetState()
             locationViewModel.resetLocationForm()
             menuViewModel.resetState()
@@ -51,7 +48,6 @@ fun NavGraph() {
                 popUpTo(0) { inclusive = true }
             }
         } else {
-            // Förbered data för inloggad ägare
             profileViewModel.loadProfile()
             menuViewModel.observeMenu()
         }
@@ -63,9 +59,22 @@ fun NavGraph() {
         navController = navController,
         startDestination = if (isLoggedIn) "profile" else "start"
     ) {
-        // Vi anropar våra extension-funktioner från NavGraphExtensions.kt
-        authNavGraph(navController, authViewModel)
-        ownerNavGraph(navController, authViewModel, profileViewModel, locationViewModel, menuViewModel)
-        customerNavGraph(navController, discoveryViewModel)
+        authNavGraph(
+            navController = navController,
+            authViewModel = authViewModel
+        )
+
+        ownerNavGraph(
+            navController = navController,
+            authViewModel = authViewModel,
+            profileViewModel = profileViewModel,
+            locationViewModel = locationViewModel,
+            menuViewModel = menuViewModel
+        )
+
+        customerNavGraph(
+            navController = navController,
+            discoveryViewModel = discoveryViewModel
+        )
     }
 }

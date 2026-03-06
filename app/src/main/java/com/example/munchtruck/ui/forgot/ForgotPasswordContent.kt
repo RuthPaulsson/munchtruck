@@ -23,7 +23,6 @@ import com.example.munchtruck.ui.components.AuthBackground
 import com.example.munchtruck.ui.components.AuthHeader
 import com.example.munchtruck.ui.components.InlineError
 import com.example.munchtruck.ui.components.InputField
-import com.example.munchtruck.ui.theme.AppColors.White
 import com.example.munchtruck.ui.theme.AppPreviewWrapper
 import com.example.munchtruck.ui.theme.Dimens.ButtonRadius
 import com.example.munchtruck.ui.theme.Dimens.LoaderSize
@@ -33,7 +32,7 @@ import com.example.munchtruck.ui.theme.Dimens.SpaceL
 import com.example.munchtruck.ui.theme.Dimens.SpaceM
 import com.example.munchtruck.ui.theme.Dimens.SpaceS
 
-// ====== Forgot Password Content ===============================
+// ====== Forgot Password Content (UI Layer) ===============================
 
 @Composable
 fun ForgotPasswordContent(
@@ -51,13 +50,17 @@ fun ForgotPasswordContent(
                 .padding(ScreenPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Reusing our shared header
+
+            // ====== Header Section ===============================
+
             AuthHeader(
                 subtitle = stringResource(R.string.forgot_password_subtitle)
             )
 
             if (isSuccess) {
-                // Success State
+
+                // ====== Success State ===============================
+
                 Text(
                     text = stringResource(R.string.forgot_password_success_message),
                     style = MaterialTheme.typography.bodyMedium,
@@ -66,23 +69,23 @@ fun ForgotPasswordContent(
                     modifier = Modifier.padding(top = SpaceM)
                 )
             } else {
-                // Input Form
+
+                // ====== Input Form ===============================
+
                 InputField(
                     value = email,
                     onChange = onEmailChange,
-                    lable = stringResource(R.string.register_email_label),
+                    label = stringResource(R.string.register_email_label),
                     placeholder = stringResource(R.string.input_email_hint)
                 )
 
                 Spacer(modifier = Modifier.height(SpaceL))
 
-                // Error Message
                 InlineError(
                     message = error,
                     modifier = Modifier.padding(bottom = SpaceS)
                 )
 
-                // Reset Button
                 Button(
                     onClick = onResetClick,
                     enabled = !isLoading,
@@ -91,12 +94,12 @@ fun ForgotPasswordContent(
                 ) {
                     if (isLoading) {
                         CircularProgressIndicator(
-                            color = White,
+                            color = MaterialTheme.colorScheme.onPrimary,
                             strokeWidth = LoaderStroke,
                             modifier = Modifier.size(LoaderSize)
                         )
                     } else {
-                        Text(stringResource(R.string.forgot_password_button))
+                        Text(text = stringResource(R.string.forgot_password_button))
                     }
                 }
             }
@@ -135,4 +138,3 @@ fun ForgotPasswordSuccessPreview() {
         )
     }
 }
-

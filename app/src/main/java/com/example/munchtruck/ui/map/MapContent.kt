@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -11,7 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.munchtruck.ui.components.DiscoveryBottom
-import com.example.munchtruck.ui.theme.AppColors.PrimaryOrange
 import com.example.munchtruck.ui.theme.AppPreviewWrapper
 import com.example.munchtruck.viewmodels.DiscoveryUiState
 import com.google.android.gms.maps.model.CameraPosition
@@ -23,6 +23,8 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 
+// ====== Map Content (UI Layer) ===============================
+
 @Composable
 fun MapContent(
     uiState: DiscoveryUiState,
@@ -31,6 +33,8 @@ fun MapContent(
 ) {
     val cameraPositionState = rememberCameraPositionState()
 
+    // ====== Camera Logic ===============================
+
     LaunchedEffect(uiState.userLocation) {
         uiState.userLocation?.let {
             cameraPositionState.position = CameraPosition.fromLatLngZoom(
@@ -38,11 +42,14 @@ fun MapContent(
             )
         }
     }
+
+    // ====== UI Layout ===============================
+
     Scaffold(
         bottomBar = {
             DiscoveryBottom(
                 currentRoute = "map",
-                onMapClick = { /* We are here */ },
+                onMapClick = { /* Already here */ },
                 onHomeClick = onNavigateToHome
             )
         }
@@ -52,6 +59,9 @@ fun MapContent(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
+
+            // ====== Google Map Section ===============================
+
             GoogleMap(
                 modifier = Modifier.fillMaxSize(),
                 cameraPositionState = cameraPositionState,
@@ -64,29 +74,35 @@ fun MapContent(
                 )
             ) {
                 uiState.mapMarkers.forEach { markerData ->
-                  Marker(
-                      state = MarkerState(
-                          position = LatLng(
-                              markerData.latitude,
-                              markerData.longitude)
-                      ),
-                      title = markerData.title,
-                      onInfoWindowClick = { onTruckClick(markerData.id) }
-                  )
+                    Marker(
+                        state = MarkerState(
+                            position = LatLng(
+                                markerData.latitude,
+                                markerData.longitude
+                            )
+                        ),
+                        title = markerData.title,
+                        onInfoWindowClick = {
+                            onTruckClick(markerData.id)
+                        }
+                    )
                 }
             }
+
+            // ====== Loading Indicator ===============================
+
             if (uiState.isLoading) {
                 CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center),
-                    color= PrimaryOrange
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
         }
-
     }
-
 }
+
 // ====== Preview ===============================
+
 @Preview(showBackground = true)
 @Composable
 fun MapContentPreview() {

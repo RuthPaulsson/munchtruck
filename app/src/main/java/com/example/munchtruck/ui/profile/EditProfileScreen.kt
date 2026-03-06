@@ -1,14 +1,12 @@
 package com.example.munchtruck.ui.profile
 
-import android.R.attr.description
+import android.Manifest
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -34,6 +32,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.launch
 
+// ====== Edit Profile Screen (Logic Layer) ===============================
+
 @Composable
 fun EditProfileScreen(
     navController: NavController,
@@ -41,57 +41,32 @@ fun EditProfileScreen(
     locationViewModel: LocationViewModel,
     menuViewModel: MenuViewModel
 ) {
-    // ====== State from ViewModel ===============================
+    // ====== State & Initialization ===============================
 
     val uiState by profileViewModel.uiState.collectAsStateWithLifecycle()
     val locationState by locationViewModel.uiState.collectAsStateWithLifecycle()
     val menuUiState by menuViewModel.uiState.collectAsStateWithLifecycle()
 
-
     val profileErrorMessage = (uiState.error as? ProfileError)?.toMessage()
     val menuErrorMessage = (menuUiState.error as? MenuItemValidationError)?.toMessage()
+
+    val cameraPositionState = rememberCameraPositionState()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    val existingImageUrl by remember(uiState.imageUrl) { mutableStateOf(uiState.imageUrl) }
+
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var menuItemToDelete by remember { mutableStateOf<String?>(null) }
+    val deletedMessage = stringResource(R.string.dish_deleted)
+
+    // ====== Side Effects ===============================
 
     LaunchedEffect(Unit) {
         profileViewModel.loadProfile()
         menuViewModel.observeMenu()
     }
-
-    // ====== Local UI State ===============================
-
-    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
-
-    var existingImageUrl by remember(uiState.imageUrl) {
-        mutableStateOf(uiState.imageUrl)
-    }
-
-//    var name by remember(uiState.name) {
-//        mutableStateOf(uiState.name)
-//    }
-//
-//    var description by remember(uiState.description) {
-//        mutableStateOf(uiState.description)
-//    }
-//
-//    var foodType by remember(uiState.foodType) {
-//        mutableStateOf(uiState.foodType ?: "")
-//    }
-//
-//    var openingHours by remember(uiState.openingHours) {
-//        mutableStateOf(uiState.openingHours ?: OpeningHours())
-//    }
-
-    val cameraPositionState = rememberCameraPositionState()
-
-    val snackbarHostState = remember { SnackbarHostState() }
-
-    val coroutineScope = rememberCoroutineScope()
-
-    var showDeleteDialog by remember { mutableStateOf(false) }
-    var menuItemToDelete by remember { mutableStateOf<String?>(null) }
-
-    val deletedMessage = stringResource(R.string.dish_deleted)
-
-    // ====== Handle Save Success ===============================
 
     LaunchedEffect(uiState.saveSuccess) {
         if (uiState.saveSuccess) {
@@ -100,24 +75,14 @@ fun EditProfileScreen(
         }
     }
 
-//    LaunchedEffect(uiState.openingHours) {
-//        uiState.openingHours?.let { savedHours ->
-//            openingHours = savedHours
-//        }
-//    }
-
-    // ====== Delete account ===============================
-
     LaunchedEffect(uiState.isAccountDeleted) {
         if (uiState.isAccountDeleted) {
             navController.navigate("start") {
                 popUpTo(0) { inclusive = true }
-
             }
         }
     }
 
-    // ====== Handle Error ===============================
     LaunchedEffect(uiState.error) {
         profileErrorMessage?.let { message ->
             snackbarHostState.showSnackbar(message)
@@ -132,29 +97,6 @@ fun EditProfileScreen(
         }
     }
 
-    // ====== Image Picker Launcher ===============================
-
-    val imageLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri ->
-        selectedImageUri = uri
-    }
-
-
-    // ====== Permission Launcher for GPS ===============================
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        val isGranted = permissions.values.all { it }
-        locationViewModel.onPermissionResult(isGranted)
-
-        if (isGranted) {
-            // Om användaren godkänner, hämta platsen direkt
-            locationViewModel.useCurrentLocation()
-        }
-    }
-    // ====== Location ===============================
-
     LaunchedEffect(locationState.selectedLat, locationState.selectedLng) {
         val lat = locationState.selectedLat
         val lng = locationState.selectedLng
@@ -162,19 +104,33 @@ fun EditProfileScreen(
         if (lat != null && lng != null) {
             try {
                 cameraPositionState.animate(
-                    com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom(
-                        com.google.android.gms.maps.model.LatLng(lat, lng),
-                        15f
-                    )
+                    CameraUpdateFactory.newLatLngZoom(LatLng(lat, lng), 15f)
                 )
             } catch (e: Exception) {
-                // Detta hindrar kraschen "CameraUpdateFactory is not initialized"
-                android.util.Log.e("EditProfile", "Kartan inte redo än")
+                Log.e("EditProfile", "Map not ready yet")
             }
         }
     }
 
-    // ====== UI Content ===============================
+    // ====== Launchers & Callbacks ===============================
+
+    val imageLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri ->
+        selectedImageUri = uri
+    }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val isGranted = permissions.values.all { it }
+        locationViewModel.onPermissionResult(isGranted)
+        if (isGranted) {
+            locationViewModel.useCurrentLocation()
+        }
+    }
+
+    // ====== UI Rendering ===============================
 
     EditProfileContent(
         name = uiState.name,
@@ -187,37 +143,29 @@ fun EditProfileScreen(
         menuItems = menuUiState.menuItems,
         isLoading = uiState.isLoading,
         errorMessage = profileErrorMessage,
-        onNameChange = { profileViewModel.onNameChanged(it) },
         openingHours = uiState.openingHours ?: OpeningHours(),
+        onNameChange = { profileViewModel.onNameChanged(it) },
         onOpeningHoursChange = { day, interval ->
-            // Skapa den uppdaterade listan baserat på nuvarande state
             val updatedHours = updateOpeningHoursState(
                 uiState.openingHours ?: OpeningHours(),
                 day,
                 interval
             )
-            // Skicka direkt till ViewModel (den nya funktionen vi skapade)
             profileViewModel.onOpeningHoursChanged(updatedHours)
         },
         onDescriptionChange = { profileViewModel.onDescriptionChanged(it) },
         onFoodTypeChange = { profileViewModel.onFoodTypeChanged(it) },
-        onMapPicked = { lat, lng ->
-            locationViewModel.onMapPicked(lat, lng)
-        },
+        onMapPicked = { lat, lng -> locationViewModel.onMapPicked(lat, lng) },
         onUseCurrentLocation = {
             permissionLauncher.launch(
                 arrayOf(
-                    android.Manifest.permission.ACCESS_FINE_LOCATION,
-                    android.Manifest.permission.ACCESS_COARSE_LOCATION
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
                 )
             )
         },
-        onSaveLocation = {
-        },
-
-        onBackClick = {
-            navController.popBackStack()
-        },
+        onSaveLocation = { /* Handled in onSaveClick */ },
+        onBackClick = { navController.popBackStack() },
         onSaveClick = {
             locationViewModel.saveLocation()
             profileViewModel.saveProfile(
@@ -226,12 +174,9 @@ fun EditProfileScreen(
                 foodType = uiState.foodType,
                 imageUri = selectedImageUri,
                 openingHours = uiState.openingHours
-
             )
         },
-        onImageClick = {
-            imageLauncher.launch("image/*")
-        },
+        onImageClick = { imageLauncher.launch("image/*") },
         onMenuClick = {
             menuViewModel.resetItemInput()
             navController.navigate("edit_menu/new")
@@ -239,20 +184,18 @@ fun EditProfileScreen(
         onEditMenuClick = { id ->
             navController.navigate("edit_menu/$id")
         },
-
         onDeleteMenuClick = { id ->
             menuItemToDelete = id
             showDeleteDialog = true
         },
-
-        onDeleteAccountClick = { profileViewModel.onDeleteAccountClicked() },
+        onDeleteAccountClick = {
+            profileViewModel.onDeleteAccountClicked()
+        },
         isDeleting = uiState.isDeleting,
-
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     )
 
-    // ====== Alert Dialog ===============================
+    // ====== Dialogs (Logic Layer) ===============================
 
     ConfirmationDialog(
         show = showDeleteDialog,
@@ -261,7 +204,9 @@ fun EditProfileScreen(
             showDeleteDialog = false
             menuItemToDelete?.let { id ->
                 menuViewModel.deleteMenuItem(id)
-                coroutineScope.launch { snackbarHostState.showSnackbar(deletedMessage) }
+                coroutineScope.launch {
+                    snackbarHostState.showSnackbar(deletedMessage)
+                }
             }
             menuItemToDelete = null
         },
@@ -279,6 +224,4 @@ fun EditProfileScreen(
         confirmText = stringResource(R.string.delete_account_confirm),
         isDangerous = true
     )
-
-
 }

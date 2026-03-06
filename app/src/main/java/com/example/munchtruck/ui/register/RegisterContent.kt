@@ -1,8 +1,5 @@
 package com.example.munchtruck.ui.register
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,8 +15,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.munchtruck.R
@@ -27,22 +22,16 @@ import com.example.munchtruck.ui.components.AuthBackground
 import com.example.munchtruck.ui.components.AuthHeader
 import com.example.munchtruck.ui.components.InlineError
 import com.example.munchtruck.ui.components.InputField
-import com.example.munchtruck.ui.theme.AppColors.PrimaryBackground
-import com.example.munchtruck.ui.theme.AppColors.PrimaryText
-import com.example.munchtruck.ui.theme.AppColors.White
 import com.example.munchtruck.ui.theme.AppPreviewWrapper
 import com.example.munchtruck.ui.theme.Dimens.ButtonRadius
 import com.example.munchtruck.ui.theme.Dimens.LoaderSize
 import com.example.munchtruck.ui.theme.Dimens.LoaderStroke
-import com.example.munchtruck.ui.theme.Dimens.LogoHeightSmall
-import com.example.munchtruck.ui.theme.Dimens.LogoWidthSmall
 import com.example.munchtruck.ui.theme.Dimens.ScreenPadding
 import com.example.munchtruck.ui.theme.Dimens.SpaceL
 import com.example.munchtruck.ui.theme.Dimens.SpaceM
 import com.example.munchtruck.ui.theme.Dimens.SpaceS
 
-
-// ====== Register Content ===============================
+// ====== Register Content (UI Layer) ===============================
 
 @Composable
 fun RegisterContent(
@@ -57,7 +46,7 @@ fun RegisterContent(
     onPasswordChange: (String) -> Unit,
     onConfirmPasswordChange: (String) -> Unit,
     onRegisterClick: () -> Unit
-){
+) {
     AuthBackground {
         Column(
             modifier = Modifier
@@ -74,7 +63,7 @@ fun RegisterContent(
             InputField(
                 value = company,
                 onChange = onCompanyChange,
-                lable = stringResource(R.string.register_company_label),
+                label = stringResource(R.string.register_company_label),
                 placeholder = stringResource(R.string.register_company_hint)
             )
 
@@ -83,7 +72,7 @@ fun RegisterContent(
             InputField(
                 value = email,
                 onChange = onEmailChange,
-                lable = stringResource(R.string.register_email_label),
+                label = stringResource(R.string.register_email_label),
                 placeholder = stringResource(R.string.input_email_hint)
             )
 
@@ -92,7 +81,7 @@ fun RegisterContent(
             InputField(
                 value = password,
                 onChange = onPasswordChange,
-                lable = stringResource(R.string.register_password_label),
+                label = stringResource(R.string.register_password_label),
                 placeholder = stringResource(R.string.input_password_hint),
                 isPassword = true
             )
@@ -102,7 +91,7 @@ fun RegisterContent(
             InputField(
                 value = confirmPassword,
                 onChange = onConfirmPasswordChange,
-                lable = stringResource(R.string.register_confirm_label),
+                label = stringResource(R.string.register_confirm_label),
                 placeholder = stringResource(R.string.input_confirm_password_hint),
                 isPassword = true
             )
@@ -116,7 +105,7 @@ fun RegisterContent(
                 modifier = Modifier.padding(bottom = SpaceS)
             )
 
-            // ====== Register Button ===============================
+            // ====== Actions ===============================
 
             Button(
                 onClick = onRegisterClick,
@@ -124,14 +113,14 @@ fun RegisterContent(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(ButtonRadius),
             ) {
-                if (isLoading){
+                if (isLoading) {
                     CircularProgressIndicator(
-                        color = White,
+                        color = MaterialTheme.colorScheme.onPrimary,
                         strokeWidth = LoaderStroke,
                         modifier = Modifier.size(LoaderSize)
                     )
                 } else {
-                    Text(stringResource(R.string.register_button))
+                    Text(text = stringResource(R.string.register_button))
                 }
             }
         }
@@ -158,5 +147,4 @@ fun RegisterContentPreview() {
             onRegisterClick = {}
         )
     }
-
 }

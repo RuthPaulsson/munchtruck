@@ -1,8 +1,6 @@
 package com.example.munchtruck.ui.start
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,9 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.munchtruck.R
-import com.example.munchtruck.ui.theme.AppColors.DarkOverlay
-import com.example.munchtruck.ui.theme.AppColors.White
-import com.example.munchtruck.ui.theme.AppColors.WhiteMuted
+import com.example.munchtruck.ui.components.DarkAuthBackground
 import com.example.munchtruck.ui.theme.AppPreviewWrapper
 import com.example.munchtruck.ui.theme.Dimens.ButtonRadius
 import com.example.munchtruck.ui.theme.Dimens.LogoHeightSmall
@@ -34,34 +30,22 @@ import com.example.munchtruck.ui.theme.Dimens.SpaceM
 import com.example.munchtruck.ui.theme.Dimens.StartTopSpacing
 import com.example.munchtruck.ui.theme.Dimens.TitleLarge
 
+// ====== Start Content (UI Layer) ===============================
+
 @Composable
 fun StartContent(
     onOwnerClick: () -> Unit,
     onLoverClick: () -> Unit
 ) {
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-
-        Image(
-            painter = painterResource(R.drawable.bg_foodtruck),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-        )
-
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(DarkOverlay)
-        )
-
+    DarkAuthBackground {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(ScreenPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
+            // ====== Header / Welcome Section ===============================
 
             Spacer(modifier = Modifier.height(StartTopSpacing))
 
@@ -70,7 +54,7 @@ fun StartContent(
                 style = MaterialTheme.typography.headlineLarge.copy(
                     fontSize = TitleLarge
                 ),
-                color = White,
+                color = MaterialTheme.colorScheme.onPrimary,
                 fontWeight = FontWeight.Bold
             )
 
@@ -85,16 +69,22 @@ fun StartContent(
 
             Spacer(modifier = Modifier.height(SpaceM))
 
+            // ====== Action Buttons ===============================
+
             Button(
                 onClick = onOwnerClick,
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(ButtonRadius)
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(stringResource(R.string.start_owner_title))
                     Text(
-                        stringResource(R.string.start_owner_subtitle),
-                        color = WhiteMuted
+                        text = stringResource(R.string.start_owner_title),
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                    Text(
+                        text = stringResource(R.string.start_owner_subtitle),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
                     )
                 }
             }
@@ -107,16 +97,22 @@ fun StartContent(
                 shape = RoundedCornerShape(ButtonRadius)
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(stringResource(R.string.start_lover_title))
                     Text(
-                        stringResource(R.string.start_lover_subtitle),
-                        color = WhiteMuted
+                        text = stringResource(R.string.start_lover_title),
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                    Text(
+                        text = stringResource(R.string.start_lover_subtitle),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
                     )
                 }
             }
         }
     }
 }
+
+// ====== Preview ===============================
 
 @Preview
 @Composable

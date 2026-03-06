@@ -1,20 +1,20 @@
 package com.example.munchtruck.ui.components
 
-
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.res.stringResource
 import com.example.munchtruck.R
+
+// ====== Confirmation Dialog (UI Layer) ===============================
 
 @Composable
 fun ConfirmationDialog(
     show: Boolean,
-    onDismiss: ()-> Unit,
+    onDismiss: () -> Unit,
     onConfirm: () -> Unit,
     title: String,
     message: String,
@@ -31,17 +31,25 @@ fun ConfirmationDialog(
                 TextButton(
                     onClick = onConfirm,
                     colors = if (isDangerous) {
-                        ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)
-
+                        ButtonDefaults.textButtonColors(
+                            contentColor = MaterialTheme.colorScheme.error
+                        )
                     } else {
-                        ButtonDefaults.textButtonColors(contentColor = Black)
+                        ButtonDefaults.textButtonColors(
+                            contentColor = MaterialTheme.colorScheme.primary
+                        )
                     }
                 ) {
                     Text(confirmText)
                 }
             },
             dismissButton = {
-                TextButton(onClick = onDismiss) {
+                TextButton(
+                    onClick = onDismiss,
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                ) {
                     Text(dismissText)
                 }
             }
