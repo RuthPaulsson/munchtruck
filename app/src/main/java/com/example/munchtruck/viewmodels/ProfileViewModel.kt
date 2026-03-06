@@ -191,7 +191,7 @@ class ProfileViewModel(
                 profileRepository.deleteAllTruckData()
                 authRepository.deleteUserDocument()
                 authRepository.deleteAuthAccount()
-                authRepository.logout() // FIX: Logga ut användaren lokalt efter radering
+                authRepository.logout() 
                 _uiState.value = ProfileUiState(isAccountDeleted = true)
             } catch (e: FirebaseAuthRecentLoginRequiredException) {
                 _uiState.update { it.copy(
