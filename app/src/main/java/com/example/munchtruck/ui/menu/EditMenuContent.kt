@@ -71,7 +71,7 @@ fun EditMenuContent(
                     IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.common_back)
+                            contentDescription = stringResource(R.string.common_action_back)
                         )
                     }
                 },
@@ -89,7 +89,7 @@ fun EditMenuContent(
                             )
                         } else {
                             Text(
-                                text = stringResource(R.string.common_save),
+                                text = stringResource(R.string.common_action_save),
                                 color = MaterialTheme.colorScheme.primary
                             )
                         }
@@ -127,7 +127,7 @@ fun EditMenuContent(
             InputField(
                 value = name,
                 onChange = onNameChange,
-                placeholder = stringResource(R.string.menu_name_hint)
+                placeholder = stringResource(R.string.menu_hint_name)
             )
 
             Spacer(modifier = Modifier.height(SpaceM))
@@ -135,7 +135,7 @@ fun EditMenuContent(
             InputField(
                 value = price,
                 onChange = onPriceChange,
-                placeholder = stringResource(R.string.menu_price_hint),
+                placeholder = stringResource(R.string.menu_hint_price),
                 errorMessage = priceError,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Decimal
@@ -147,7 +147,7 @@ fun EditMenuContent(
             InputField(
                 value = description,
                 onChange = onDescriptionChange,
-                placeholder = stringResource(R.string.menu_description_hint),
+                placeholder = stringResource(R.string.menu_hint_description),
                 singleLine = false,
                 minLines = 3
             )

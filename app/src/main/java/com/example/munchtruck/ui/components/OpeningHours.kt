@@ -34,13 +34,13 @@ fun OpeningHoursSection(
     isReadOnly: Boolean = false
 ) {
     val days = listOf(
-        Triple("mon", R.string.day_mon, openingHours.weekly.mon),
-        Triple("tue", R.string.day_tue, openingHours.weekly.tue),
-        Triple("wed", R.string.day_wed, openingHours.weekly.wed),
-        Triple("thu", R.string.day_thu, openingHours.weekly.thu),
-        Triple("fri", R.string.day_fri, openingHours.weekly.fri),
-        Triple("sat", R.string.day_sat, openingHours.weekly.sat),
-        Triple("sun", R.string.day_sun, openingHours.weekly.sun),
+        Triple("mon", R.string.opening_hours_day_mon, openingHours.weekly.mon),
+        Triple("tue", R.string.opening_hours_day_tue, openingHours.weekly.tue),
+        Triple("wed", R.string.opening_hours_day_wed, openingHours.weekly.wed),
+        Triple("thu", R.string.opening_hours_day_thu, openingHours.weekly.thu),
+        Triple("fri", R.string.opening_hours_day_fri, openingHours.weekly.fri),
+        Triple("sat", R.string.opening_hours_day_sat, openingHours.weekly.sat),
+        Triple("sun", R.string.opening_hours_day_sun, openingHours.weekly.sun),
     )
 
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -66,8 +66,8 @@ fun DayInputRow(
     onIntervalChange: ((OpeningInterval?) -> Unit)? = null,
     isReadOnly: Boolean = false
 ) {
-    val startPlaceholder = stringResource(R.string.time_placeholder_start)
-    val endPlaceholder = stringResource(R.string.time_placeholder_end)
+    val startPlaceholder = stringResource(R.string.opening_hours_placeholder_start)
+    val endPlaceholder = stringResource(R.string.opening_hours_placeholder_end)
 
     Row(
         modifier = Modifier
@@ -85,7 +85,7 @@ fun DayInputRow(
 
         if (isReadOnly) {
             Text(
-                text = if (interval == null) stringResource(R.string.status_closed)
+                text = if (interval == null) stringResource(R.string.status_label_closed)
                 else "${interval.start} - ${interval.end}",
                 style = MaterialTheme.typography.bodyMedium,
                 color = if (interval == null) MaterialTheme.colorScheme.error
@@ -104,8 +104,8 @@ fun DayInputRow(
                 modifier = Modifier.width(StatusButtonWidth)
             ) {
                 Text(
-                    text = if (interval == null) stringResource(R.string.status_closed)
-                    else stringResource(R.string.status_open),
+                    text = if (interval == null) stringResource(R.string.status_label_closed)
+                    else stringResource(R.string.status_label_open),
                     color = if (interval == null) MaterialTheme.colorScheme.outline
                     else MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.labelSmall
@@ -148,7 +148,7 @@ fun DayInputRow(
 
 @Composable
 fun OpeningHours.toDisplayString(): String {
-    if (this.tempClosed) return stringResource(R.string.status_closed)
+    if (this.tempClosed) return stringResource(R.string.status_label_closed)
     return stringResource(R.string.opening_hours_title)
 }
 

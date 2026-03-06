@@ -97,7 +97,7 @@ fun DiscoveryContent(
                 if (uiState.isListEmpty && errorMessage == null) {
                     item {
                         CenteredMessage(
-                            message = stringResource(R.string.discovery_empty_nearby)
+                            message = stringResource(R.string.discovery_message_empty_nearby)
                         )
                     }
                 }
@@ -107,9 +107,9 @@ fun DiscoveryContent(
                 items(uiState.trucks) { truck ->
                     val isOpen = truck.openingHours?.isOpenNow() ?: false
                     val statusText = if (isOpen) {
-                        stringResource(R.string.status_open)
+                        stringResource(R.string.status_label_open)
                     } else {
-                        stringResource(R.string.status_closed)
+                        stringResource(R.string.status_label_closed)
                     }
 
                     val calculatedDistance = uiState.userLocation?.let { userLoc ->
@@ -179,7 +179,6 @@ fun HeroSection(
             modifier = Modifier.fillMaxSize()
         )
 
-        // Använder nu MaterialTheme.colorScheme.scrim konsekvent
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -201,7 +200,7 @@ fun HeroSection(
         ) {
             Image(
                 painter = painterResource(R.drawable.munchtruck_text),
-                contentDescription = stringResource(R.string.logo_munchtruck),
+                contentDescription = stringResource(R.string.common_content_desc_logo),
                 modifier = Modifier
                     .padding(top = HeroLogoTopPadding)
                     .width(HeroLogoWidth)
@@ -210,7 +209,7 @@ fun HeroSection(
             Spacer(modifier = Modifier.height(SpaceXXL))
 
             Text(
-                text = stringResource(R.string.discovery_search_placeholder),
+                text = stringResource(R.string.discovery_placeholder_search),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onPrimary
             )
@@ -231,13 +230,13 @@ fun HeroSection(
                 horizontalAlignment = Alignment.Start
             ) {
                 Text(
-                    text = stringResource(R.string.discovery_hero_title_line1),
+                    text = stringResource(R.string.discovery_hero_title_1),
                     style = MaterialTheme.typography.headlineSmall,
                     color = MaterialTheme.colorScheme.onPrimary
                 )
 
                 Text(
-                    text = stringResource(R.string.discovery_hero_title_line2),
+                    text = stringResource(R.string.discovery_hero_title_2),
                     style = MaterialTheme.typography.headlineSmall,
                     color = MaterialTheme.colorScheme.onPrimary
                 )

@@ -78,10 +78,10 @@ fun ProfileScreen(
                 popUpTo(0) { inclusive = true }
             }
         },
-        title = stringResource(R.string.profile_logout_title),
-        message = stringResource(R.string.profile_logout_message),
-        confirmText = stringResource(R.string.profile_logout_confirm),
-        dismissText = stringResource(R.string.profile_logout_cancel),
+        title = stringResource(R.string.profile_dialog_logout_title),
+        message = stringResource(R.string.profile_dialog_logout_message),
+        confirmText = stringResource(R.string.profile_dialog_logout_confirm),
+        dismissText = stringResource(R.string.profile_dialog_logout_cancel),
         isDangerous = false
     )
 }

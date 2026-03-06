@@ -55,13 +55,13 @@ fun PublicProfileScreen(
 
             truck == null -> {
                 CenteredMessage(
-                    message = stringResource(R.string.public_profile_truck_not_found)
+                    message = stringResource(R.string.public_profile_error_truck_not_found)
                 )
             }
 
             uiState.selectedTruckMenu.isEmpty() -> {
                 CenteredMessage(
-                    message = stringResource(R.string.public_profile_menu_empty)
+                    message = stringResource(R.string.public_profile_message_menu_empty)
                 )
             }
 

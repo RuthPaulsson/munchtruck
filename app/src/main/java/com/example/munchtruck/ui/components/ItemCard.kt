@@ -129,8 +129,8 @@ fun ItemCard(
 
                 // ====== Row 2: Description & Distance ===============================
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    val openText = stringResource(R.string.status_open)
-                    val closedText = stringResource(R.string.status_closed)
+                    val openText = stringResource(R.string.status_label_open)
+                    val closedText = stringResource(R.string.status_label_closed)
                     
                     val statusColor = when {
                         description.contains(openText, ignoreCase = true) -> StatusOpen
@@ -229,7 +229,7 @@ fun SharedImagePlaceholder(
                     .padding(bottom = SpaceM),
                 shape = RoundedCornerShape(ButtonRadius)
             ) {
-                Text(stringResource(R.string.menu_select_image))
+                Text(stringResource(R.string.menu_button_select_image))
             }
         }
     }

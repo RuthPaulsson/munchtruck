@@ -61,7 +61,7 @@ fun EditProfileScreen(
 
     var showDeleteDialog by remember { mutableStateOf(false) }
     var menuItemToDelete by remember { mutableStateOf<String?>(null) }
-    val deletedMessage = stringResource(R.string.dish_deleted)
+    val deletedMessage = stringResource(R.string.menu_message_dish_deleted)
 
     // ====== Side Effects ===============================
 
@@ -211,8 +211,8 @@ fun EditProfileScreen(
             }
             menuItemToDelete = null
         },
-        title = stringResource(R.string.delete_title),
-        message = stringResource(R.string.delete_message),
+        title = stringResource(R.string.menu_dialog_delete_title),
+        message = stringResource(R.string.menu_dialog_delete_message),
         isDangerous = true
     )
 
@@ -220,9 +220,9 @@ fun EditProfileScreen(
         show = uiState.showDeleteConfirmation,
         onDismiss = { profileViewModel.onDeleteDismissed() },
         onConfirm = { profileViewModel.onDeleteConfirmed() },
-        title = stringResource(R.string.delete_account_title),
-        message = stringResource(R.string.delete_account_message),
-        confirmText = stringResource(R.string.delete_account_confirm),
+        title = stringResource(R.string.edit_profile_dialog_delete_title),
+        message = stringResource(R.string.edit_profile_dialog_delete_message),
+        confirmText = stringResource(R.string.edit_profile_dialog_delete_confirm),
         isDangerous = true
     )
 }

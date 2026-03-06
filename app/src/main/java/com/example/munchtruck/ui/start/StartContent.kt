@@ -50,7 +50,7 @@ fun StartContent(
             Spacer(modifier = Modifier.height(StartTopSpacing))
 
             Text(
-                text = stringResource(R.string.start_welcome),
+                text = stringResource(R.string.start_title_welcome),
                 style = MaterialTheme.typography.headlineLarge.copy(
                     fontSize = TitleLarge
                 ),
@@ -60,7 +60,7 @@ fun StartContent(
 
             Image(
                 painter = painterResource(R.drawable.munchtruck_text),
-                contentDescription = stringResource(R.string.logo_munchtruck),
+                contentDescription = stringResource(R.string.common_content_desc_logo),
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .fillMaxWidth(LogoWidthSmall)
@@ -78,11 +78,11 @@ fun StartContent(
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        text = stringResource(R.string.start_owner_title),
+                        text = stringResource(R.string.start_card_title_owner),
                         style = MaterialTheme.typography.labelLarge
                     )
                     Text(
-                        text = stringResource(R.string.start_owner_subtitle),
+                        text = stringResource(R.string.start_card_subtitle_owner),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
                     )
@@ -98,11 +98,11 @@ fun StartContent(
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        text = stringResource(R.string.start_lover_title),
+                        text = stringResource(R.string.start_card_title_lover),
                         style = MaterialTheme.typography.labelLarge
                     )
                     Text(
-                        text = stringResource(R.string.start_lover_subtitle),
+                        text = stringResource(R.string.start_card_subtitle_lover),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
                     )

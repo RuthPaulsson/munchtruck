@@ -54,7 +54,7 @@ fun ForgotPasswordContent(
             // ====== Header Section ===============================
 
             AuthHeader(
-                subtitle = stringResource(R.string.forgot_password_subtitle)
+                subtitle = stringResource(R.string.forgot_password_title_subtitle)
             )
 
             if (isSuccess) {
@@ -62,7 +62,7 @@ fun ForgotPasswordContent(
                 // ====== Success State ===============================
 
                 Text(
-                    text = stringResource(R.string.forgot_password_success_message),
+                    text = stringResource(R.string.forgot_password_message_success),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary,
                     textAlign = TextAlign.Center,
@@ -75,8 +75,8 @@ fun ForgotPasswordContent(
                 InputField(
                     value = email,
                     onChange = onEmailChange,
-                    label = stringResource(R.string.register_email_label),
-                    placeholder = stringResource(R.string.input_email_hint)
+                    label = stringResource(R.string.register_label_email),
+                    placeholder = stringResource(R.string.common_input_hint_email)
                 )
 
                 Spacer(modifier = Modifier.height(SpaceL))
@@ -99,7 +99,7 @@ fun ForgotPasswordContent(
                             modifier = Modifier.size(LoaderSize)
                         )
                     } else {
-                        Text(text = stringResource(R.string.forgot_password_button))
+                        Text(text = stringResource(R.string.forgot_password_button_send_link))
                     }
                 }
             }

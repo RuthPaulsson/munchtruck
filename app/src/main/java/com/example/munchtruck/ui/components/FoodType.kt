@@ -83,7 +83,7 @@ fun FoodTypeSection(
 
         Column(modifier = Modifier.fillMaxWidth()) {
             Text(
-                text = stringResource(R.string.profile_food_type_hint),
+                text = stringResource(R.string.edit_profile_label_food_type),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(bottom = SpaceXS)
@@ -98,7 +98,7 @@ fun FoodTypeSection(
                     value = foodType,
                     onValueChange = {},
                     readOnly = true,
-                    placeholder = { Text(stringResource(R.string.profile_food_type_placeholder)) },
+                    placeholder = { Text(stringResource(R.string.edit_profile_placeholder_food_type)) },
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                     colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
                     modifier = Modifier

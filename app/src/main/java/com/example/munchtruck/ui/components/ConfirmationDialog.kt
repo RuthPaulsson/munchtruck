@@ -18,8 +18,8 @@ fun ConfirmationDialog(
     onConfirm: () -> Unit,
     title: String,
     message: String,
-    confirmText: String = stringResource(R.string.delete_confirm),
-    dismissText: String = stringResource(R.string.common_cancel),
+    confirmText: String = stringResource(R.string.common_action_delete),
+    dismissText: String = stringResource(R.string.common_action_cancel),
     isDangerous: Boolean = false
 ) {
     if (show) {

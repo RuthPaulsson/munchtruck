@@ -1,19 +1,28 @@
 package com.example.munchtruck.ui.login
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.munchtruck.R
-import com.example.munchtruck.ui.components.DarkAuthBackground
 import com.example.munchtruck.ui.components.AuthHeader
+import com.example.munchtruck.ui.components.DarkAuthBackground
 import com.example.munchtruck.ui.components.InlineError
 import com.example.munchtruck.ui.components.InputField
 import com.example.munchtruck.ui.theme.AppPreviewWrapper
@@ -24,6 +33,8 @@ import com.example.munchtruck.ui.theme.Dimens.ScreenPadding
 import com.example.munchtruck.ui.theme.Dimens.SpaceL
 import com.example.munchtruck.ui.theme.Dimens.SpaceM
 import com.example.munchtruck.ui.theme.Dimens.SpaceS
+
+// ====== Login Content (UI Layer) ===============================
 
 @Composable
 fun LoginContent(
@@ -44,21 +55,22 @@ fun LoginContent(
                 .padding(ScreenPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Top spacing for logo alignment
+
+            // ====== Header Section ===============================
+
             Spacer(modifier = Modifier.height(SpaceL))
 
-            // AuthHeader without subtitle
             AuthHeader(subtitle = "")
 
             Spacer(modifier = Modifier.height(SpaceL))
 
-            // ====== Input Fields (Without labels) =====================
+            // ====== Input Form ===============================
 
             InputField(
                 value = email,
                 onChange = onEmailChange,
-                label = "", // No label used here
-                placeholder = stringResource(R.string.input_email_hint)
+                label = "",
+                placeholder = stringResource(R.string.common_input_hint_email)
             )
 
             Spacer(modifier = Modifier.height(SpaceM))
@@ -66,16 +78,17 @@ fun LoginContent(
             InputField(
                 value = password,
                 onChange = onPasswordChange,
-                label = "", // No label used here
-                placeholder = stringResource(R.string.input_password_hint),
+                label = "",
+                placeholder = stringResource(R.string.common_input_hint_password),
                 isPassword = true
             )
 
             Spacer(modifier = Modifier.height(SpaceS))
 
-            // Forgot Password Link
+            // ====== Actions ===============================
+
             Text(
-                text = stringResource(R.string.login_forgot_password),
+                text = stringResource(R.string.login_text_forgot_password),
                 color = MaterialTheme.colorScheme.tertiary,
                 style = MaterialTheme.typography.bodySmall.copy(
                     textDecoration = TextDecoration.Underline
@@ -87,16 +100,12 @@ fun LoginContent(
 
             Spacer(modifier = Modifier.height(SpaceL))
 
-            // ====== Error Messages ===============================
-
             if (error.isNotEmpty()) {
                 InlineError(
                     message = error,
                     modifier = Modifier.padding(bottom = SpaceS)
                 )
             }
-
-            // ====== Actions ===============================
 
             Button(
                 onClick = onLoginClick,
@@ -111,21 +120,22 @@ fun LoginContent(
                         modifier = Modifier.size(LoaderSize)
                     )
                 } else {
-                    Text(text = stringResource(R.string.login_button))
+                    Text(text = stringResource(R.string.login_button_login))
                 }
             }
 
             Spacer(modifier = Modifier.height(SpaceM))
 
-            // Registration Link
+            // ====== Footer Links ===============================
+
             Row {
                 Text(
-                    text = stringResource(R.string.login_no_account),
-                    color = Color.White,
+                    text = stringResource(R.string.login_text_no_account),
+                    color = MaterialTheme.colorScheme.onPrimary,
                     style = MaterialTheme.typography.bodySmall
                 )
                 Text(
-                    text = stringResource(R.string.login_create_account),
+                    text = stringResource(R.string.login_text_create_account),
                     color = MaterialTheme.colorScheme.tertiary,
                     style = MaterialTheme.typography.bodySmall.copy(
                         textDecoration = TextDecoration.Underline
@@ -138,6 +148,8 @@ fun LoginContent(
         }
     }
 }
+
+// ====== Preview ===============================
 
 @Preview(showBackground = true)
 @Composable

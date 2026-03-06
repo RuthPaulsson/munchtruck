@@ -54,17 +54,20 @@ fun RegisterContent(
                 .padding(ScreenPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
+            // ====== Header Section ===============================
+
             AuthHeader(
-                subtitle = stringResource(R.string.register_subtitle)
+                subtitle = stringResource(R.string.register_title_subtitle)
             )
 
-            // ====== Input Fields ===============================
+            // ====== Input Form Section ===============================
 
             InputField(
                 value = company,
                 onChange = onCompanyChange,
-                label = stringResource(R.string.register_company_label),
-                placeholder = stringResource(R.string.register_company_hint)
+                label = stringResource(R.string.register_label_company),
+                placeholder = stringResource(R.string.register_hint_company)
             )
 
             Spacer(modifier = Modifier.height(SpaceM))
@@ -72,8 +75,8 @@ fun RegisterContent(
             InputField(
                 value = email,
                 onChange = onEmailChange,
-                label = stringResource(R.string.register_email_label),
-                placeholder = stringResource(R.string.input_email_hint)
+                label = stringResource(R.string.register_label_email),
+                placeholder = stringResource(R.string.common_input_hint_email)
             )
 
             Spacer(modifier = Modifier.height(SpaceM))
@@ -81,8 +84,8 @@ fun RegisterContent(
             InputField(
                 value = password,
                 onChange = onPasswordChange,
-                label = stringResource(R.string.register_password_label),
-                placeholder = stringResource(R.string.input_password_hint),
+                label = stringResource(R.string.register_label_password),
+                placeholder = stringResource(R.string.common_input_hint_password),
                 isPassword = true
             )
 
@@ -91,8 +94,8 @@ fun RegisterContent(
             InputField(
                 value = confirmPassword,
                 onChange = onConfirmPasswordChange,
-                label = stringResource(R.string.register_confirm_label),
-                placeholder = stringResource(R.string.input_confirm_password_hint),
+                label = stringResource(R.string.register_label_password_confirm),
+                placeholder = stringResource(R.string.common_input_hint_password_confirm),
                 isPassword = true
             )
 
@@ -120,7 +123,7 @@ fun RegisterContent(
                         modifier = Modifier.size(LoaderSize)
                     )
                 } else {
-                    Text(text = stringResource(R.string.register_button))
+                    Text(text = stringResource(R.string.register_button_get_started))
                 }
             }
         }
