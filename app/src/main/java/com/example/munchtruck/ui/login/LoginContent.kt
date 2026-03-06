@@ -56,7 +56,7 @@ fun LoginContent(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             AuthHeader(
-                subtitle = stringResource(R.string.login_subtitle)
+                subtitle = stringResource(R.string.start_welcome)
             )
 
             // ====== Input Fields ===============================
@@ -64,7 +64,7 @@ fun LoginContent(
             InputField(
                 value = email,
                 onChange = onEmailChange,
-                label = stringResource(R.string.login_email_label),
+                label = stringResource(R.string.register_email_label),
                 placeholder = stringResource(R.string.input_email_hint)
             )
 
@@ -73,7 +73,7 @@ fun LoginContent(
             InputField(
                 value = password,
                 onChange = onPasswordChange,
-                label = stringResource(R.string.login_password_label),
+                label = stringResource(R.string.register_password_label),
                 placeholder = stringResource(R.string.input_password_hint),
                 isPassword = true
             )
