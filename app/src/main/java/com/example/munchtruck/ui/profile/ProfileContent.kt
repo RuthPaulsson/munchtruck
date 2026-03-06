@@ -219,6 +219,13 @@ fun ProfileHeroSection(
             modifier = Modifier.fillMaxSize()
         )
 
+        // Overlay för att säkerställa att vit text syns oavsett bild
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.3f))
+        )
+
         if (isOwner) {
             Box(
                 modifier = Modifier
@@ -229,7 +236,8 @@ fun ProfileHeroSection(
                     Icon(
                         imageVector = Icons.Default.MoreVert,
                         contentDescription = stringResource(R.string.profile_options),
-                        tint = MaterialTheme.colorScheme.onSurface
+                        // Ändrad till vit färg (onPrimary)
+                        tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
 
@@ -258,7 +266,8 @@ fun ProfileHeroSection(
         Text(
             text = truckName,
             style = MaterialTheme.typography.headlineSmall,
-            color = MaterialTheme.colorScheme.onSurface,
+            // Ändrad till vit färg (onPrimary) för att synas mot bilden
+            color = MaterialTheme.colorScheme.onPrimary,
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .padding(SpaceM)
