@@ -33,7 +33,7 @@ class FirebaseAuthRepository(
         }   }
     }
 
-    override suspend fun register(email: String, password: String) {
+    override suspend fun register(email: String, password: String, companyName: String) {
         try {
             val authResult = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
             val uid = authResult.user?.uid ?: throw FirebaseExceptions.UserNotFound()
@@ -43,12 +43,12 @@ class FirebaseAuthRepository(
                 hashMapOf(
                     ID to uid,
                     EMAIL to email,
-                    COMPANY_NAME to "",
-                    ROLE to "owner"
+                    COMPANY_NAME to companyName.trim(),
+                    ROLE to ROLE_OWNER
                 )
             }
             val truck = mutableMapOf<String, Any?>(
-                FirestoreFields.NAME to "",
+                FirestoreFields.NAME to companyName.trim(),
                 FirestoreFields.DESCRIPTION to "",
                 FirestoreFields.LOCATION to null,
                 FirestoreFields.IMAGE_URL to "",

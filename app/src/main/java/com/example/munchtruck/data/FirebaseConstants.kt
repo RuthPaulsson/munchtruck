@@ -24,6 +24,7 @@ object FirestoreFields {
     const val EMAIL = "email"
     const val COMPANY_NAME = "companyName"
     const val ROLE = "role"
+    const val ROLE_OWNER = "owner"
     const val NAME = "name"
     const val DESCRIPTION = "description"
     const val FOOD_TYPE = "foodType"

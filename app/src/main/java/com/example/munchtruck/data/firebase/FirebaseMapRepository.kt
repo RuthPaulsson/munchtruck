@@ -1,12 +1,11 @@
 package com.example.munchtruck.data.firebase
 
-import com.example.munchtruck.data.FirebaseExceptions
 import com.example.munchtruck.data.FirestoreCollections
 import com.example.munchtruck.data.model.MapTruck
 import com.example.munchtruck.data.repository.MapRepository
+import com.example.munchtruck.data.toFirebaseException
 import com.example.munchtruck.data.toFoodTruck
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -23,11 +22,7 @@ class FirebaseMapRepository(
         firestore.collection(MAP_TRUCKS)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
-                    val wrappedError = when (error.code) {
-                        FirebaseFirestoreException.Code.PERMISSION_DENIED -> FirebaseExceptions.AccessDenied()
-                        else -> FirebaseExceptions.DatabaseError(error.message,error)
-                    }
-                    trySend(Result.failure(wrappedError))
+                    trySend(Result.failure(error.toFirebaseException()))
                     return@addSnapshotListener
                 }
 
