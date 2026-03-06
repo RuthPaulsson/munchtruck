@@ -11,6 +11,5 @@ data class MapTruck(
     val longitude: Double,
     val foodType: String,
     val imageUrl: String,
-//    val isActive: Boolean,
     val openingHours: OpeningHours? = null
 )

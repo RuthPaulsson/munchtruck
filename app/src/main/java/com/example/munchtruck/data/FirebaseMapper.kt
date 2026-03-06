@@ -3,6 +3,8 @@ package com.example.munchtruck.data
 import com.example.munchtruck.data.model.*
 import com.google.firebase.firestore.DocumentSnapshot
 
+// ============ MODEL MAPPERS ===========================================
+
 fun DocumentSnapshot.toFoodTruck(): FoodTruck? = with(FirestoreFields) {
     val name = getString(NAME) ?: return null
 
