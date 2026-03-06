@@ -33,7 +33,7 @@ class FirebaseAuthRepository(
         }   }
     }
 
-    override suspend fun register(email: String, password: String) {
+    override suspend fun register(email: String, password: String, trimmedCompanyName: String) {
         try {
             val authResult = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
             val uid = authResult.user?.uid ?: throw FirebaseExceptions.UserNotFound()

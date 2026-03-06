@@ -8,7 +8,7 @@ interface AuthRepository {
 
     suspend fun login(email: String, password: String)
 
-    suspend fun register(email: String, password: String)
+    suspend fun register(email: String, password: String, trimmedCompanyName: String)
 
     suspend fun sendPasswordResetEmail(email: String)
 
