@@ -160,6 +160,22 @@ The following table explains how the MoSCoW prioritization method was applied in
 | **Won’t Have**  | Features that were intentionally excluded from the current version to keep focus on the core functionality of the MVP.                    |
 
 ### Sprint Planning
+The development was divided into four one-week sprints, emphasizing iterative improvement and team collaboration. Our routine included:
+- **Daily Scrum**: Quick sync every morning to track progress and remove blockers.
+- **Sprint Review**: End-of-sprint presentation of results to stakeholders.
+- **Sprint Retrospective**: Reflecting on internal processes to improve efficiency for the next sprint.
+
+#### Sprint 1: Foundation & Security
+The focus was on enabling food truck owners to securely create accounts and manage sessions. We established the Firebase integration, developed the core Auth repository, and designed the initial landing and login screens. Key outcomes included resolving technical challenges with Firebase rules and Gradle configurations.
+
+#### Sprint 2: Owner Management
+During this sprint, we empowered owners to build their digital presence. We implemented image uploading via Firebase Storage, developed the profile editing interface, and established the CRUD logic for menu items. We also integrated Google Maps for location selection and updated our system architecture to handle complex data models.
+
+#### Sprint 3: Real-Time Discovery
+The goal was to deliver a fully functional discovery experience for food lovers. We built the interactive map and list views, implemented real-time menu viewing, and added category-based filtering. Significant backend refactoring was performed to optimize data synchronization between owners and customers.
+
+#### Sprint 4: Refinement & Stability
+The final sprint focused on polishing the MVP and ensuring high code quality. We implemented account deletion and password recovery, conducted extensive debugging across all layers, and standardized our resource management. The sprint concluded with a thorough cleanup of hardcoded values and final synchronization of the UI with our standardized naming conventions.
 
 ### Implemented User Stories
 The following user stories have been fully developed and integrated into the application. These features represent the core functionality of MunchTruck, providing a functional Minimum Viable Product (MVP) that meets the essential needs of both truck owners and customers.
