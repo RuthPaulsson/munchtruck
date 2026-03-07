@@ -106,6 +106,8 @@ Key principles include:
 
 Our goal is to create a smooth and enjoyable user experience that encourages continued use of the application.
 
+[Back to top](#munchtruck)
+
 ## Agile Planning
 The development of MunchTruck was planned using Agile methodology. The project was structured around user stories and organized using short, focused sprints.
 
@@ -234,6 +236,7 @@ During the development process, some adjustments were made as the project evolve
 
 ![UML Diagram](docs/uml_diagram.png)
 
+[Back to top](#munchtruck)
 
 ## Design
 The visual design of MunchTruck was developed with a focus on establishing a strong brand identity while ensuring a clean and modern user experience. The design process involved careful consideration of layout, color theory, and typography to create an interface that is both functional and inviting.
@@ -259,6 +262,8 @@ The application’s color palette was carefully selected to establish a strong b
 ### Fonts
 The application uses **Montserrat** as its primary typeface. This font was chosen for its modern, geometric appearance and excellent legibility across various weights and sizes. It ensures a professional and clean look for both headings and body text, enhancing the overall user experience.
 
+[Back to top](#munchtruck)
+
 ## Features
 The features of MunchTruck are designed to provide essential tools for food truck owners to manage their business and for food lovers to discover street food easily. The application focuses on real-time updates, clear communication, and simple navigation.
 
@@ -278,6 +283,8 @@ The features of MunchTruck are designed to provide essential tools for food truc
 - **Advanced Preferences**: Filtering based on price range, ratings, and specific dietary requirements.
 - **Owner Analytics**: A statistics dashboard for truck owners to track profile views and engagement.
 - **Push Notifications**: Real-time alerts for customers when a favorite truck opens nearby.
+
+[Back to top](#munchtruck)
 
 ## Testing
 Comprehensive testing was performed throughout the development process to ensure application stability, security, and a smooth user experience. This included both automated unit tests for core logic and extensive manual testing across different devices and scenarios.
@@ -311,6 +318,8 @@ During development, several issues were identified and resolved:
 ### Unfixed Bugs
 There are no known critical bugs in the current version of the application. 
 
+[Back to top](#munchtruck)
+
 ## Technologies
 The MunchTruck application is built using modern Android development tools and cloud services to ensure a robust, high-performance, and scalable platform. The choice of technologies focuses on developer productivity and a seamless end-user experience.
 
@@ -338,6 +347,8 @@ To get the development environment running:
 3. Ensure a valid `google-services.json` file is placed in the `app/` directory to enable Firebase services.
 4. Sync Gradle and build the project.
 5. Run the application on a physical device or an emulator with Google Play Services enabled.
+
+[Back to top](#munchtruck)
 
 ## Credits
 The development of MunchTruck was a collaborative effort, where all application logic and user interface layouts were created by the team. This section acknowledges the contributors and tools that supported the development process.
