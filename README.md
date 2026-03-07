@@ -1,5 +1,7 @@
 # MunchTruck
 
+![Mockup](docs/mockup.png)
+
 ## Table of Contents
 - [UX](#ux)
   - [App Purpose](#app-purpose)
@@ -26,6 +28,7 @@
   - [Future Features](#future-features)
 - [Testing](#testing)
   - [Manual Testing](#manual-testing)
+  - [Automated Testing](#automated-testing)
   - [Bugs](#bugs)
   - [Unfixed Bugs](#unfixed-bugs)
 - [Technologies](#technologies)
@@ -116,17 +119,18 @@ By working with clearly defined stories, acceptance criteria, and detailed tasks
 Below, the user stories are grouped according to their MoSCoW priority:
 
 ***Must Have***
+- US 1:  Log in (Food truck owner)
 - US 2: Edit profile (Food truck owner)
 - US 3: Add menu (Food truck owner)
-- US 7: See nearby food trucks (Food lover)
 - US 5: Set location (Food truck owner)
+- US 7: See nearby food trucks (Food lover)
 - US 10: View menu (Food lover)
 - US 12: View map (Food lover)
 
 ***Should Have***
 - US 4: Set availability (online/offline) (Food truck owner)
-- US 9: Filter by preferences (Food lover)
 - US 8: Search by food type (Food lover)
+- US 9: Filter by preferences (Food lover)
 - US 11: See opening hours & status (Food lover)
 - US 13: Edit menu in real time (Food truck owner)
 - US 15: Set opening hours (Food truck owner)
@@ -156,8 +160,45 @@ The following table explains how the MoSCoW prioritization method was applied in
 | **Won’t Have**  | Features that were intentionally excluded from the current version to keep focus on the core functionality of the MVP.                    |
 
 ### Sprint Planning
+
 ### Implemented User Stories
+The following user stories have been fully developed and integrated into the application. These features represent the core functionality of MunchTruck, providing a functional Minimum Viable Product (MVP) that meets the essential needs of both truck owners and customers.
+
+***Must Have***
+- US 1:  Log in (Food truck owner)
+- US 2: Edit profile (Food truck owner)
+- US 3: Add menu (Food truck owner)
+- US 5: Set location (Food truck owner)
+- US 7: See nearby food trucks (Food lover)
+- US 10: View menu (Food lover)
+- US 12: View map (Food lover)
+
+***Should Have***
+- US 8: Search by food type (Food lover)
+- US 11: See opening hours & status (Food lover)
+- US 13: Edit menu in real time (Food truck owner)
+- US 15: Set opening hours (Food truck owner)
+- US 16: Delete account (Food truck owner)
+
+***Could Have***
+- US 14: Upload food truck image (Food truck owner)
+- US 21: Reset password (Food truck owner)
+
 ### Not Implemented User Stories
+The user stories listed below were identified during the planning phase but have not been implemented in the current version. These features remain in the backlog and are candidates for future development to further enhance the user experience and platform depth.
+
+***Should Have***
+- US 4: Set availability (online/offline) (Food truck owner)
+- US 9: Filter by preferences (Food lover)
+
+***Could Have***
+- US 17: Save favorite food trucks (Food lover)
+- US 18: View reviews (Food lover)
+- US 19: Leave a review (Food lover)
+
+***Won’t Have***
+- US 6: View statistics (Food truck owner)
+- US 20: Filter by distance (Food lover)
 
 ### Kanban Board
 The project is organized using a [Trello Kanban](https://trello.com/b/zNiBfOvi/androidprojekt-uppgift-kom-pa-namn) board to manage and track progress throughout development.
@@ -179,28 +220,122 @@ During the development process, some adjustments were made as the project evolve
 
 
 ## Design
+The visual design of MunchTruck was developed with a focus on establishing a strong brand identity while ensuring a clean and modern user experience. The design process involved careful consideration of layout, color theory, and typography to create an interface that is both functional and inviting.
+
 ### Wireframe
+The design process began with creating wireframes in [Figma](https://www.figma.com/) to visualize the application's layout and user flow. These served as a template and blueprint for both the Food Truck Owner and Food Lover interfaces, ensuring a consistent and intuitive experience before moving into the development phase. While they acted as a primary guide, the final application may differ from the initial design as refinements were made during implementation.
+
+![Wireframes](docs/wireframes.png)
+
 ### Colour Scheme
+The application’s color palette was carefully selected to establish a strong brand identity while ensuring high readability and a warm, inviting atmosphere.
+
+- **Primary Branding Color**: A vibrant orange (`#ED6114`) was chosen as the core branding color. This color reflects energy, appetite, and the dynamic nature of the food truck industry.
+- **Background & Surfaces**: A soft off-white/creamy background (`#F9F5F1`) is used to provide a warm feel that is less straining on the eyes than pure white, while keeping the interface clean.
+- **Typography & Details**: Pure black (`#000000`) and white (`#FFFFFF`) are used for text and high-contrast elements.
+- **Status Indicators**: Standard green (`#4CAF50`) and red (`#E53935`) are used to clearly communicate "Open" and "Closed" statuses to users at a glance.
+- **Overlays**: Dark semi-transparent overlays are used on hero images to ensure that text remains legible regardless of the background image content.
+
+*Color palette generated with [Coolors](https://coolors.co/)*
+![Colour Scheme](docs/munchtruck_color.png)
+
+
 ### Fonts
+The application uses **Montserrat** as its primary typeface. This font was chosen for its modern, geometric appearance and excellent legibility across various weights and sizes. It ensures a professional and clean look for both headings and body text, enhancing the overall user experience.
 
 ## Features
+The features of MunchTruck are designed to provide essential tools for food truck owners to manage their business and for food lovers to discover street food easily. The application focuses on real-time updates, clear communication, and simple navigation.
+
 ### Existing Features
+- **Secure Authentication**: Full login and registration system for food truck owners, including a secure password reset flow via email.
+- **Profile Customization**: Owners can manage their truck's public identity, including name, description, category, and hero image.
+- **Digital Menu Management**: Real-time management of menu items with support for titles, descriptions, prices, and high-quality images.
+- **Location Awareness**: GPS-integrated location setting for owners using a map picker. Automated distance calculation shows customers exactly how far away each truck is.
+- **Discovery Engine**: Interactive list and map views for customers to browse nearby open trucks.
+- **Smart Filtering**: Category-based browsing allowing users to filter by food type (e.g., Burger, Pizza, Tacos).
+- **Automated Open/Closed Status**: Dynamic status indicators that update automatically based on the truck's defined opening hours.
+- **Account Control**: Full "Danger Zone" support allowing owners to permanently delete their account and associated data.
+
 ### Future Features
+- **Instant Availability Toggle**: A dedicated switch for owners to appear or disappear from the map instantly outside of scheduled hours.
+- **Social Engagement**: Ability for food lovers to save favorite trucks and leave reviews/ratings.
+- **Advanced Preferences**: Filtering based on price range, ratings, and specific dietary requirements.
+- **Owner Analytics**: A statistics dashboard for truck owners to track profile views and engagement.
+- **Push Notifications**: Real-time alerts for customers when a favorite truck opens nearby.
 
 ## Testing
+Comprehensive testing was performed throughout the development process to ensure application stability, security, and a smooth user experience. This included both automated unit tests for core logic and extensive manual testing across different devices and scenarios.
+
 ### Manual Testing
+Extensive manual testing was conducted to verify that all features work as expected from a user's perspective.
+
+| Feature Area | Description | Status |
+| :--- | :--- | :---: |
+| **Authentication Flow** | Verified successful registration, login, and logout. Tested the password reset flow with real email verification. | ✅ |
+| **Profile & Menu Management** | Confirmed that owners can update their information, upload images, and manage menu items in real time. | ✅ |
+| **Location & Maps** | Tested the GPS integration and map picker functionality. Verified that truck locations are correctly displayed on the customer's map and distances are accurately calculated. | ✅ |
+| **Responsive Layout** | Verified the UI across various screen sizes and orientations to ensure a consistent experience. | ✅ |
+| **Error Handling** | Confirmed that informative error messages are displayed for common issues such as invalid credentials, poor network connectivity, or missing permissions. | ✅ |
+
+### Automated Testing
+Automated tests were implemented to verify core business logic and UI components independently of the backend services.
+
+| Test Category | Description | File Link | Status |
+| :--- | :--- | :--- | :---: |
+| **Authentication Logic** | Verified secure authentication, account registration, and validation logic in the AuthViewModel. | [AuthViewModelTest.kt](app/src/test/java/com/example/munchtruck/AuthViewModelTest.kt) | ✅ |
+| **UI Component Test** | Verified that basic UI elements render correctly within the instrumentation environment. | [AuthUiTest.kt](app/src/androidTest/java/com/example/munchtruck/AuthUiTest.kt) | ✅ |
+
 ### Bugs
+During development, several issues were identified and resolved:
+- **Visual Regressions**: Fixed inconsistent padding and broken layout elements in the profile and list views.
+- **Resource Synchronization**: Resolved issues where incorrect string or color references caused application crashes.
+- **State Management**: Fixed bugs related to UI state not updating correctly after saving profile or menu changes.
+- **Image Loading**: Optimized the image loading flow to handle slow network connections and prevent UI flickering.
+
 ### Unfixed Bugs
+There are no known critical bugs in the current version of the application. 
 
 ## Technologies
+The MunchTruck application is built using modern Android development tools and cloud services to ensure a robust, high-performance, and scalable platform. The choice of technologies focuses on developer productivity and a seamless end-user experience.
+
 ### Main Languages Used
+- **Kotlin**: The primary language used for all application logic, including ViewModels, repositories, and UI components.
+- **XML**: Used for defining core Android resources such as string translations and the application manifest.
+
 ### Architecture
+The project follows the **MVVM (Model-View-ViewModel)** architectural pattern to ensure a clean separation of concerns and improved testability.
+- **View**: Built entirely with **Jetpack Compose**, providing a modern and declarative UI.
+- **ViewModel**: Manages the UI state and handles interaction with the data layer.
+- **Model/Repository**: Acts as a single source of truth for data, abstracting Firebase operations behind clean interfaces.
+- **Dependency Provider**: A manual dependency injection system (`NavDependencyProvider`) is used to manage the lifecycle of repositories and ViewModels.
+
 ### Firebase Integration
+MunchTruck leverages Firebase as its backend-as-a-service provider to handle real-time data and infrastructure needs:
+- **Firebase Auth**: Manages secure user authentication, including account creation and secure password recovery.
+- **Cloud Firestore**: A flexible NoSQL database used to store and sync food truck profiles, menu data, and real-time locations.
+- **Firebase Storage**: Used for efficient hosting and retrieval of user-uploaded images for food trucks and menu items.
+
 ### Setup & Installation
+To get the development environment running:
+1. Clone the repository from GitHub.
+2. Open the project in **Android Studio** (Ladybug or later recommended).
+3. Ensure a valid `google-services.json` file is placed in the `app/` directory to enable Firebase services.
+4. Sync Gradle and build the project.
+5. Run the application on a physical device or an emulator with Google Play Services enabled.
 
 ## Credits
+The development of MunchTruck was a collaborative effort, where all application logic and user interface layouts were created by the team. This section acknowledges the contributors and tools that supported the development process.
+
 ### Content
+The content and application logic of MunchTruck were developed by the following team members:
+- [Linnea87](https://github.com/Linnea87)
+- [PatNoO](https://github.com/PatNoO)
+- [RuthPaulsson](https://github.com/RuthPaulsson)
+- [ahmadhayel](https://github.com/ahmadhayel)
+
 ### Media
-
-
-
+- **Mockup**: Generated using [DeviceFrames](https://deviceframes.com/).
+- **AI Generation**: Static images used as backgrounds or placeholders within the application were created using AI generation tools.
+- **Icons**:
+    - Category icons within the food type chips were sourced from [Flaticon](https://www.flaticon.com/).
+    - All other system icons use the standard [Material Icons](https://fonts.google.com/icons) library.
