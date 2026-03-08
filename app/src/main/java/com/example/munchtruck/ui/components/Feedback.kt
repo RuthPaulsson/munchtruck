@@ -103,7 +103,7 @@ fun CenteredMessageWithRetry(
             )
             Spacer(modifier = Modifier.height(SpaceSM))
             Button(onClick = onRetry) {
-                Text(text = "Retry") // Rekommenderar stringResource här sen
+                Text(text = "Retry")
             }
         }
     }
