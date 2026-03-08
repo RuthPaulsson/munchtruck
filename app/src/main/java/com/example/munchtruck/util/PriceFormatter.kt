@@ -45,7 +45,7 @@ object PriceFormatter {
                 .replace(",", ".")
                 .trim()
             val kronor = cleaned.toDoubleOrNull() ?: return null
-            (kronor * 100).toLong()  // Convert to öre
+            (kronor * 100).toLong()
         } catch (e: Exception) {
             null
         }
